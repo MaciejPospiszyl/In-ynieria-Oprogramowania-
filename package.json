@@ -1,0 +1,30 @@
+{
+  "name": "inzynieria-oprogramowania-",
+  "version": "1.0.0",
+  "description": "\"# In-ynieria-Oprogramowania-\" \r \"# In-ynieria-Oprogramowania-\"",
+  "main": "index.js",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "html": "^1.0.0",
+    "mongodb": "^3.6.5",
+    "mongoose": "^5.12.2",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaciejPospiszyl/Inzynieria-Oprogramowania-.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaciejPospiszyl/Inzynieria-Oprogramowania-/issues"
+  },
+  "homepage": "https://github.com/MaciejPospiszyl/Inzynieria-Oprogramowania-#readme"
+}
