@@ -1,0 +1,51 @@
+#container{
+    width: 630px;
+    height: 790px;
+    background-color:rgb(41, 27, 172);
+    margin:auto;
+    margin-top: 30px;
+    border-radius: 50px;
+}
+
+.card-outer{
+    height: 160px;
+    width: 120px;
+    perspective: 1000px;
+    float: left;
+    margin-left: 30px;
+    margin-top: 30px;
+    
+}
+
+.card-inner{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+}
+
+.card-outer:hover .card-inner{
+    transform:rotateY(180deg)
+}
+
+.front, .back{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(234deg, rgba(131,58,180,1) 0%, rgba(29,248,253,1) 50%, rgba(252,176,69,1) 100%);
+    backface-visibility: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.8);
+}
+
+.back{
+    transform:rotateY(180deg);
+}
+
+
+img{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+}

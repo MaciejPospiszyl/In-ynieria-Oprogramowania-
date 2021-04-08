@@ -3,14 +3,15 @@ const path = require("path")
 // const mongoose = require('mongoose')
 const port = 3000
 const app = express()
+ 
 
 
 //public
 app.use(express.static(__dirname + '/public')); 
 
 //views
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+//app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
 
 //parsers
 app.use(express.json())
