@@ -1,68 +1,39 @@
 var models = require('./database.js')
 const bcrypt = require('bcryptjs')
+var jwt = require('jsonwebtoken')
 const saltRounds = 10;
 var users = models.users
 var credentials = models.credentials
 
-<<<<<<< HEAD
-function userR()
-{
-    alert("hello")
-}
-
 exports.register = (req, res) => {
-=======
-exports.register = async (req, res) => {
->>>>>>> c8a32eea96824315bf2f15b9b0f806ab27bf2fb0
     const { username, email, password } = req.body;
     console.log("BODY:", req.body);
 
     if (!username.length || !email.length || !password.length) {
         console.log("Niewypełnione pole/a")
-        return res.status('401').render("register.ejs", {
+         res.status('401').render("register.ejs", {
             message: "Niewypełnione pole/a"
         })
     }
-<<<<<<< HEAD
     users.findOne({ username: username })
         .then(results => {
             if (results) {
                 console.log("Username jest zajęty")
-                return res.status('401').render("register.ejs", {
+                 res.status('401').render("register.ejs", {
                     message: "Username jest zajęty"
                 })
             }
-=======
-
-    const user = await users.findOne({ username: username })
-    if (user) {
-        console.log(user)
-        console.log("Username jest zajęty")
-        return res.status('401').render("register.html", {
-            message: "Username jest zajęty"
->>>>>>> c8a32eea96824315bf2f15b9b0f806ab27bf2fb0
         })
-    }
 
-<<<<<<< HEAD
     credentials.findOne({ email: email })
         .then(results => {
             if (results) {
                 console.log("Email jest zajęty")
-                return res.status('401').render('register.ejs', {
+                 res.status('401').render('register.ejs', {
                     message: 'Email jest zajęty'
                 })
             }
-=======
-    const credential = await credentials.findOne({ email: email })
-    if (credential) {
-        console.log(credential)
-        console.log("Email jest zajęty")
-        return res.status('401').render('register.html', {
-            message: 'Email jest zajęty'
->>>>>>> c8a32eea96824315bf2f15b9b0f806ab27bf2fb0
         })
-    }
 
     var newUser = users({ username: username })
     newUser.save(function (err, result) {
@@ -78,13 +49,8 @@ exports.register = async (req, res) => {
             newCredential.save(function (err2, result2) {
                 if (err2) console.log(err2)
                 else {
-<<<<<<< HEAD
                     console.log(result2)
-                    return res.status('400').render('login.ejs', {
-=======
-                    console.log("newCredentialSave", result2)
-                    return res.status('400').render('login.html', {
->>>>>>> c8a32eea96824315bf2f15b9b0f806ab27bf2fb0
+                     res.status('400').render('login.ejs', {
                         message: "Rejestracja zakończona"
                     })
                 }
@@ -97,7 +63,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         console.log("Niewypełnione pole/a")
-        return res.status('401').render('login.ejs', {
+         res.status('401').render('login.ejs', {
             message: "Niewypełnione pole/a"
         })
     }
@@ -109,29 +75,62 @@ exports.login = async (req, res) => {
                 users.findOne({ _id: results.user_id })
                     .then(results2 => {
                         if (results2) {
-                            
+                            const user = results.user_id
+                            const token = jwt.sign({ user }, 'secret', { expiresIn: '24h' })
+                            const cookieOptions = {
+                                expires: new Date(
+                                    Date.now() + 24 * 60 * 60 * 1000 //1day
+                                ),
+                                httpOnly: true
+                            }
                             console.log(results2)
                             console.log("Zalogowano jako " + results2.username)
-<<<<<<< HEAD
-                            return res.status('400').render("indexLogged.ejs", {
-                                message: "Pomyślne logowanie"
-                                
-                            } 
-                            
-                            )
-=======
-                            return res.status('200').render("index.html", {
-                                message: "Pomyślne logowanie"
-                            })
->>>>>>> c8a32eea96824315bf2f15b9b0f806ab27bf2fb0
+                            res.cookie('jwt', token, cookieOptions)
+                             res.status('400').redirect("/")
                         }
                     })
             }
             else {
                 console.log("Złe dane")
-                return res.status('401').render('login.ejs', {
+                 res.status('401').render('login.ejs', {
                     message: "Złe dane"
                 })
             }
-        })  
+        })
 }
+
+exports.isLoggedIn = async (req, res, next) => {
+
+    if (req.cookies.jwt) {
+        try {
+            var decoded = jwt.verify(req.cookies.jwt, 'secret');
+            users.findOne({_id: decoded.user})
+            .then(results => {
+                if(results){
+                req.user = results;
+                next()
+                }
+                else{
+                    next()
+                }
+            })
+        }
+        catch{
+            next()
+        }     
+    }
+    else {
+        next()
+    }
+}
+
+
+exports.logout = async (req, res) => {
+    res.cookie('jwt', 'wyloguj', {
+        expires: new Date(Date.now() + 2 * 1000), //2 seconds
+        httpOnly: true
+    })
+    res.status(200).redirect('/logowanie')
+}
+
+

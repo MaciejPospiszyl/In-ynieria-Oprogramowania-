@@ -41,6 +41,11 @@
             </div>
         </div>
 
+        <% if (message) { %>
+            <h4 class="alert alert-info" style="text-align: center; margin-top: 20px;" role="alert">
+                <%= message %></h4>
+          <% } %>
+
         
     </div>
     <!-- jQuery first, then Tether, then Bootstrap JS. -->

@@ -1,6 +1,7 @@
 const express = require("express")
 const path = require("path")
 // const mongoose = require('mongoose')
+const cookieParser = require("cookie-parser")
 const port = 3000
 const app = express()
  
@@ -16,6 +17,7 @@ app.set('view engine', 'ejs');
 //parsers
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
 
 //routes
 app.use('/', require('./routes/pages'))
