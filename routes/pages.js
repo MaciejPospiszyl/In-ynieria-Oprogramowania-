@@ -30,8 +30,16 @@ router.get('/logowanie', (req, res) => {
     })
 })
 
-router.get('/plansza', (req, res) => {
-    res.render('indexLogged')
+router.get('/plansza', authController.isLoggedIn, (req, res) => {
+    if(req.user){
+    res.render('indexLogged',{
+        user: req.user,
+        message: null
+    })
+    }
+    else{
+        res.redirect('login')
+    }
 })
 
 

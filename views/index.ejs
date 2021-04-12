@@ -18,10 +18,12 @@
     <h4>Memory card game</h4>
     <% if (user) { %>
       <ul>
+        Zalogowany jako <%= user.username %>  
         <li>
-          Zalogowany jako <%= user.username %>
+          <li><a href="/plansza">Gra</a></li>
+          <li>
+                       
         </li>
-        <li>
            <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
       </ul>
       <% } else { %>

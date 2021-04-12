@@ -17,13 +17,28 @@
 
     
       
-	<nav>
-        <h4>Memory card game</h4>
+    <nav>
+      <h4>Memory card game</h4>
+      <% if (user) { %>
         <ul>
-          <li><a href="/logowanie">Logowanie</a></li>
-          <li><a href="/rejestracja">Rejestracja</a></li>
+          <li>
+            Zalogowany jako <%= user.username %>
+          </li>
+          <li>
+             <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
         </ul>
+        <% } else { %>
+          <ul>
+            <li><a href="/logowanie">Logowanie</a></li>
+            <li><a href="/rejestracja">Rejestracja</a></li>
+          </ul>
+          <% } %>
     </nav>
+    <% if (message) { %>
+      <h4 class="alert alert-info" style="text-align: center; margin-top: 50px;" role="alert">
+        <%= message %>
+      </h4>
+      <% } %>
 
     <div class="container">
       
