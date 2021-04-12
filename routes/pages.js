@@ -30,5 +30,9 @@ router.get('/logowanie', (req, res) => {
     })
 })
 
+router.get('/plansza', (req, res) => {
+    res.render('indexLogged')
+})
+
 
 module.exports = router;

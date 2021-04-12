@@ -11,7 +11,7 @@ exports.register = (req, res) => {
 
     if (!username.length || !email.length || !password.length) {
         console.log("Niewypełnione pole/a")
-         res.status('401').render("register.ejs", {
+        return res.status('401').render("register.ejs", {
             message: "Niewypełnione pole/a"
         })
     }
@@ -19,7 +19,7 @@ exports.register = (req, res) => {
         .then(results => {
             if (results) {
                 console.log("Username jest zajęty")
-                 res.status('401').render("register.ejs", {
+                return res.status('401').render("register.ejs", {
                     message: "Username jest zajęty"
                 })
             }
@@ -29,7 +29,7 @@ exports.register = (req, res) => {
         .then(results => {
             if (results) {
                 console.log("Email jest zajęty")
-                 res.status('401').render('register.ejs', {
+                return res.status('401').render('register.ejs', {
                     message: 'Email jest zajęty'
                 })
             }
@@ -47,10 +47,10 @@ exports.register = (req, res) => {
                 user_id: result._id
             })
             newCredential.save(function (err2, result2) {
-                if (err2) console.log(err2)
+                if (err2) { console.log(err2) }
                 else {
                     console.log(result2)
-                     res.status('400').render('login.ejs', {
+                    return res.status('400').render('login.ejs', {
                         message: "Rejestracja zakończona"
                     })
                 }
@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         console.log("Niewypełnione pole/a")
-         res.status('401').render('login.ejs', {
+       return res.status('401').render('login.ejs', {
             message: "Niewypełnione pole/a"
         })
     }
@@ -86,13 +86,13 @@ exports.login = async (req, res) => {
                             console.log(results2)
                             console.log("Zalogowano jako " + results2.username)
                             res.cookie('jwt', token, cookieOptions)
-                             res.status('400').redirect("/")
+                            res.status('400').redirect("/plansza")
                         }
                     })
             }
             else {
                 console.log("Złe dane")
-                 res.status('401').render('login.ejs', {
+                return res.status('401').render('login.ejs', {
                     message: "Złe dane"
                 })
             }
@@ -104,20 +104,20 @@ exports.isLoggedIn = async (req, res, next) => {
     if (req.cookies.jwt) {
         try {
             var decoded = jwt.verify(req.cookies.jwt, 'secret');
-            users.findOne({_id: decoded.user})
-            .then(results => {
-                if(results){
-                req.user = results;
-                next()
-                }
-                else{
-                    next()
-                }
-            })
+            users.findOne({ _id: decoded.user })
+                .then(results => {
+                    if (results) {
+                        req.user = results;
+                        next()
+                    }
+                    else {
+                        next()
+                    }
+                })
         }
-        catch{
+        catch {
             next()
-        }     
+        }
     }
     else {
         next()
