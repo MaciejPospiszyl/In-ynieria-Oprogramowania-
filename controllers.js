@@ -5,35 +5,34 @@ const saltRounds = 10;
 var users = models.users
 var credentials = models.credentials
 
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
     const { username, email, password } = req.body;
     console.log("BODY:", req.body);
 
     if (!username.length || !email.length || !password.length) {
         console.log("Niewypełnione pole/a")
-        return res.status('401').render("register.ejs", {
+        return res.status('401').render("register", {
             message: "Niewypełnione pole/a"
         })
     }
-    users.findOne({ username: username })
-        .then(results => {
-            if (results) {
-                console.log("Username jest zajęty")
-                return res.status('401').render("register.ejs", {
-                    message: "Username jest zajęty"
-                })
-            }
-        })
 
-    credentials.findOne({ email: email })
-        .then(results => {
-            if (results) {
-                console.log("Email jest zajęty")
-                return res.status('401').render('register.ejs', {
-                    message: 'Email jest zajęty'
-                })
-            }
+    const user = await users.findOne({ username: username })
+    if (user) {
+        console.log(user)
+        console.log("Username jest zajęty")
+        return res.status('401').render("register", {
+            message: "Username jest zajęty"
         })
+    }
+
+    const credential = await credentials.findOne({ email: email })
+    if (credential) {
+        console.log(credential)
+        console.log("Email jest zajęty")
+        return res.status('401').render('register', {
+            message: 'Email jest zajęty'
+        })
+    }
 
     var newUser = users({ username: username })
     newUser.save(function (err, result) {
@@ -47,10 +46,10 @@ exports.register = (req, res) => {
                 user_id: result._id
             })
             newCredential.save(function (err2, result2) {
-                if (err2) { console.log(err2) }
+                if (err2) console.log(err2)
                 else {
-                    console.log(result2)
-                    return res.status('400').render('login.ejs', {
+                    console.log("newCredentialSave", result2)
+                    return res.status('400').render('login', {
                         message: "Rejestracja zakończona"
                     })
                 }
@@ -63,7 +62,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         console.log("Niewypełnione pole/a")
-       return res.status('401').render('login.ejs', {
+       return res.status('401').render('login', {
             message: "Niewypełnione pole/a"
         })
     }
@@ -92,7 +91,7 @@ exports.login = async (req, res) => {
             }
             else {
                 console.log("Złe dane")
-                return res.status('401').render('login.ejs', {
+                return res.status('401').render('login', {
                     message: "Złe dane"
                 })
             }
