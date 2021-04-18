@@ -17,6 +17,24 @@ let minutes = 0;
 let seconds = 0;
 let timeStart = false;
 
+function sendData(data){
+  console.log(data)
+  fetch("/auth/saveScore", {
+    method: "POST", 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Success:');
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
+
 function shuffle(array) {
  let currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -131,6 +149,9 @@ function noMatch() {
 function winGame() {
  if (matched.length === 36) {
    stopTime();
+   var scTime = seconds + (minutes * 60);
+   const data = {scTime, moves, difficulty: 'hard'};
+   sendData(data);
  }
 }
 

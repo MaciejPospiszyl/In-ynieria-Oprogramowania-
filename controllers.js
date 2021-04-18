@@ -88,7 +88,7 @@ exports.login = async (req, res) => {
                             console.log(results2)
                             console.log("Zalogowano jako " + results2.username)
                             res.cookie('jwt', token, cookieOptions)
-                            res.status('400').redirect("/plansza")
+                            res.status('400').redirect("/easy")
                         }
                     })
             }
@@ -137,7 +137,7 @@ exports.logout = async (req, res) => {
 exports.saveScore = async (req, res) => {
     console.log(req.body)
     var decoded = jwt.verify(req.cookies.jwt, 'secret');
-    var newScore = leaderboard({ user_id: decoded.user, time: req.body.scTime, moves: req.body.moves, difficulty: 'easy' })
+    var newScore = leaderboard({ user_id: decoded.user, time: req.body.scTime, moves: req.body.moves, difficulty: req.body.difficulty })
     newScore.save(function (err, result) {
         if (err) console.log(err)
         else {
@@ -148,7 +148,15 @@ exports.saveScore = async (req, res) => {
 }
 
 exports.getLeaderboard =  (req, res, next) => {
-  leaderboard.aggregate([{
+    let difficulty = req.query.difficulty || 'easy'
+
+  leaderboard.aggregate([
+      {
+      $match: {
+          "difficulty": difficulty
+        }
+    },
+      {
         $lookup: {
             "from": "users",
             "localField": "user_id",
@@ -177,6 +185,21 @@ exports.getLeaderboard =  (req, res, next) => {
         console.log(error)
         next()
     })
+
+// leaderboard.aggregate([
+//     {
+//     $match: {
+//         difficulty: "easy"
+//       }
+//   }
+//   ]).then(results => {
+//       console.log('here',results)
+//       req.ranks = results
+//       next()
+//   }).catch(error => {
+//       console.log(error)
+//       next()
+//   })
     
     
 }

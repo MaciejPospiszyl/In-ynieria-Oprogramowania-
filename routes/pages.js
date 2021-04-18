@@ -30,7 +30,7 @@ router.get('/logowanie', (req, res) => {
     })
 })
 
-router.get('/plansza', authController.isLoggedIn, (req, res) => {
+router.get('/easy', authController.isLoggedIn, (req, res) => {
     if (req.user) {
         res.render('indexLogged', {
             user: req.user,
@@ -44,8 +44,10 @@ router.get('/plansza', authController.isLoggedIn, (req, res) => {
 
 router.get('/ranking', authController.isLoggedIn, authController.getLeaderboard, (req, res) => {
     if (req.user) {
+        console.log('hahahaha',req.query.difficulty)
         res.render('ranking', {
             user: req.user,
+            difficulty: req.query.difficulty || 'easy',
             ranks: req.ranks
         })
     }

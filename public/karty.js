@@ -146,9 +146,8 @@ function winGame() {
  if (matched.length === 16) {
    stopTime();
    var scTime = seconds + (minutes * 60);
-   const data = {scTime, moves};
+   const data = {scTime, moves, difficulty: 'easy'};
    sendData(data);
-   
  }
 }
 

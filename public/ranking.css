@@ -71,6 +71,12 @@
     display: flex;  
     margin-right: auto;
     margin-left: auto;
-    justify-content: space-evenly;
+    justify-content: left;
     width: 50%;
+  }
+
+  .dupa{
+      margin-right: 15px;
+      flex-grow: 1;
+      width:33%;
   }

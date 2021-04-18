@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
     integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   <link href="/style.css" rel="stylesheet">
+  <link href="/main.css" rel="stylesheet">
   <link href="/ranking.css" rel="stylesheet">
 </head>
 
@@ -20,7 +21,7 @@
       <ul>
         Zalogowany jako <%= user.username %>  
         <li>
-          <li><a href="/plansza">Gra</a></li>
+          <li><a href="/easy">Gra</a></li>
           <li>
         </li>
            <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
@@ -35,15 +36,18 @@
         
 <div class="ctr">
     <div class="dif-ctr">
-        <div class="dif-ez">
+        <a href="/ranking"> <div class="dif-ez">
             Easy
         </div>
-        <div class="dif-md">
+    </a>
+       <a href="/ranking?difficulty=medium"> <div class="dif-md">
             Medium
-        </div>
-        <div class="dif-hd">
+        </div> 
+    </a>
+    <a href="/ranking?difficulty=hard"> <div class="dif-hd">
             Hard
         </div>
+    </a>
     </div>
     <div class="header">
         <h2>Ranking</h2>
@@ -53,9 +57,9 @@
         <div class="rank-ctr">
             <div class="ele pos"><%= i+1 %></div>
             <div class="ele rest">
-                <div class="name">User: <%= ranks[i].username %></div>
-                <div class="moves">Moves: <%= ranks[i].moves %></div>
-                <div class="time">Time: <%= ranks[i].time %></div>
+                <div class= "dupa name"><%= ranks[i].username %></div>
+                <div class="dupa moves">Moves: <%= ranks[i].moves %></div>
+                <div class="dupa time">Time: <%= ranks[i].time %>s</div>
             </div>
         </div>
         <% } %>
