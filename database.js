@@ -1,3 +1,4 @@
+const { ObjectID } = require('bson');
 const mongoose = require('mongoose')
 
 const dbUrl = "mongodb+srv://inzynieria123:haslo123@cluster0.v9mg8.mongodb.net/inzynieria?retryWrites=true&w=majority";
@@ -15,11 +16,22 @@ var users = mongoose.model('Users', usersSchema)
 var credentialsSchema = mongoose.Schema({
     email: String,
     password: String,
-    user_id: String
+    user_id: ObjectID
 })
 
 var credentials = mongoose.model('Credentials', credentialsSchema)
 
-var models = {users, credentials}
+
+var lbSchema = mongoose.Schema({
+    user_id: ObjectID,
+    time: Number,
+    moves: Number,
+    difficulty: String
+})
+
+var leaderboard = mongoose.model('Leaderboard', lbSchema)
+
+var models = {users, credentials, leaderboard}
+
 
 module.exports = models

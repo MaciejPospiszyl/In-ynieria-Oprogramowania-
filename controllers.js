@@ -1,13 +1,16 @@
 var models = require('./database.js')
 const bcrypt = require('bcryptjs')
-var jwt = require('jsonwebtoken')
+var jwt = require('jsonwebtoken');
+const mongoose = require('mongoose')
 const saltRounds = 10;
 var users = models.users
 var credentials = models.credentials
+var leaderboard = models.leaderboard
+var db = require('./database.js');
+const { ObjectID } = require('bson');
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
-    console.log("BODY:", req.body);
 
     if (!username.length || !email.length || !password.length) {
         console.log("Niewypełnione pole/a")
@@ -62,7 +65,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         console.log("Niewypełnione pole/a")
-       return res.status('401').render('login', {
+        return res.status('401').render('login', {
             message: "Niewypełnione pole/a"
         })
     }
@@ -99,7 +102,6 @@ exports.login = async (req, res) => {
 }
 
 exports.isLoggedIn = async (req, res, next) => {
-
     if (req.cookies.jwt) {
         try {
             var decoded = jwt.verify(req.cookies.jwt, 'secret');
@@ -130,6 +132,53 @@ exports.logout = async (req, res) => {
         httpOnly: true
     })
     res.status(200).redirect('/logowanie')
+}
+
+exports.saveScore = async (req, res) => {
+    console.log(req.body)
+    var decoded = jwt.verify(req.cookies.jwt, 'secret');
+    var newScore = leaderboard({ user_id: decoded.user, time: req.body.scTime, moves: req.body.moves, difficulty: 'easy' })
+    newScore.save(function (err, result) {
+        if (err) console.log(err)
+        else {
+            console.log("newScoreSave", result)
+            return res.status(200);
+        }
+    })
+}
+
+exports.getLeaderboard =  (req, res, next) => {
+  leaderboard.aggregate([{
+        $lookup: {
+            "from": "users",
+            "localField": "user_id",
+            "foreignField": "_id",
+            "as": "user"
+        }
+    },
+    {
+        $project: {
+            "username": "$user.username",
+            "time": "$time",
+            "moves": "$moves"
+        }
+        },
+        {
+            $sort: {
+                "moves": 1,
+                "time": 1
+            }
+        }
+    ]).then(results => {
+        console.log('here',results)
+        req.ranks = results
+        next()
+    }).catch(error => {
+        console.log(error)
+        next()
+    })
+    
+    
 }
 
 

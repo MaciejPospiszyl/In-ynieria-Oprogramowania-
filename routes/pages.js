@@ -31,16 +31,30 @@ router.get('/logowanie', (req, res) => {
 })
 
 router.get('/plansza', authController.isLoggedIn, (req, res) => {
-    if(req.user){
-    res.render('indexLogged',{
-        user: req.user,
-        message: null
-    })
+    if (req.user) {
+        res.render('indexLogged', {
+            user: req.user,
+            message: null
+        })
     }
-    else{
+    else {
         res.redirect('login')
     }
 })
+
+router.get('/ranking', authController.isLoggedIn, authController.getLeaderboard, (req, res) => {
+    if (req.user) {
+        res.render('ranking', {
+            user: req.user,
+            ranks: req.ranks
+        })
+    }
+    else {
+        res.redirect('login')
+    }
+})
+
+
 
 
 module.exports = router;

@@ -4,18 +4,33 @@ const deckCards = ["kiwi.png","kiwi.png","pomarancze.png","pomarancze.png","bana
 const deck = document.querySelector(".deck");
 let opened = [];
 let matched = [];
-const modal = document.getElementById("modal");
 const reset = document.querySelector(".reset-btn");
 const playAgain = document.querySelector(".play-again-btn");
 const movesCount = document.querySelector(".moves-counter");
 let moves = 0;
-const star = document.getElementById("star-rating").querySelectorAll(".star");
-let starCount = 3;
 const timeCounter = document.querySelector(".timer");
 let time;
 let minutes = 0;
 let seconds = 0;
 let timeStart = false;
+
+function sendData(data){
+  console.log(data)
+  fetch("/auth/saveScore", {
+    method: "POST", 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Success:');
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
 
 function shuffle(array) {
  let currentIndex = array.length, temporaryValue, randomIndex;
@@ -57,7 +72,16 @@ function timer() {
        minutes++;
        seconds = 0;
      }
-   timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer: " + minutes + " Mins " + seconds + " Secs" ;
+     if(minutes < 10 && seconds < 10 )
+     {
+      timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer: 0" + minutes + ":0"+ seconds;
+     }
+     else if(minutes > 9 && seconds < 10)
+       timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer:  " + minutes + ":0"+ seconds;
+     else if(minutes > 9 && seconds > 9)
+      timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer:  " + minutes + ":"+ seconds;
+     else if(minutes < 9 && seconds > 9)
+      timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer:  0" + minutes + ":"+ seconds;
  }, 1000);
 }
 
@@ -71,9 +95,6 @@ function resetEverything() {
  seconds = 0;
  minutes = 0;
  timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer: 00:00";
- star[1].firstElementChild.classList.add("fa-star");
- star[2].firstElementChild.classList.add("fa-star");
- starCount = 3;
  moves = 0;
  movesCount.innerHTML = 0;
  matched = [];
@@ -87,16 +108,6 @@ function movesCounter() {
  moves ++;
 }
 
-function starRating() {
- if (moves === 14) {
-   star[2].firstElementChild.classList.remove("fa-star");
-   starCount--;
- }
- if (moves === 18) {
-   star[1].firstElementChild.classList.remove("fa-star");
-   starCount--;
- }
-}
 
 function compareTwo() {
  if (opened.length === 2) {
@@ -119,7 +130,6 @@ function match() {
    opened = [];
  }, 600);
  movesCounter();
- starRating();
 }
 
 function noMatch() {
@@ -130,28 +140,15 @@ function noMatch() {
    opened = [];
  }, 700);
  movesCounter();
- starRating();
 }
-
-function AddStats() {
- const stats = document.querySelector(".modal-content");
- for (let i = 1; i <= 3; i++) {
-   const statsElement = document.createElement("p");
-   statsElement.classList.add("stats");
-   stats.appendChild(statsElement);
- }
- let p = stats.querySelectorAll("p.stats");
-   p[0].innerHTML = "Time to complete: " + minutes + " Minutes and " + seconds + " Seconds";
-   p[1].innerHTML = "Moves Taken: " + moves;
-   p[2].innerHTML = "Your Star Rating is: " + starCount + " out of 3";
-}
-
-
 
 function winGame() {
  if (matched.length === 16) {
    stopTime();
-   AddStats();
+   var scTime = seconds + (minutes * 60);
+   const data = {scTime, moves};
+   sendData(data);
+   
  }
 }
 
@@ -179,8 +176,3 @@ deck.addEventListener("click", function(evt) {
 });
 
 reset.addEventListener('click', resetEverything);
-
-playAgain.addEventListener('click',function() {
- modal.style.display = "none";
- resetEverything();
-});
