@@ -54,6 +54,30 @@ router.get('/ranking', authController.isLoggedIn, authController.getLeaderboard,
     }
 })
 
+router.get('/medium', authController.isLoggedIn, (req, res) => {
+    if(req.user){
+    res.render('medium',{
+        user: req.user,
+        message: null
+    })
+    }
+    else{
+        res.redirect('login')
+    }
+})
+
+router.get('/hard', authController.isLoggedIn, (req, res) => {
+    if(req.user){
+    res.render('hard',{
+        user: req.user,
+        message: null
+    })
+    }
+    else{
+        res.redirect('login')
+    }
+})
+
 
 
 
