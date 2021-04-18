@@ -1,5 +1,10 @@
+/*const deckCards = ["kiwi.png","kiwi.png","pomarancze.png","pomarancze.png","banany.png","banany.png","grejfrut.png","grejfrut.png",
+"arbuz.png","arbuz.png","maliny.png","maliny.png","winogrono.png","winogrono.png","wisnie.png","wisnie.png"
+,"borowki3.png","borowki3.png","gruszka2.png","gruszka2.png","ananas2.png","ananas2.png","limonka2.png","limonka2.png"]; */
+
 const deckCards = ["kiwi.png","kiwi.png","pomarancze.png","pomarancze.png","banany.png","banany.png","grejfrut.png","grejfrut.png",
-"arbuz.png","arbuz.png","maliny.png","maliny.png","winogrono.png","winogrono.png","wisnie.png","wisnie.png"]; 
+"arbuz.png","arbuz.png","maliny.png","maliny.png","winogrono.png","winogrono.png","wisnie.png","wisnie.png"
+,"borowki.png","borowki.png","gruszka.png","gruszka.png","ananas.png","ananas.png","limonka.png","limonka.png"]; 
 
 const deck = document.querySelector(".deck");
 let opened = [];
@@ -125,7 +130,7 @@ function noMatch() {
 }
 
 function winGame() {
- if (matched.length === 16) {
+ if (matched.length === 24) {
    stopTime();
  }
 }

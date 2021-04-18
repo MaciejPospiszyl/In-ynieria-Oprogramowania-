@@ -1,5 +1,8 @@
 const deckCards = ["kiwi.png","kiwi.png","pomarancze.png","pomarancze.png","banany.png","banany.png","grejfrut.png","grejfrut.png",
-"arbuz.png","arbuz.png","maliny.png","maliny.png","winogrono.png","winogrono.png","wisnie.png","wisnie.png"]; 
+"arbuz.png","arbuz.png","maliny.png","maliny.png","winogrono.png","winogrono.png","wisnie.png","wisnie.png"
+,"borowki.png","borowki.png","gruszka.png","gruszka.png","ananas.png","ananas.png","limonka.png","limonka.png"
+,"sliwka.png","sliwka.png","agrest.png","agrest.png","porzeczka.png","porzeczka.png","brzoskwinie.png","brzoskwinie.png"
+,"truskawki.png","truskawki.png","winogronoBiale.png","winogronoBiale.png"]; 
 
 const deck = document.querySelector(".deck");
 let opened = [];
@@ -64,6 +67,7 @@ function timer() {
       timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer:  " + minutes + ":"+ seconds;
      else if(minutes < 9 && seconds > 9)
       timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer:  0" + minutes + ":"+ seconds;
+
  }, 1000);
 }
 
@@ -125,7 +129,7 @@ function noMatch() {
 }
 
 function winGame() {
- if (matched.length === 16) {
+ if (matched.length === 36) {
    stopTime();
  }
 }

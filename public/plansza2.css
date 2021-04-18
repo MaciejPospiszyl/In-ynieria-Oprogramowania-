@@ -10,7 +10,6 @@
     font-size: 62.5%;
     letter-spacing: 1px;
     text-align: center;
-    
   }
   ul > li {
     list-style: none;
@@ -86,7 +85,7 @@
     height: 70em;
     margin-bottom: 6em;
     padding: 0.5em;
-    width: 70em;
+    width: 100em;
   }
   
   .deck,
@@ -111,6 +110,7 @@
   }
   
   .deck img {
+    /*visibility: hidden;*/
     visibility: hidden;
     width: 13em;
   }
