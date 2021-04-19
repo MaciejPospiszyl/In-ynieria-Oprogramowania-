@@ -178,7 +178,6 @@ exports.getLeaderboard =  (req, res, next) => {
             }
         }
     ]).then(results => {
-        console.log('here',results)
         req.ranks = results
         next()
     }).catch(error => {
@@ -186,20 +185,7 @@ exports.getLeaderboard =  (req, res, next) => {
         next()
     })
 
-// leaderboard.aggregate([
-//     {
-//     $match: {
-//         difficulty: "easy"
-//       }
-//   }
-//   ]).then(results => {
-//       console.log('here',results)
-//       req.ranks = results
-//       next()
-//   }).catch(error => {
-//       console.log(error)
-//       next()
-//   })
+
     
     
 }
