@@ -38,7 +38,7 @@ router.get('/easy', authController.isLoggedIn, (req, res) => {
         })
     }
     else {
-        res.redirect('login')
+        res.redirect('logowanie')
     }
 })
 
@@ -51,7 +51,7 @@ router.get('/ranking', authController.isLoggedIn, authController.getLeaderboard,
         })
     }
     else {
-        res.redirect('login')
+        res.redirect('logowanie')
     }
 })
 
@@ -63,7 +63,7 @@ router.get('/medium', authController.isLoggedIn, (req, res) => {
     })
     }
     else{
-        res.redirect('login')
+        res.redirect('logowanie')
     }
 })
 
@@ -75,7 +75,7 @@ router.get('/hard', authController.isLoggedIn, (req, res) => {
     })
     }
     else{
-        res.redirect('login')
+        res.redirect('logowanie')
     }
 })
 
