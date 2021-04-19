@@ -42,6 +42,18 @@ router.get('/easy', authController.isLoggedIn, (req, res) => {
     }
 })
 
+router.get('/levelChoice', authController.isLoggedIn, (req, res) => {
+    if (req.user) {
+        res.render('levelChoice', {
+            user: req.user,
+            message: null
+        })
+    }
+    else {
+        res.redirect('login')
+    }
+})
+
 router.get('/ranking', authController.isLoggedIn, authController.getLeaderboard, (req, res) => {
     if (req.user) {
         res.render('ranking', {

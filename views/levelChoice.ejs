@@ -12,7 +12,7 @@
      integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 	<link href="/style.css" rel="stylesheet">
   <link href="/main.css" rel="stylesheet">
-  <link href="/plansza.css" rel="stylesheet">
+  <link href="/levelChoice.css" rel="stylesheet">
 
 
 </head>
@@ -45,35 +45,23 @@
     </h4>
     <% } %>
 
-
-      <nav class="levelDifficulty">
-        <ul>
-         <a id="" href="/medium"><li>Medium</li></a>
-         <a href="/hard"><li>Hard</li></a>
-         </ul>
-       </nav>
-
-
+    <h1>Wybierz poziom</h1>
+    
     <div class="container">
-      
-    <section class="score-panel">
-        <span class="moves-counter">0</span><span class="text"> Moves</span>
-        <div class="timer-container">
-          <span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:00</span>
+      <div class="containerButtons">
+        <a href="/easy"><div class="levelButton">Easy</div></a>
+        <a href="/medium"><div class="levelButton">Medium</div></a>
+        <a href="/hard"><div class="levelButton">Hard</div></a>
         </div>
-        <div class="reset">
-          <button class="btn reset-btn">Reset <i class="fa fa-repeat"></i></button>
-        </div>
-      </section>
-    
-      
-      <ul class="deck"></ul>
-    
+      </div>
     </div>
+
+
+      
 
    
   </body>
-  <script src="/karty.js"></script>
+  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>

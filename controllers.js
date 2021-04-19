@@ -88,7 +88,7 @@ exports.login = async (req, res) => {
                             console.log(results2)
                             console.log("Zalogowano jako " + results2.username)
                             res.cookie('jwt', token, cookieOptions)
-                            res.status('400').redirect("/easy")
+                            res.status('400').redirect("/levelChoice")
                         }
                     })
             }
