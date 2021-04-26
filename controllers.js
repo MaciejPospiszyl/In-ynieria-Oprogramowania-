@@ -186,7 +186,6 @@ exports.getLeaderboard = (req, res, next) => {
 }
 
 exports.getRooms = (req, res, next) => {
-    console.log("pipip")
     lobby.find()
         .then(results => {
             console.log(results);
@@ -211,15 +210,28 @@ exports.createRoom = (req, res, next) => {
     const roomName = req.body.roomName;
     var decoded = jwt.verify(req.cookies.jwt, 'secret');
     if (roomName) {
-        var newLobby = lobby({ player1_id: decoded.user, room_name: roomName });
+        var newLobby = lobby({ player1_id: decoded.user, room_name: roomName, player_amount: 1 });
         newLobby.save(function (err, result) {
             if (err) console.log(error);
             else {
-                console.log("newScoreSave", result)
+                console.log("newRoom", result)
                 return res.status(200);
             }
         })
     }
+}
+
+exports.joinRoom = (req, res, next) => {
+    console.log(req.body);
+    // lobby.findOne({ _id: req.body.room_id })
+    //     .catch(error => console.log(error))
+    //     .then(result => lobby.findOneAndUpdate({ _id: req.body.room_id }, { player_amount: result.player_amount + 1 })
+    //         .then(result2 => {
+    //             console.log('heh', result2)
+    //         })
+    //         .catch(error2 => console.log(error2)));
+    res.status(200).redirect('/multiplayer?=' + req.body.room_id)
+
 }
 
 

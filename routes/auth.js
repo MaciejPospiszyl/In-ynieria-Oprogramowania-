@@ -12,5 +12,7 @@ router.post('/saveScore', authController.saveScore)
 
 router.post('/createRoom', authController.createRoom)
 
+router.post('/joinRoom', authController.joinRoom)
+
 
 module.exports = router;

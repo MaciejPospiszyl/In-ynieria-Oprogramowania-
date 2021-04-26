@@ -36,6 +36,7 @@ var lobbySchema = mongoose.Schema({
     player2_id: ObjectID,
     player3_id: ObjectID,
     player4_id: ObjectID,
+    player_amount: Number,
     room_name: String
 })
 

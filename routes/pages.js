@@ -33,6 +33,7 @@ router.get('/multiplayer', authController.isLoggedIn, authController.getRooms, (
     if (req.user) {
         res.render('multiplayer', {
             user: req.user,
+            room_id: req.query.room_id || null,
             rooms: req.rooms || null,
             message: null
         })
@@ -41,6 +42,7 @@ router.get('/multiplayer', authController.isLoggedIn, authController.getRooms, (
         res.redirect('logowanie')
     }
 })
+
 
 router.get('/easy', authController.isLoggedIn, (req, res) => {
     if (req.user) {
