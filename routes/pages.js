@@ -2,7 +2,6 @@ const express = require('express')
 const authController = require('../controllers.js')
 const router = express.Router()
 
-
 router.get('/', authController.isLoggedIn, (req, res) => {
     if (req.user) {
         res.render('index', {
@@ -103,8 +102,6 @@ router.get('/hard', authController.isLoggedIn, (req, res) => {
         res.redirect('logowanie')
     }
 })
-
-
 
 
 module.exports = router;
