@@ -30,7 +30,7 @@ nav li a:hover{
 	text-decoration: none;
 }
 
-.levelDifficulty 
+/*.levelDifficulty 
 {
 	padding: 0px;
 	background-color: rgb(255, 255, 255);
@@ -67,7 +67,75 @@ nav li a:hover{
 	background:linear-gradient(to bottom, #f24437 5%, #c62d1f 100%);
 	background-color:#f24437;
 	
+}*/
+
+.levelDifficulty 
+{
+	padding: 0px;
+	background-color: rgb(255, 255, 255);
+	
 }
+
+
+.levelDifficulty  li {
+	
+	box-shadow: 3px 4px 7px 0px #1564ad;
+	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+	background-color:#79bbff;
+	border-radius:18px;
+	border:1px solid #337bc4;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	font-weight:bold;
+	padding:7px 25px;
+	text-decoration:none;
+	text-shadow:0px 0px 0px #528ecc;
+	margin:15px 5px;
+	background-repeat: no-repeat;
+}
+
+.levelDifficulty  li:hover {
+	background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+	background-color:#378de5;
+	box-shadow: 0px 0px 12px 7px #1a94e6;
+}
+
+.levelDifficulty  ul
+{
+	margin: auto;
+	text-align: center;
+}
+
+.levelDifficultySelected li {
+	box-shadow: 0px 0px 0px 0px #1a94e6;
+	background:linear-gradient(to bottom, #bdb4b4 5%, #474947 100%);
+	/*background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);*/
+	background-color:#79bbff;
+	border-radius:18px;
+	border:1px solid #337bc4;
+	display:inline-block;
+	cursor:pointer;
+	color:white;
+	font-family:Arial;
+	font-size:17px;
+	font-weight:bold;
+	padding:7px 25px;
+	text-decoration:none;
+	text-shadow:0px 0px 0px #528ecc;
+	margin:15px 5px;
+	background-repeat: no-repeat;
+	
+}
+
+.levelDifficultySelected li:hover{
+	background:linear-gradient(to bottom, #bdb4b4 5%, #474947 100%);
+	
+	box-shadow: 0px 0px 12px 7px #1a94e6;
+}
+
 
 body {
     margin: 0px 0px;
@@ -75,3 +143,6 @@ body {
     font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
     font-size: 14px;
   }
+
+
+  

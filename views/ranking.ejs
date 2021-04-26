@@ -36,15 +36,16 @@
         
 <div class="ctr">
     <div class="dif-ctr">
-        <a href="/ranking"> <div class="dif-ez">
+      <a href="/ranking"><% if (difficulty == "easy") { %><div class="buttonSelected"><% } else { %> <div class="button"> <% } %>
             Easy
         </div>
     </a>
-       <a href="/ranking?difficulty=medium"> <div class="dif-md">
+       
+        <a href="/ranking?difficulty=medium"><% if (difficulty == "medium") { %><div class="buttonSelected"><% } else { %> <div class="button"> <% } %>
             Medium
         </div> 
     </a>
-    <a href="/ranking?difficulty=hard"> <div class="dif-hd">
+      <a href="/ranking?difficulty=hard"><% if (difficulty == "hard") { %><div class="buttonSelected"><% } else { %> <div class="button"> <% } %>
             Hard
         </div>
     </a>
