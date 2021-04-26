@@ -6,8 +6,7 @@ const saltRounds = 10;
 var users = models.users
 var credentials = models.credentials
 var leaderboard = models.leaderboard
-var db = require('./database.js');
-const { ObjectID } = require('bson');
+var lobby = models.lobby
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -147,29 +146,29 @@ exports.saveScore = async (req, res) => {
     })
 }
 
-exports.getLeaderboard =  (req, res, next) => {
+exports.getLeaderboard = (req, res, next) => {
     let difficulty = req.query.difficulty || 'easy'
 
-  leaderboard.aggregate([
-      {
-      $match: {
-          "difficulty": difficulty
-        }
-    },
-      {
-        $lookup: {
-            "from": "users",
-            "localField": "user_id",
-            "foreignField": "_id",
-            "as": "user"
-        }
-    },
-    {
-        $project: {
-            "username": "$user.username",
-            "time": "$time",
-            "moves": "$moves"
-        }
+    leaderboard.aggregate([
+        {
+            $match: {
+                "difficulty": difficulty
+            }
+        },
+        {
+            $lookup: {
+                "from": "users",
+                "localField": "user_id",
+                "foreignField": "_id",
+                "as": "user"
+            }
+        },
+        {
+            $project: {
+                "username": "$user.username",
+                "time": "$time",
+                "moves": "$moves"
+            }
         },
         {
             $sort: {
@@ -184,10 +183,43 @@ exports.getLeaderboard =  (req, res, next) => {
         console.log(error)
         next()
     })
+}
 
+exports.getRooms = (req, res, next) => {
+    console.log("pipip")
+    lobby.find()
+        .then(results => {
+            console.log(results);
+            req.rooms = results;
+            next();
+        })
+        .catch(error => {
+            console.log(error);
+            next();
+        })
 
-    
-    
+    // leaderboard.find()
+    // .then(results => {
+    //     console.log(results);
+    //     req.rooms = results
+    // })
+    // .catch(error => { console.log(error) })
+
+}
+
+exports.createRoom = (req, res, next) => {
+    const roomName = req.body.roomName;
+    var decoded = jwt.verify(req.cookies.jwt, 'secret');
+    if (roomName) {
+        var newLobby = lobby({ player1_id: decoded.user, room_name: roomName });
+        newLobby.save(function (err, result) {
+            if (err) console.log(error);
+            else {
+                console.log("newScoreSave", result)
+                return res.status(200);
+            }
+        })
+    }
 }
 
 

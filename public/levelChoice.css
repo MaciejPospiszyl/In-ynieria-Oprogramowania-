@@ -49,7 +49,7 @@ a:hover
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    height: 500px;
+    height: flex;
     width: 60em;
     border-width:10px;
     border-style:solid;

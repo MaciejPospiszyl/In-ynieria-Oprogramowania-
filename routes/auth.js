@@ -10,5 +10,7 @@ router.get('/wyloguj', authController.logout)
 
 router.post('/saveScore', authController.saveScore)
 
+router.post('/createRoom', authController.createRoom)
+
 
 module.exports = router;

@@ -31,7 +31,17 @@ var lbSchema = mongoose.Schema({
 
 var leaderboard = mongoose.model('Leaderboard', lbSchema)
 
-var models = {users, credentials, leaderboard}
+var lobbySchema = mongoose.Schema({
+    player1_id: ObjectID,
+    player2_id: ObjectID,
+    player3_id: ObjectID,
+    player4_id: ObjectID,
+    room_name: String
+})
+
+var lobby = mongoose.model('Lobbies', lobbySchema)
+
+var models = {users, credentials, leaderboard, lobby}
 
 
 module.exports = models

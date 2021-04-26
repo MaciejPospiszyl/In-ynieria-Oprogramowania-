@@ -3,9 +3,8 @@ const path = require("path")
 // const mongoose = require('mongoose')
 const cookieParser = require("cookie-parser")
 const port = 3000
+const WebSocket = require('ws');
 const app = express()
- 
-
 
 //public
 app.use(express.static(__dirname + '/public')); 
@@ -24,12 +23,16 @@ app.use('/', require('./routes/pages'))
 app.use('/auth', require('./routes/auth'))
 
 
+let server = app.listen(port, () => console.log(`Listening on ${ port }`));
 
-app.listen(port, function(error){
-    if(error){
-        console.log("There was an error", error)
-    }
-    else{
-        console.log("Server is running on port " + port)
-    }
-})
+const wss = new WebSocket.Server({server: server});
+
+wss.on('connection', function connection(ws) {
+    console.log('A new client connected');
+    ws.send('Welcome new client');
+
+    ws.on('message', function incoming(message) {
+      console.log('received: %s', message);
+      ws.send('Got your message, its: ' + message)
+    });
+});

@@ -21,7 +21,7 @@
       <ul>
         Zalogowany jako <%= user.username %>  
         <li>
-          <li><a href="/easy">Gra</a></li>
+          <li><a href="/levelChoice">Gra</a></li>
           <li>
         </li>
            <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
@@ -77,5 +77,15 @@
         integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
         crossorigin="anonymous"></script>
 </body>
+<!-- <script>
+  const socket = new WebSocket('ws://localhost:3000')
 
+  socket.addEventListener('open', function(event){
+    socket.send('Hello Server!');
+  })
+
+  socket.addEventListener('message', function(event){
+    console.log('Messaage from server', event.data)
+  })
+</script> -->
 </html>
