@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link href="/style.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
+    <link href="/ranking.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav>
+        <h4>Memory card game</h4>
+        <% if (user) { %>
+            <ul>
+                Zalogowany jako <%= user.username %>
+                    <li>
+                    <li><a href="/levelChoice">Gra</a></li>
+                    <li>
+                    </li>
+                    <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
+            </ul>
+            <% } else { %>
+                <ul>
+                    <li><a href="/logowanie">Logowanie</a></li>
+                    <li><a href="/rejestracja">Rejestracja</a></li>
+                </ul>
+                <% } %>
+    </nav>
+
+    <% if (!room_id) { %>
+        <!-- lobby -->
+        <form action="/auth/createRoom" method="POST">
+            <div class="form-group">
+                <label for="roomName">Room name</label>
+                <input type="text" class="form-control" id="roomName" name="roomName">
+            </div>
+            <button type="submit" class="btn btn-primary">Create room</button>
+        </form>
+        <div class="room-ctr">
+            <% for(var i=0; i<rooms.length; i++) {%>
+
+                <div id="lobby_name">Room: <%= rooms[i].room_name %>
+                </div>
+                <div id="player_amount">Players: <%= rooms[i].player_amount %>
+                </div>
+                <div id="room_id">room_id: <%= rooms[i]._id %>
+                </div>
+                <button class="join" data-room-id=<%=rooms[i]._id %> data-player-amount = <%= rooms[i].player_amount %>
+                        >join</button>
+
+                <% } %>
+        </div>
+        <%} else { %>
+                <!-- Pokój do 4 osób z czatem i przyciskiem start/wyjdz-->
+                Siema
+                <% } %>
+
+
+                    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+                    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+                        integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+                        crossorigin="anonymous"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+                        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+                        crossorigin="anonymous"></script>
+                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+                        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+                        crossorigin="anonymous"></script>
+</body>
+<script>
+    let joinSelection = document.getElementsByClassName('room-ctr')[0];
+    let joinData = joinSelection.getElementsByTagName('button');
+    for (let i = 0; i < joinData.length; i++) {
+        joinData[i].addEventListener("click", async (event) => {
+            let roomInfo = { "roomId": event.target.dataset.roomId, "playerAmount": event.target.dataset.playerAmount };
+            let response = await fetch('/auth/joinRoom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(roomInfo)
+            });
+            const resData = await response.json();
+            console.log(resData);
+            if (resData.status != 'success') {
+                window.location.replace('/multiplayer')
+            }
+            else {
+                window.location.replace('/multiplayer?room_id=' + resData.room_id);
+            }
+        })
+    }
+
+
+
+    // for(let i=0; i<gowno.length; i++){
+    // gowno[i].addEventListiner("click", ()=>{
+    //     console.log(this.dataset.roomId)
+    // });
+// }
+// for(var i = 0; i<joinSelection.length; i++){
+//     console.log(joinSelection[i].getElementById('text room_id').textContent);
+// }
+// for(var i =0 ; i < joinSelection.length; i++){
+//     joinSelection[i].addEventListener('click', function(){
+//         console.log("clicked index " + i);
+//     })
+// }
+// //     function join(cos){
+//         console.log("tutaj", cos);
+//   fetch("/auth/joinRoom", {
+//     method: "POST", 
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(room_id),
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log('Success:');
+//   })
+//   .catch((error) => {
+//     console.error('Error:', error);
+//   });
+// }
+// $(function() {
+//   $('button.join').click(function() {
+//     fetch("/auth/joinRoom", {
+//     method: "POST", 
+//     redirect: 'follow'
+//   }).then(response => {
+
+//   }).catch(function(err){
+//       console.info(err + " url: " + url);
+//   })
+
+// });
+// });
+</script>
+
+</html>

@@ -1,7 +1,8 @@
 var models = require('./database.js')
 const bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { response } = require('express');
 const saltRounds = 10;
 var users = models.users
 var credentials = models.credentials
@@ -84,7 +85,6 @@ exports.login = async (req, res) => {
                                 ),
                                 httpOnly: true
                             }
-                            console.log(results2)
                             console.log("Zalogowano jako " + results2.username)
                             res.cookie('jwt', token, cookieOptions)
                             res.status('400').redirect("/levelChoice")
@@ -222,7 +222,7 @@ exports.createRoom = (req, res, next) => {
 }
 
 exports.joinRoom = (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     // lobby.findOne({ _id: req.body.room_id })
     //     .catch(error => console.log(error))
     //     .then(result => lobby.findOneAndUpdate({ _id: req.body.room_id }, { player_amount: result.player_amount + 1 })
@@ -230,8 +230,15 @@ exports.joinRoom = (req, res, next) => {
     //             console.log('heh', result2)
     //         })
     //         .catch(error2 => console.log(error2)));
-    res.status(200).redirect('/multiplayer?=' + req.body.room_id)
-
+    // return res.status(200).redirect('/multiplayer?=' + req.body.room_id)
+    // next();
+    console.log(req.body)
+    let data = {room_id : req.body.roomId};
+    return res.json({
+        status: 'success',
+        room_id: data.room_id
+    })
+   
 }
 
 
