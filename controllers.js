@@ -210,35 +210,98 @@ exports.createRoom = (req, res, next) => {
     const roomName = req.body.roomName;
     var decoded = jwt.verify(req.cookies.jwt, 'secret');
     if (roomName) {
-        var newLobby = lobby({ player1_id: decoded.user, room_name: roomName, player_amount: 1 });
+        var newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user });
         newLobby.save(function (err, result) {
-            if (err) console.log(error);
+            if (err) {
+                console.log(error);
+                res.redirect('/multiplayer')
+            }
             else {
                 console.log("newRoom", result)
-                return res.status(200);
+                return res.status(200).redirect('/multiplayer/' + result._id)
             }
         })
     }
+
 }
 
-exports.joinRoom = (req, res, next) => {
-    // console.log(req.body);
-    // lobby.findOne({ _id: req.body.room_id })
-    //     .catch(error => console.log(error))
-    //     .then(result => lobby.findOneAndUpdate({ _id: req.body.room_id }, { player_amount: result.player_amount + 1 })
-    //         .then(result2 => {
-    //             console.log('heh', result2)
-    //         })
-    //         .catch(error2 => console.log(error2)));
-    // return res.status(200).redirect('/multiplayer?=' + req.body.room_id)
-    // next();
-    console.log(req.body)
-    let data = {room_id : req.body.roomId};
-    return res.json({
+exports.joinRoom = async (req, res, next) => {
+    let decoded = jwt.verify(req.cookies.jwt, 'secret');
+    let data = { room_id: req.body.roomId, player_amount: req.body.playerAmount };
+
+
+    function addToCertainSpot(player_id) {
+        lobby.findOneAndUpdate({ _id: data.room_id }, { [player_id]: decoded.user, player_amount: +req.body.playerAmount + 1 })
+            .catch(error => res.json({ status: 'failure' }))
+            .then(result => {
+                res.json({
+                    status: 'success',
+                    room_id: data.room_id,
+                    player_amount: data.player_amount
+                })
+            })
+    }
+
+        const x = await lobby.findOne({ _id: data.room_id })
+        .catch(error => res.json({ stauts: 'failure' }))
+        .then(result => {
+            console.log("jeden result", result)
+            if (result.player_amount < 4) {
+                if (!result.player1_id) {
+                    addToCertainSpot('player1_id')
+                }
+                else if (!result.player2_id) {
+                    addToCertainSpot('player2_id')
+                }
+                else if (!result.player3_id) {
+                    addToCertainSpot('player3_id')
+                }
+                else if (!result.player4_id) {
+                    addToCertainSpot('player4_id')
+                }
+                else {
+                    res.json({ stauts: 'failure' })
+                }
+            }
+            else {
+                res.json({ stauts: 'failure' })
+            }
+        });
+
+    res.json({
         status: 'success',
-        room_id: data.room_id
+        room_id: data.room_id,
+        player_amount: data.player_amount
     })
-   
+
+}
+
+exports.getRoom = async (req, res, next) => {
+    let players = {}
+    console.log('getRoom' + JSON.stringify(req.params.room_id));
+    try {
+        const result = await lobby.findOne({ _id: req.params.room_id })
+        if (result.player1_id) {
+            players.player1 = await users.findOne({ _id: result.player1_id })
+        }
+        if (result.player2_id) {
+            players.player2 = await users.findOne({ _id: result.player2_id })
+        }
+        if (result.player3_id) {
+            players.player3 = await users.findOne({ _id: result.player3_id })
+        }
+        if (result.player4_id) {
+            
+            players.player4 = await users.findOne({ _id: result.player4_id })
+        }
+        req.players = players;
+        console.log('players', players)
+        next();
+    }
+    catch (erorr) { console.log(error) }
+
+
+
 }
 
 

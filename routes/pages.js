@@ -29,11 +29,28 @@ router.get('/logowanie', (req, res) => {
     })
 })
 
+router.get('/multiplayer/:room_id',authController.isLoggedIn, authController.getRoom, (req, res) => {
+//req.params.room_id
+if(req.user){
+    res.render('multiplayer',{
+        user: req.user,
+        room_id: req.params.room_id,
+        players: req.players,
+        rooms:  null,
+        message: null
+    })
+}
+else{
+    res.redirect('/logowanie')
+}
+
+})
+
 router.get('/multiplayer', authController.isLoggedIn, authController.getRooms, (req, res) => {
     if (req.user) {
         res.render('multiplayer', {
             user: req.user,
-            room_id: req.query.room_id || null,
+            room_id: null,
             rooms: req.rooms || null,
             message: null
         })
@@ -82,25 +99,25 @@ router.get('/ranking', authController.isLoggedIn, authController.getLeaderboard,
 })
 
 router.get('/medium', authController.isLoggedIn, (req, res) => {
-    if(req.user){
-    res.render('medium',{
-        user: req.user,
-        message: null
-    })
+    if (req.user) {
+        res.render('medium', {
+            user: req.user,
+            message: null
+        })
     }
-    else{
+    else {
         res.redirect('logowanie')
     }
 })
 
 router.get('/hard', authController.isLoggedIn, (req, res) => {
-    if(req.user){
-    res.render('hard',{
-        user: req.user,
-        message: null
-    })
+    if (req.user) {
+        res.render('hard', {
+            user: req.user,
+            message: null
+        })
     }
-    else{
+    else {
         res.redirect('logowanie')
     }
 })

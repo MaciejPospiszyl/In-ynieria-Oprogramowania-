@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 const dbUrl = "mongodb+srv://inzynieria123:haslo123@cluster0.v9mg8.mongodb.net/inzynieria?retryWrites=true&w=majority";
 
-var db = module.exports = mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+var db = module.exports = mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true ,useFindAndModify: false })
     .then((result) => console.log('db is running'))
     .catch((err) => console.log(err));
 

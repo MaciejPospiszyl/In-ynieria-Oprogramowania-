@@ -60,7 +60,11 @@
         </div>
         <%} else { %>
                 <!-- Pokój do 4 osób z czatem i przyciskiem start/wyjdz-->
-                Siema
+                Elo
+                <%= players.player1 %>
+                <%= players.player2 %>
+                <%= players.player3 %>
+                <%= players.player4 %>
                 <% } %>
 
 
@@ -75,7 +79,10 @@
                         integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
                         crossorigin="anonymous"></script>
 </body>
+
 <script>
+    var test = '<%- JSON.stringify(rooms) %>';
+    if(test && test != 'null'){
     let joinSelection = document.getElementsByClassName('room-ctr')[0];
     let joinData = joinSelection.getElementsByTagName('button');
     for (let i = 0; i < joinData.length; i++) {
@@ -89,15 +96,16 @@
                 body: JSON.stringify(roomInfo)
             });
             const resData = await response.json();
-            console.log(resData);
+            console.log('multi room ejs' + JSON.stringify(resData));
             if (resData.status != 'success') {
                 window.location.replace('/multiplayer')
             }
             else {
-                window.location.replace('/multiplayer?room_id=' + resData.room_id);
+                window.location.replace('/multiplayer/' + resData.room_id);
             }
         })
-    }
+    } 
+}
 
 
 
@@ -145,5 +153,4 @@
 // });
 // });
 </script>
-
 </html>
