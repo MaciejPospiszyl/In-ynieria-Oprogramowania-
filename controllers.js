@@ -265,22 +265,18 @@ exports.createRoom = async (req, res, next) => {
 exports.joinRoom = async (req, res, next) => {
     let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
     let data = { room_id: req.body.roomId, player_amount: req.body.playerAmount }; //pokoj do ktorego dolacza uzytkownik
-    console.log(data);
-    //funkcja dodajaca gracza do pokoju
-    function addToCertainSpot(player_id) {
-        lobby.findOneAndUpdate({ _id: data.room_id }, { [player_id]: decoded.user, player_amount: +req.body.playerAmount + 1 })
-            .catch(error => {
-                return res.json({ status: 'failure' })
-            })
-            .then(result => {
-                return res.json({
-                    status: 'success',
-                    room_id: data.room_id,
-                    player_amount: data.player_amount
-                })
-            })
-    }
 
+    //funkcja dodajaca gracza do pokoju
+    async function addToCertainSpot(player_id) {
+        try {
+            await lobby.findOneAndUpdate({ _id: data.room_id }, { [player_id]: decoded.user, player_amount: +req.body.playerAmount + 1 })
+        }
+        catch (error) {
+            throw error;
+        }
+
+
+    }
 
     //sprawdzamy czy gracz znajduje sie juz w jakimkolwiek pokoju
     try {
@@ -291,49 +287,50 @@ exports.joinRoom = async (req, res, next) => {
                 { player3_id: decoded.user },
                 { player4_id: decoded.user }
                 ]
-        }).catch(error => {
-            console.log(error)
-        }).then(results => {
-            console.log('jestes w innym lobby', results)
-            return res.json({
+        })
+        if (check && check.length != 0) {
+            console.log('jestes w innym lobby', check)
+            res.json({
                 status: 'failure'
             })
-        })
-    } catch (error) { console.log(erorr) };
+        }
+    } catch (error) { console.log(error) };
 
 
     //szukamy wolnego miejsca w pokoju
     try {
         const findSpotForPlayer = await lobby.findOne({ _id: data.room_id })
-            .catch(error => {
-                return res.json({ stauts: 'failure' })
-            })
-            .then(result => {
-                if (result.player_amount < 4) {
-                    if (!result.player1_id) {
-                        addToCertainSpot('player1_id')
-                    }
-                    else if (!result.player2_id) {
-                        addToCertainSpot('player2_id')
-                    }
-                    else if (!result.player3_id) {
-                        addToCertainSpot('player3_id')
-                    }
-                    else if (!result.player4_id) {
-                        addToCertainSpot('player4_id')
-                    }
-                    else {
-                        return res.json({ stauts: 'failure' })
-                    }
-                }
-                else {
-                    return res.json({ stauts: 'failure' })
-                }
-            })
+        if (findSpotForPlayer && findSpotForPlayer.player_amount < 4) {
+            if (!findSpotForPlayer.player1_id) {
+                addToCertainSpot('player1_id')
+            }
+            else if (!findSpotForPlayer.player2_id) {
+                addToCertainSpot('player2_id')
+            }
+            else if (!findSpotForPlayer.player3_id) {
+                addToCertainSpot('player3_id')
+            }
+            else if (!findSpotForPlayer.player4_id) {
+                addToCertainSpot('player4_id')
+            }
+            else {
+                res.json({ status: 'failure' })
+            }
+        }
+        else {
+            res.json({ status: 'failure' })
+            return
+        }
     }
-    catch (error) { console.log(error) };
+    catch (error) {
+        res.json({
+            status: 'failure'
+        })
+        return
+    };
 
-    return res.json({
+
+    res.json({
         status: 'success',
         room_id: data.room_id,
         player_amount: data.player_amount
