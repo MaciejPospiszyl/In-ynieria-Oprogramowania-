@@ -185,56 +185,95 @@ exports.getLeaderboard = (req, res, next) => {
     })
 }
 
-exports.getRooms = (req, res, next) => {
-    lobby.find()
-        .then(results => {
-            console.log(results);
-            req.rooms = results;
-            next();
+exports.getRooms = async (req, res, next) => {
+    //sprawdzam czy uzytkownik jest juz w pokoju jezeli tak to go do niego przekierowujemy 
+    const decoded = jwt.verify(req.cookies.jwt, 'secret');
+    try {
+        const check = await lobby.findOne({
+            $or:
+                [{ player1_id: decoded.user },
+                { player2_id: decoded.user },
+                { player3_id: decoded.user },
+                { player4_id: decoded.user }
+                ]
+        }).catch(error => {
+            console.log(error)
+        }).then(results => {
+            if (results && results.length != 0) {
+                return res.redirect('/multiplayer/' + results._id)
+            }
+            else {
+                lobby.find()
+                    .then(results => {
+                        req.rooms = results;
+                        next();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        next();
+                    })
+            }
         })
-        .catch(error => {
-            console.log(error);
-            next();
-        })
+    } catch (error) { console.log(error) };
 
-    // leaderboard.find()
-    // .then(results => {
-    //     console.log(results);
-    //     req.rooms = results
-    // })
-    // .catch(error => { console.log(error) })
+
 
 }
 
-exports.createRoom = (req, res, next) => {
+exports.createRoom = async (req, res, next) => {
     const roomName = req.body.roomName;
-    var decoded = jwt.verify(req.cookies.jwt, 'secret');
-    if (roomName) {
-        var newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user });
-        newLobby.save(function (err, result) {
-            if (err) {
-                console.log(error);
-                res.redirect('/multiplayer')
-            }
-            else {
-                console.log("newRoom", result)
-                return res.status(200).redirect('/multiplayer/' + result._id)
-            }
-        })
-    }
+    const decoded = jwt.verify(req.cookies.jwt, 'secret');
 
+    if (roomName) {
+        //sprawdzamy czy uzytkownik jest juz w jakims pokoju
+        try {
+            const check = await lobby.find({
+                $or:
+                    [{ player1_id: decoded.user },
+                    { player2_id: decoded.user },
+                    { player3_id: decoded.user },
+                    { player4_id: decoded.user }
+                    ]
+            }).catch(error => {
+                console.log(error)
+            }).then(results => {
+                if (results.length != 0) {
+                    console.log('jestes w innym lobby', results)
+                    return res.status(300).redirect('/multiplayer')
+                }
+                else {
+                    var newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user });
+                    newLobby.save(function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            return res.status(400).redirect('/multiplayer')
+                        }
+                        else {
+                            console.log("newRoom", result)
+                            return res.status(200).redirect('/multiplayer/' + result._id)
+                        }
+                    })
+                }
+            })
+        } catch (error) { console.log(erorr) }
+    }
+    else {
+        return res.status(300).redirect('/multiplayer')
+    }
 }
 
 exports.joinRoom = async (req, res, next) => {
-    let decoded = jwt.verify(req.cookies.jwt, 'secret');
-    let data = { room_id: req.body.roomId, player_amount: req.body.playerAmount };
-
-
+    let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
+    let data = { room_id: req.body.roomId, player_amount: req.body.playerAmount }; //pokoj do ktorego dolacza uzytkownik
+    console.log(data);
+    //funkcja dodajaca gracza do pokoju
     function addToCertainSpot(player_id) {
         lobby.findOneAndUpdate({ _id: data.room_id }, { [player_id]: decoded.user, player_amount: +req.body.playerAmount + 1 })
-            .catch(error => res.json({ status: 'failure' }))
+            .catch(error => {
+                return res.json({ status: 'failure' })
+            })
             .then(result => {
-                res.json({
+                return res.json({
                     status: 'success',
                     room_id: data.room_id,
                     player_amount: data.player_amount
@@ -242,63 +281,147 @@ exports.joinRoom = async (req, res, next) => {
             })
     }
 
-        const x = await lobby.findOne({ _id: data.room_id })
-        .catch(error => res.json({ stauts: 'failure' }))
-        .then(result => {
-            console.log("jeden result", result)
-            if (result.player_amount < 4) {
-                if (!result.player1_id) {
-                    addToCertainSpot('player1_id')
-                }
-                else if (!result.player2_id) {
-                    addToCertainSpot('player2_id')
-                }
-                else if (!result.player3_id) {
-                    addToCertainSpot('player3_id')
-                }
-                else if (!result.player4_id) {
-                    addToCertainSpot('player4_id')
+
+    //sprawdzamy czy gracz znajduje sie juz w jakimkolwiek pokoju
+    try {
+        const check = await lobby.find({
+            $or:
+                [{ player1_id: decoded.user },
+                { player2_id: decoded.user },
+                { player3_id: decoded.user },
+                { player4_id: decoded.user }
+                ]
+        }).catch(error => {
+            console.log(error)
+        }).then(results => {
+            console.log('jestes w innym lobby', results)
+            return res.json({
+                status: 'failure'
+            })
+        })
+    } catch (error) { console.log(erorr) };
+
+
+    //szukamy wolnego miejsca w pokoju
+    try {
+        const findSpotForPlayer = await lobby.findOne({ _id: data.room_id })
+            .catch(error => {
+                return res.json({ stauts: 'failure' })
+            })
+            .then(result => {
+                if (result.player_amount < 4) {
+                    if (!result.player1_id) {
+                        addToCertainSpot('player1_id')
+                    }
+                    else if (!result.player2_id) {
+                        addToCertainSpot('player2_id')
+                    }
+                    else if (!result.player3_id) {
+                        addToCertainSpot('player3_id')
+                    }
+                    else if (!result.player4_id) {
+                        addToCertainSpot('player4_id')
+                    }
+                    else {
+                        return res.json({ stauts: 'failure' })
+                    }
                 }
                 else {
-                    res.json({ stauts: 'failure' })
+                    return res.json({ stauts: 'failure' })
                 }
-            }
-            else {
-                res.json({ stauts: 'failure' })
-            }
-        });
+            })
+    }
+    catch (error) { console.log(error) };
 
-    res.json({
+    return res.json({
         status: 'success',
         room_id: data.room_id,
         player_amount: data.player_amount
     })
-
 }
+
+
 
 exports.getRoom = async (req, res, next) => {
     let players = {}
-    console.log('getRoom' + JSON.stringify(req.params.room_id));
+    let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
+
     try {
-        const result = await lobby.findOne({ _id: req.params.room_id })
-        if (result.player1_id) {
-            players.player1 = await users.findOne({ _id: result.player1_id })
+        const result = await lobby.findOne({
+            $and:
+                [{ _id: req.params.room_id },
+                {
+                    $or:
+                        [{ player1_id: decoded.user },
+                        { player2_id: decoded.user },
+                        { player3_id: decoded.user },
+                        { player4_id: decoded.user }
+                        ]
+                }
+                ]
+        })
+        if (result && result.length != 0) {
+            if (result.player1_id) {
+                players.player1 = await users.findOne({ _id: result.player1_id })
+            }
+            if (result.player2_id) {
+                players.player2 = await users.findOne({ _id: result.player2_id })
+            }
+            if (result.player3_id) {
+                players.player3 = await users.findOne({ _id: result.player3_id })
+            }
+            if (result.player4_id) {
+
+                players.player4 = await users.findOne({ _id: result.player4_id })
+            }
+            req.players = players;
+            req.player_amount = result.player_amount;
+            console.log('players', players)
         }
-        if (result.player2_id) {
-            players.player2 = await users.findOne({ _id: result.player2_id })
+        else {
+            res.status('400').redirect('/multiplayer')
         }
-        if (result.player3_id) {
-            players.player3 = await users.findOne({ _id: result.player3_id })
-        }
-        if (result.player4_id) {
-            
-            players.player4 = await users.findOne({ _id: result.player4_id })
-        }
-        req.players = players;
-        console.log('players', players)
-        next();
     }
-    catch (erorr) { console.log(error) }
+    catch (error) { console.log(error) }
+    next()
+}
+
+exports.leaveRoom = async (req, res, next) => {
+    let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
+    let data = { room_id: req.body.room, player_amount: req.body.player_amount }; //pokoj ktory opuszcza uzytkownik
+    console.log(data);
+
+    function removePlayer(player) {
+        lobby.findOneAndUpdate({ _id: data.room_id }, { [player]: undefined, player_amount: +data.player_amount - 1 })
+            .catch(error => { console.log(error) })
+            .then(result => {
+                console.log(result)
+                next()
+            })
+    }
+
+    lobby.findOne({ _id: data.room_id })
+        .catch(error => { console.log(error) })
+        .then(results => {
+            console.log(results);
+            if (results.player1_id && results.player1_id == decoded.user) {
+                removePlayer('player1_id')
+            }
+            else if (results.player2_id && results.player2_id == decoded.user) {
+                removePlayer('player2_id')
+            }
+            else if (results.player3_id && results.player3_id == decoded.user) {
+                removePlayer('player3_id')
+            }
+            else if (results.player4_id && results.player4_id == decoded.user) {
+                removePlayer('player4_id')
+            }
+            else {
+                next()
+            }
+        })
+
+
 
 
 
