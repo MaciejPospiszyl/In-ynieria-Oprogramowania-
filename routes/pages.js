@@ -51,6 +51,7 @@ router.get('/multiplayer', authController.isLoggedIn, authController.getRooms, (
     if (req.user) {
         res.render('multiplayer', {
             user: req.user,
+            players: null,
             room: null,
             player_amount: null,
             rooms: req.rooms || null,

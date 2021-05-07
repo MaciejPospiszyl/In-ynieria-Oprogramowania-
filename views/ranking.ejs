@@ -60,7 +60,11 @@
             <div class="ele rest">
                 <div class= "text name"><%= ranks[i].username %></div>
                 <div class="text moves">Moves: <%= ranks[i].moves %></div>
-                <div class="text time">Time: <%= ranks[i].time %>s</div>
+                <% if (ranks[i].time < 600) { %>
+                <div class="text time">Time: 0<%= Math.floor(ranks[i].time/60) %>:<%= ranks[i].time%60 %></div>
+                <% } else { %>
+                  <div class="text time">Time: <%= Math.floor(ranks[i].time/60) %>:<%= ranks[i].time%60 %></div>
+                  <% } %>
             </div>
         </div>
         <% } %>

@@ -60,26 +60,24 @@
         </div>
         <%} else { %>
             <!-- Pokój do 4 osób z czatem i przyciskiem start/wyjdz-->
-            Elo
-            Player1: <%= players.player1 %>
-                Player2: <%= players.player2 %>
-                    Player3: <%= players.player3 %>
-                        Player4: <%= players.player4 %>
-                            <button id="leave-btn">Leave</button>
-                            <% } %>
+            <p id='player1'></p>
+            <p id='player2'></p>
+            <p id='player3'></p>
+            <p id='player4'></p>
+            <button id="leave-btn">Leave</button>
+            <% } %>
 
 
-                                <!-- jQuery first, then Tether, then Bootstrap JS. -->
-                                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-                                    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-                                    crossorigin="anonymous"></script>
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-                                    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-                                    crossorigin="anonymous"></script>
-                                <script
-                                    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-                                    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-                                    crossorigin="anonymous"></script>
+                <!-- jQuery first, then Tether, then Bootstrap JS. -->
+                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+                    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+                    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+                    crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+                    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+                    crossorigin="anonymous"></script>
 </body>
 
 <script>
@@ -110,12 +108,26 @@
     }
 
     var room = '<%- room %>';
-    var player_amount = '<%- JSON.stringify(player_amount) %>';
+    var player_amount = '<%- player_amount %>';
+
     if (room && room != 'null') {
+        var players = '<%- JSON.stringify(players) %>';
+        players = JSON.parse(players);
+        console.log(players);
+        for (var i = 1; i < +player_amount + 1; i++) {
+            var x = document.getElementById('player' + i);
+            if (players['player' + i]._id == players.leader) {
+                x.innerHTML = players['player' + i].username + ' LIDER'
+                //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
+            }
+            else {
+                x.innerHTML = players['player' + i].username;
+            }
+        }
         let leave = document.getElementById('leave-btn');
 
         leave.addEventListener("click", async (event) => {
-            let leaveInfo = { "room": room, "player_amount": player_amount}
+            let leaveInfo = { "room": room, "player_amount": player_amount }
             console.log(leaveInfo)
             let res = await fetch('/auth/leaveRoom', {
                 method: 'POST',
@@ -126,6 +138,7 @@
             });
             window.location.replace('/multiplayer')
         })
+
     }
 
 

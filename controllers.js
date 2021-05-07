@@ -242,7 +242,7 @@ exports.createRoom = async (req, res, next) => {
                     return res.status(300).redirect('/multiplayer')
                 }
                 else {
-                    var newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user });
+                    var newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user, leader_id: decoded.user });
                     newLobby.save(function (err, result) {
                         if (err) {
                             console.log(err);
@@ -368,9 +368,9 @@ exports.getRoom = async (req, res, next) => {
                 players.player3 = await users.findOne({ _id: result.player3_id })
             }
             if (result.player4_id) {
-
                 players.player4 = await users.findOne({ _id: result.player4_id })
             }
+            players.leader = result.leader_id;
             req.players = players;
             req.player_amount = result.player_amount;
             console.log('players', players)
@@ -397,10 +397,42 @@ exports.leaveRoom = async (req, res, next) => {
             })
     }
 
+    function findNewLeader() {
+        lobby.findOne({_id: data.room_id})
+        .catch(error => console.log(error))
+        .then(results => {
+            if(results.player1_id){
+                setNewLeader(results.player1_id)
+            }
+            else if(results.player2_id){
+                setNewLeader(results.player2_id)
+            }
+            else if(results.player3_id){
+                setNewLeader(results.player3_id)
+            }
+            else if(results.player4_id){
+                setNewLeader(results.player4_id)
+            }
+        })
+    }
+
+    function setNewLeader(player){
+        lobby.findOneAndUpdate({_id: data.room_id}, {leader_id: player})
+        .catch(error => console.log(error))
+        .then(results => console.log(results))
+    }
+
     lobby.findOne({ _id: data.room_id })
         .catch(error => { console.log(error) })
         .then(results => {
             console.log(results);
+            if (results.player_amount == 1) {
+                lobby.deleteOne({ _id: data.room_id })
+                    .catch(error => { console.log(error) })
+                    .then(results => {
+                        next()
+                    })
+            }
             if (results.player1_id && results.player1_id == decoded.user) {
                 removePlayer('player1_id')
             }
@@ -412,6 +444,9 @@ exports.leaveRoom = async (req, res, next) => {
             }
             else if (results.player4_id && results.player4_id == decoded.user) {
                 removePlayer('player4_id')
+            }
+            if (decoded.user == results.leader_id) {
+                findNewLeader();
             }
             else {
                 next()
