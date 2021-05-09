@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const { response } = require('express');
+const { getPlayers } = require('./functions.js');
 const saltRounds = 10;
 var users = models.users
 var credentials = models.credentials
@@ -188,6 +189,7 @@ exports.getLeaderboard = (req, res, next) => {
 exports.getRooms = async (req, res, next) => {
     //sprawdzam czy uzytkownik jest juz w pokoju jezeli tak to go do niego przekierowujemy 
     const decoded = jwt.verify(req.cookies.jwt, 'secret');
+
     try {
         const check = await lobby.findOne({
             $or:
@@ -196,29 +198,24 @@ exports.getRooms = async (req, res, next) => {
                 { player3_id: decoded.user },
                 { player4_id: decoded.user }
                 ]
-        }).catch(error => {
-            console.log(error)
-        }).then(results => {
-            if (results && results.length != 0) {
-                return res.redirect('/multiplayer/' + results._id)
-            }
-            else {
-                lobby.find()
-                    .then(results => {
-                        req.rooms = results;
-                        next();
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        next();
-                    })
-            }
         })
+        if (check && check.length != 0) {
+            return res.redirect('/multiplayer/' + check._id)
+        }
+        else {
+            lobby.find()
+                .then(results => {
+                    req.rooms = results;
+                    next();
+                })
+                .catch(error => {
+                    console.log(error);
+                    next();
+                })
+        }
     } catch (error) { console.log(error) };
-
-
-
 }
+
 
 exports.createRoom = async (req, res, next) => {
     const roomName = req.body.roomName;
@@ -239,18 +236,20 @@ exports.createRoom = async (req, res, next) => {
             }).then(results => {
                 if (results.length != 0) {
                     console.log('jestes w innym lobby', results)
-                    return res.status(300).redirect('/multiplayer')
+                    res.json({ status: 'failure' })
+                    return
                 }
                 else {
                     var newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user, leader_id: decoded.user });
                     newLobby.save(function (err, result) {
                         if (err) {
                             console.log(err);
-                            return res.status(400).redirect('/multiplayer')
+                            res.json({ status: 'failure' })
+                            return
                         }
                         else {
-                            console.log("newRoom", result)
-                            return res.status(200).redirect('/multiplayer/' + result._id)
+                            res.json({ status: 'success', room_id: result._id })
+                            return
                         }
                     })
                 }
@@ -258,24 +257,24 @@ exports.createRoom = async (req, res, next) => {
         } catch (error) { console.log(erorr) }
     }
     else {
-        return res.status(300).redirect('/multiplayer')
+        res.json({status: 'failure'})
+        return
     }
 }
 
 exports.joinRoom = async (req, res, next) => {
     let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
-    let data = { room_id: req.body.roomId, player_amount: req.body.playerAmount }; //pokoj do ktorego dolacza uzytkownik
+    let data = { room_id: req.body.roomId }; //pokoj do ktorego dolacza uzytkownik
 
     //funkcja dodajaca gracza do pokoju
-    async function addToCertainSpot(player_id) {
+    async function addToCertainSpot(player_id, playerAmount) {
         try {
-            await lobby.findOneAndUpdate({ _id: data.room_id }, { [player_id]: decoded.user, player_amount: +req.body.playerAmount + 1 })
+            await lobby.findOneAndUpdate({ _id: data.room_id }, { [player_id]: decoded.user, player_amount: playerAmount + 1 })
+            data.player_amount = playerAmount + 1
         }
         catch (error) {
             throw error;
         }
-
-
     }
 
     //sprawdzamy czy gracz znajduje sie juz w jakimkolwiek pokoju
@@ -302,16 +301,16 @@ exports.joinRoom = async (req, res, next) => {
         const findSpotForPlayer = await lobby.findOne({ _id: data.room_id })
         if (findSpotForPlayer && findSpotForPlayer.player_amount < 4) {
             if (!findSpotForPlayer.player1_id) {
-                addToCertainSpot('player1_id')
+                addToCertainSpot('player1_id', findSpotForPlayer.player_amount)
             }
             else if (!findSpotForPlayer.player2_id) {
-                addToCertainSpot('player2_id')
+                addToCertainSpot('player2_id', findSpotForPlayer.player_amount)
             }
             else if (!findSpotForPlayer.player3_id) {
-                addToCertainSpot('player3_id')
+                addToCertainSpot('player3_id', findSpotForPlayer.player_amount)
             }
             else if (!findSpotForPlayer.player4_id) {
-                addToCertainSpot('player4_id')
+                addToCertainSpot('player4_id', findSpotForPlayer.player_amount)
             }
             else {
                 res.json({ status: 'failure' })
@@ -329,7 +328,6 @@ exports.joinRoom = async (req, res, next) => {
         return
     };
 
-
     res.json({
         status: 'success',
         room_id: data.room_id,
@@ -339,14 +337,75 @@ exports.joinRoom = async (req, res, next) => {
 
 
 
+
 exports.getRoom = async (req, res, next) => {
-    let players = {}
-    let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
+    // let players = {}
+    // let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
 
     try {
-        const result = await lobby.findOne({
+        const players = await getPlayers(req);
+        if (players) {
+            players.leader = players.leader;
+            players.room_name = players.room_name;
+            req.players = players;
+            req.player_amount = players.player_amount;
+        }
+        else {
+            res.status('400').redirect('/multiplayer')
+        }
+    }
+    catch (error) {
+        console.log(error)
+    }
+    next()
+}
+
+
+
+exports.leaveRoom = async (req, res, next) => {
+    let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
+    let data = { room_id: req.body.room }; //pokoj ktory opuszcza uzytkownik
+
+    function removePlayer(player, player_amount) {
+        console.log('gdfgdfdfgdfg', player_amount)
+        lobby.findOneAndUpdate({ _id: data.room_id }, { [player]: undefined, player_amount: player_amount - 1 })
+            .catch(error => { console.log(error) })
+            .then(result => {
+                next()
+            })
+    }
+
+    function setNewLeader(player) {
+        console.log('setting new leader', player)
+        lobby.findOneAndUpdate({ _id: data.room_id }, { leader_id: player })
+            .catch(error => console.log(error))
+    }
+
+    function findNewLeader() {
+        console.log('finding new leader')
+        lobby.findOne({ _id: data.room_id })
+            .catch(error => console.log(error))
+            .then(results => {
+                if (results.player1_id != null) {
+                    setNewLeader(results.player1_id)
+                }
+                else if (results.player2_id != null) {
+                    setNewLeader(results.player2_id)
+                }
+                else if (results.player3_id != null) {
+                    setNewLeader(results.player3_id)
+                }
+                else if (results.player4_id != null) {
+                    setNewLeader(results.player4_id)
+                }
+            })
+    }
+
+
+    try {
+        const results = await lobby.findOne({
             $and:
-                [{ _id: req.params.room_id },
+                [{ _id: data.room_id },
                 {
                     $or:
                         [{ player1_id: decoded.user },
@@ -357,106 +416,46 @@ exports.getRoom = async (req, res, next) => {
                 }
                 ]
         })
-        if (result && result.length != 0) {
-            if (result.player1_id) {
-                players.player1 = await users.findOne({ _id: result.player1_id })
-            }
-            if (result.player2_id) {
-                players.player2 = await users.findOne({ _id: result.player2_id })
-            }
-            if (result.player3_id) {
-                players.player3 = await users.findOne({ _id: result.player3_id })
-            }
-            if (result.player4_id) {
-                players.player4 = await users.findOne({ _id: result.player4_id })
-            }
-            players.leader = result.leader_id;
-            req.players = players;
-            req.player_amount = result.player_amount;
-            console.log('players', players)
-        }
-        else {
-            res.status('400').redirect('/multiplayer')
-        }
-    }
-    catch (error) { console.log(error) }
-    next()
-}
-
-exports.leaveRoom = async (req, res, next) => {
-    let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
-    let data = { room_id: req.body.room, player_amount: req.body.player_amount }; //pokoj ktory opuszcza uzytkownik
-    console.log(data);
-
-    function removePlayer(player) {
-        lobby.findOneAndUpdate({ _id: data.room_id }, { [player]: undefined, player_amount: +data.player_amount - 1 })
-            .catch(error => { console.log(error) })
-            .then(result => {
-                console.log(result)
-                next()
-            })
-    }
-
-    function findNewLeader() {
-        lobby.findOne({_id: data.room_id})
-        .catch(error => console.log(error))
-        .then(results => {
-            if(results.player1_id){
-                setNewLeader(results.player1_id)
-            }
-            else if(results.player2_id){
-                setNewLeader(results.player2_id)
-            }
-            else if(results.player3_id){
-                setNewLeader(results.player3_id)
-            }
-            else if(results.player4_id){
-                setNewLeader(results.player4_id)
-            }
-        })
-    }
-
-    function setNewLeader(player){
-        lobby.findOneAndUpdate({_id: data.room_id}, {leader_id: player})
-        .catch(error => console.log(error))
-        .then(results => console.log(results))
-    }
-
-    lobby.findOne({ _id: data.room_id })
-        .catch(error => { console.log(error) })
-        .then(results => {
-            console.log(results);
+        if (results) {
             if (results.player_amount == 1) {
                 lobby.deleteOne({ _id: data.room_id })
                     .catch(error => { console.log(error) })
-                    .then(results => {
+                    .then(result => {
                         next()
                     })
             }
-            if (results.player1_id && results.player1_id == decoded.user) {
-                removePlayer('player1_id')
+            else if (results.player1_id && results.player1_id == decoded.user) {
+                removePlayer('player1_id', results.player_amount)
             }
             else if (results.player2_id && results.player2_id == decoded.user) {
-                removePlayer('player2_id')
+                removePlayer('player2_id', results.player_amount)
             }
             else if (results.player3_id && results.player3_id == decoded.user) {
-                removePlayer('player3_id')
+                removePlayer('player3_id', results.player_amount)
             }
             else if (results.player4_id && results.player4_id == decoded.user) {
-                removePlayer('player4_id')
+                removePlayer('player4_id', results.player_amount)
             }
-            if (decoded.user == results.leader_id) {
-                findNewLeader();
-            }
-            else {
-                next()
-            }
-        })
-
-
-
-
-
+            // if (results.leader_id && results.leader_id == decoded.user) {
+            //     findNewLeader();
+            // }
+        }
+        else {
+            next()
+        }
+    } catch (error) { console.log(error) }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

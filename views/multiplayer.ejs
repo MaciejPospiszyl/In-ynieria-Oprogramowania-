@@ -36,35 +36,28 @@
     </nav>
 
     <% if (!room) { %>
-        <!-- lobby -->
-        <form action="/auth/createRoom" method="POST">
-            <div class="form-group">
-                <label for="roomName">Room name</label>
-                <input type="text" class="form-control" id="roomName" name="roomName">
+        <div id="wholeLobby">
+            <div id="createRoom">
+                <label for="roomName">Room Name</label>
+                <input type="text" id="roomName" name="roomName">
+                <button id="cr-btn" class="btn btn-primary">Create room</button>
             </div>
-            <button type="submit" class="btn btn-primary">Create room</button>
-        </form>
-        <div class="room-ctr">
-            <% for(var i=0; i<rooms.length; i++) {%>
 
-                <div id="lobby_name">Room: <%= rooms[i].room_name %>
-                </div>
-                <div id="player_amount">Players: <%= rooms[i].player_amount %>/4
-                </div>
-                <div id="room_id">room_id: <%= rooms[i]._id %>
-                </div>
-                <button class="join" data-room-id=<%=rooms[i]._id %> data-player-amount = <%= rooms[i].player_amount %>
-                        >join</button>
-
-                <% } %>
+            <div id="lobbyDiv">
+                <!-- wczytywanie pokoi -->
+            </div>
         </div>
+
         <%} else { %>
             <!-- Pokój do 4 osób z czatem i przyciskiem start/wyjdz-->
-            <p id='player1'></p>
-            <p id='player2'></p>
-            <p id='player3'></p>
-            <p id='player4'></p>
-            <button id="leave-btn">Leave</button>
+            <div classs="playersDiv">
+                <p id='room_name'></p>
+                <p id='player1'></p>
+                <p id='player2'></p>
+                <p id='player3'></p>
+                <p id='player4'></p>
+                <button id="leave-btn">Leave</button>
+            </div>
             <% } %>
 
 
@@ -79,15 +72,99 @@
                     integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
                     crossorigin="anonymous"></script>
 </body>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="../utils.js"></script>
 <script>
-    var rooms = '<%- JSON.stringify(rooms) %>';
+    let socket = io()
+    socket.on('connect', function (data) {
+        socket.emit('lobbySetup')
+    });
+    socket.on('disconnect', function (data) {
+
+    });
+
+
+
+    //=========================================================================================LOBBY=======================================================================================================
+    let rooms = '<%- JSON.stringify(rooms) %>';
+    rooms = JSON.parse(rooms)
+    //multiplayer
     if (rooms && rooms != 'null') {
-        let joinSelection = document.getElementsByClassName('room-ctr')[0];
-        let joinData = joinSelection.getElementsByTagName('button');
-        for (let i = 0; i < joinData.length; i++) {
-            joinData[i].addEventListener("click", async (event) => {
-                let roomInfo = { "roomId": event.target.dataset.roomId, "playerAmount": event.target.dataset.playerAmount };
+        let crBtn = document.getElementById('cr-btn');
+        crBtn.addEventListener("click", async (event) => {
+            let roomName = { roomName: document.getElementById('roomName').value };
+            console.log(roomName)
+            let response = await fetch('/auth/createRoom', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(roomName)
+            });
+            const resData = await response.json();
+            console.log(resData)
+            if (resData.status != 'success') {
+                window.location.replace('/multiplayer')
+            }
+            else {
+                socket.emit('joinRoom', { jwt: getCookie('jwt'), room_id: resData.room_id })
+                window.location.replace('/multiplayer/' + resData.room_id);
+            }
+        })
+
+        //aktualizujemy pokoje po otrzymaniu brodcasta
+        let lobbyDiv = document.getElementById("lobbyDiv")
+        socket.on('lobbyChange', function (data) {
+            while (lobbyDiv.firstChild) {
+                lobbyDiv.removeChild(lobbyDiv.firstChild)    
+            }
+            console.log('lobbyChange', data)
+            for (var i = 0; i < data.length; i++) {
+                var lobby = document.createElement("div");
+                var btn = document.createElement("button");
+                btn.id = "join" + data[i]._id;
+                btn.dataset.room_id = data[i]._id;
+                btn.dataset.player_amount = data[i].player_amount;
+                btn.innerText = "join"
+                lobby.id = "lobby" + data[i]._id;
+                lobby.innerText = "Room: " + data[i].room_name + "\nPlayers: " + data[i].player_amount + "/4";
+                document.getElementById("lobbyDiv").appendChild(lobby);
+                document.getElementById("lobbyDiv").appendChild(btn);
+                btn.addEventListener("click", async (event) => {
+                    let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
+                    let response = await fetch('/auth/joinRoom', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(roomInfo)
+                    });
+                    const resData = await response.json();
+                    if (resData.status != 'success') {
+                        window.location.replace('/multiplayer')
+                    }
+                    else {
+                        socket.emit('joinRoom', { jwt: getCookie('jwt'), room_id: roomInfo.roomId })
+                        window.location.replace('/multiplayer/' + resData.room_id);
+                    }
+                })
+            }
+        })
+
+        //tworzymy pokoje
+        for (var i = 0; i < rooms.length; i++) {
+            var lobby = document.createElement("div")
+            var btn = document.createElement("button");
+            btn.id = "join" + rooms[i]._id;
+            btn.dataset.room_id = rooms[i]._id;
+            btn.dataset.player_amount = rooms[i].player_amount;
+            btn.innerText = "join"
+            lobby.id = "lobby" + rooms[i]._id;
+            lobby.innerText = "Room: " + rooms[i].room_name + "\nPlayers: " + rooms[i].player_amount + "/4"
+            document.getElementById("lobbyDiv").appendChild(lobby);
+            document.getElementById("lobbyDiv").appendChild(btn);
+            btn.addEventListener("click", async (event) => {
+                let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
                 let response = await fetch('/auth/joinRoom', {
                     method: 'POST',
                     headers: {
@@ -96,39 +173,65 @@
                     body: JSON.stringify(roomInfo)
                 });
                 const resData = await response.json();
-                console.log('multi room ejs' + JSON.stringify(resData));
                 if (resData.status != 'success') {
                     window.location.replace('/multiplayer')
                 }
                 else {
+                    socket.emit('joinRoom', { jwt: getCookie('jwt'), room_id: roomInfo.roomId })
                     window.location.replace('/multiplayer/' + resData.room_id);
                 }
             })
         }
     }
 
+    //==========================================================================================POJEDYNCZE POKOJE=====================================================================================
     var room = '<%- room %>';
     var player_amount = '<%- player_amount %>';
-
+    //multiplayer/room_id = 
     if (room && room != 'null') {
+        socket.emit('roomSetup', { room_id: room });
+        socket.on('joinRoom', data => {
+            console.log('joinRoom', data)
+            //aktualizacja graczy w pokoju po otrzymaniu broadcasata (socket)
+            for (var i = 1; i < 5; i++) {
+                var x = document.getElementById('player' + i);
+                if (data['player' + i]) {
+                    if (data['player' + i]._id == data.leader) {
+                        x.innerHTML = data['player' + i].username + ' LIDER'
+                        //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
+                    }
+                    else {
+                        x.innerHTML = data['player' + i].username;
+                    }
+                }
+                else {
+                    x.innerHTML = null;
+                }
+            }
+        })
+
+
+        //gracze w pokoju
         var players = '<%- JSON.stringify(players) %>';
         players = JSON.parse(players);
-        console.log(players);
-        for (var i = 1; i < +player_amount + 1; i++) {
+        document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
+        for (var i = 1; i < 5; i++) {
             var x = document.getElementById('player' + i);
-            if (players['player' + i]._id == players.leader) {
-                x.innerHTML = players['player' + i].username + ' LIDER'
-                //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
-            }
-            else {
-                x.innerHTML = players['player' + i].username;
+            if (players['player' + i]) {
+                if (players['player' + i]._id == players.leader) {
+                    x.innerHTML = players['player' + i].username + ' LIDER'
+                    //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
+                }
+                else {
+                    x.innerHTML = players['player' + i].username;
+                }
             }
         }
-        let leave = document.getElementById('leave-btn');
 
+        //przycisk leave
+        let leave = document.getElementById('leave-btn');
         leave.addEventListener("click", async (event) => {
-            let leaveInfo = { "room": room, "player_amount": player_amount }
-            console.log(leaveInfo)
+            let leaveInfo = { "room": room }
             let res = await fetch('/auth/leaveRoom', {
                 method: 'POST',
                 headers: {
@@ -136,11 +239,10 @@
                 },
                 body: JSON.stringify(leaveInfo)
             });
+            socket.emit('leaveRoom', { jwt: getCookie('jwt'), room_id: room })
             window.location.replace('/multiplayer')
         })
-
     }
-
 
 </script>
 
