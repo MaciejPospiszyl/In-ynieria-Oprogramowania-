@@ -1,14 +1,14 @@
-var models = require('./database.js')
+let models = require('./database.js')
 const bcrypt = require('bcryptjs')
-var jwt = require('jsonwebtoken');
+let jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const { response } = require('express');
 const { getPlayers } = require('./functions.js');
 const saltRounds = 10;
-var users = models.users
-var credentials = models.credentials
-var leaderboard = models.leaderboard
-var lobby = models.lobby
+let users = models.users
+let credentials = models.credentials
+let leaderboard = models.leaderboard
+let lobby = models.lobby
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -38,13 +38,13 @@ exports.register = async (req, res) => {
         })
     }
 
-    var newUser = users({ username: username })
+    let newUser = users({ username: username })
     newUser.save(function (err, result) {
         if (err) console.log(err)
         else {
             console.log("newUserSave", result)
             const hashedPassword = bcrypt.hashSync(password, saltRounds);
-            var newCredential = credentials({
+            let newCredential = credentials({
                 email: email,
                 password: hashedPassword,
                 user_id: result._id
@@ -104,7 +104,7 @@ exports.login = async (req, res) => {
 exports.isLoggedIn = async (req, res, next) => {
     if (req.cookies.jwt) {
         try {
-            var decoded = jwt.verify(req.cookies.jwt, 'secret');
+            let decoded = jwt.verify(req.cookies.jwt, 'secret');
             users.findOne({ _id: decoded.user })
                 .then(results => {
                     if (results) {
@@ -136,8 +136,8 @@ exports.logout = async (req, res) => {
 
 exports.saveScore = async (req, res) => {
     console.log(req.body)
-    var decoded = jwt.verify(req.cookies.jwt, 'secret');
-    var newScore = leaderboard({ user_id: decoded.user, time: req.body.scTime, moves: req.body.moves, difficulty: req.body.difficulty })
+    let decoded = jwt.verify(req.cookies.jwt, 'secret');
+    let newScore = leaderboard({ user_id: decoded.user, time: req.body.scTime, moves: req.body.moves, difficulty: req.body.difficulty })
     newScore.save(function (err, result) {
         if (err) console.log(err)
         else {
@@ -240,7 +240,7 @@ exports.createRoom = async (req, res, next) => {
                     return
                 }
                 else {
-                    var newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user, leader_id: decoded.user });
+                    let newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user, leader_id: decoded.user });
                     newLobby.save(function (err, result) {
                         if (err) {
                             console.log(err);
@@ -257,12 +257,12 @@ exports.createRoom = async (req, res, next) => {
         } catch (error) { console.log(erorr) }
     }
     else {
-        res.json({status: 'failure'})
+        res.json({ status: 'failure' })
         return
     }
 }
 
-exports.joinRoom = async (req, res, next) => {
+exports.joinRoom = async (req, res) => {
     let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
     let data = { room_id: req.body.roomId }; //pokoj do ktorego dolacza uzytkownik
 
@@ -301,19 +301,20 @@ exports.joinRoom = async (req, res, next) => {
         const findSpotForPlayer = await lobby.findOne({ _id: data.room_id })
         if (findSpotForPlayer && findSpotForPlayer.player_amount < 4) {
             if (!findSpotForPlayer.player1_id) {
-                addToCertainSpot('player1_id', findSpotForPlayer.player_amount)
+                await addToCertainSpot('player1_id', findSpotForPlayer.player_amount)
             }
             else if (!findSpotForPlayer.player2_id) {
-                addToCertainSpot('player2_id', findSpotForPlayer.player_amount)
+                await addToCertainSpot('player2_id', findSpotForPlayer.player_amount)
             }
             else if (!findSpotForPlayer.player3_id) {
-                addToCertainSpot('player3_id', findSpotForPlayer.player_amount)
+                await addToCertainSpot('player3_id', findSpotForPlayer.player_amount)
             }
             else if (!findSpotForPlayer.player4_id) {
-                addToCertainSpot('player4_id', findSpotForPlayer.player_amount)
+                await addToCertainSpot('player4_id', findSpotForPlayer.player_amount)
             }
             else {
                 res.json({ status: 'failure' })
+                return
             }
         }
         else {
@@ -366,85 +367,87 @@ exports.leaveRoom = async (req, res, next) => {
     let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
     let data = { room_id: req.body.room }; //pokoj ktory opuszcza uzytkownik
 
-    function removePlayer(player, player_amount) {
-        console.log('gdfgdfdfgdfg', player_amount)
-        lobby.findOneAndUpdate({ _id: data.room_id }, { [player]: undefined, player_amount: player_amount - 1 })
-            .catch(error => { console.log(error) })
-            .then(result => {
-                next()
+    async function removePlayer(player, player_amount, leader) {
+        try {
+            const x = await lobby.findOneAndUpdate({ _id: data.room_id }, { [player]: undefined, player_amount: player_amount - 1 })
+            if (x) {
+                if (leader == decoded.user) {
+                    await findNewLeader();
+                }
+                next();
+            }
+        } catch (erorr) {
+            console.log('error')
+        }
+    }
+
+        async function setNewLeader(player) {
+            try {
+                await lobby.findOneAndUpdate({ _id: data.room_id }, { leader_id: player })
+            }
+            catch (error) { console.log('error') }
+        }
+
+        async function findNewLeader() {
+            try {
+                const results = await lobby.findOne({ _id: data.room_id })
+                if (results) {
+                    if (results.player1_id != null) {
+                        await setNewLeader(results.player1_id)
+                    }
+                    else if (results.player2_id != null) {
+                        await setNewLeader(results.player2_id)
+                    }
+                    else if (results.player3_id != null) {
+                        await setNewLeader(results.player3_id)
+                    }
+                    else if (results.player4_id != null) {
+                        await setNewLeader(results.player4_id)
+                    }
+                }
+            } catch (error) { console.log('error') }
+        }
+
+
+        try {
+            const results = await lobby.findOne({
+                $and:
+                    [{ _id: data.room_id },
+                    {
+                        $or:
+                            [{ player1_id: decoded.user },
+                            { player2_id: decoded.user },
+                            { player3_id: decoded.user },
+                            { player4_id: decoded.user }
+                            ]
+                    }
+                    ]
             })
-    }
-
-    function setNewLeader(player) {
-        console.log('setting new leader', player)
-        lobby.findOneAndUpdate({ _id: data.room_id }, { leader_id: player })
-            .catch(error => console.log(error))
-    }
-
-    function findNewLeader() {
-        console.log('finding new leader')
-        lobby.findOne({ _id: data.room_id })
-            .catch(error => console.log(error))
-            .then(results => {
-                if (results.player1_id != null) {
-                    setNewLeader(results.player1_id)
-                }
-                else if (results.player2_id != null) {
-                    setNewLeader(results.player2_id)
-                }
-                else if (results.player3_id != null) {
-                    setNewLeader(results.player3_id)
-                }
-                else if (results.player4_id != null) {
-                    setNewLeader(results.player4_id)
-                }
-            })
-    }
-
-
-    try {
-        const results = await lobby.findOne({
-            $and:
-                [{ _id: data.room_id },
-                {
-                    $or:
-                        [{ player1_id: decoded.user },
-                        { player2_id: decoded.user },
-                        { player3_id: decoded.user },
-                        { player4_id: decoded.user }
-                        ]
-                }
-                ]
-        })
-        if (results) {
-            if (results.player_amount == 1) {
-                lobby.deleteOne({ _id: data.room_id })
-                    .catch(error => { console.log(error) })
-                    .then(result => {
+            if (results) {
+                if (results.player_amount == 1) {
+                    const result = await lobby.deleteOne({ _id: data.room_id })
+                    if(result){
                         next()
-                    })
+                    }
+                }
+                else if (results.player1_id && results.player1_id == decoded.user) {
+                    await removePlayer('player1_id', results.player_amount, results.leader_id)
+                }
+                else if (results.player2_id && results.player2_id == decoded.user) {
+                    await removePlayer('player2_id', results.player_amount, results.leader_id)
+                }
+                else if (results.player3_id && results.player3_id == decoded.user) {
+                    await removePlayer('player3_id', results.player_amount, results.leader_id)
+                }
+                else if (results.player4_id && results.player4_id == decoded.user) {
+                    await removePlayer('player4_id', results.player_amount, results.leader_id)
+                }
             }
-            else if (results.player1_id && results.player1_id == decoded.user) {
-                removePlayer('player1_id', results.player_amount)
+            else {
+                next()
             }
-            else if (results.player2_id && results.player2_id == decoded.user) {
-                removePlayer('player2_id', results.player_amount)
-            }
-            else if (results.player3_id && results.player3_id == decoded.user) {
-                removePlayer('player3_id', results.player_amount)
-            }
-            else if (results.player4_id && results.player4_id == decoded.user) {
-                removePlayer('player4_id', results.player_amount)
-            }
-            // if (results.leader_id && results.leader_id == decoded.user) {
-            //     findNewLeader();
-            // }
-        }
-        else {
-            next()
-        }
-    } catch (error) { console.log(error) }
-}
+        } catch (error) { console.log(error) }
+    }
 
 
 

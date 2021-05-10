@@ -12,6 +12,62 @@
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
     <link href="/ranking.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #chatForm {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 0.25rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            height: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        #chatInput {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 1;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #chatInput:focus {
+            outline: none;
+        }
+
+        #chatForm>button {
+            background: #333;
+            border: none;
+            padding: 0 1rem;
+            margin: 0.25rem;
+            border-radius: 3px;
+            outline: none;
+            color: #fff;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages>li {
+            padding: 0.5rem 1rem;
+        }
+
+        #messages>li:nth-child(odd) {
+            background: #efefef;
+        }
+    </style>
 </head>
 
 <body>
@@ -58,6 +114,13 @@
                 <p id='player4'></p>
                 <button id="leave-btn">Leave</button>
             </div>
+            <!-- chat -->
+            
+            <ul id="messages"></ul>
+            <form id="chatForm" action="">
+                <input id="chatInput" autocomplete="off" /><button>Send</button>
+            </form>
+
             <% } %>
 
 
@@ -75,25 +138,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script src="../utils.js"></script>
 <script>
+    async function fetchJoinRoom(roomInfo) {
+        let response = await fetch('/auth/joinRoom', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(roomInfo)
+        });
+        return response.json()
+    }
+
+
     let socket = io()
     socket.on('connect', function (data) {
-        socket.emit('lobbySetup')
+        if (room && room != null) {
+            socket.emit('roomSetup', { room_id: room })
+        }
+        else {
+            socket.emit('lobbySetup')
+        }
     });
     socket.on('disconnect', function (data) {
 
     });
 
 
-
     //=========================================================================================LOBBY=======================================================================================================
     let rooms = '<%- JSON.stringify(rooms) %>';
     rooms = JSON.parse(rooms)
-    //multiplayer
+
+
     if (rooms && rooms != 'null') {
         let crBtn = document.getElementById('cr-btn');
         crBtn.addEventListener("click", async (event) => {
             let roomName = { roomName: document.getElementById('roomName').value };
-            console.log(roomName)
             let response = await fetch('/auth/createRoom', {
                 method: 'POST',
                 headers: {
@@ -102,7 +181,6 @@
                 body: JSON.stringify(roomName)
             });
             const resData = await response.json();
-            console.log(resData)
             if (resData.status != 'success') {
                 window.location.replace('/multiplayer')
             }
@@ -116,12 +194,12 @@
         let lobbyDiv = document.getElementById("lobbyDiv")
         socket.on('lobbyChange', function (data) {
             while (lobbyDiv.firstChild) {
-                lobbyDiv.removeChild(lobbyDiv.firstChild)    
+                lobbyDiv.removeChild(lobbyDiv.firstChild)
             }
             console.log('lobbyChange', data)
-            for (var i = 0; i < data.length; i++) {
-                var lobby = document.createElement("div");
-                var btn = document.createElement("button");
+            for (let i = 0; i < data.length; i++) {
+                let lobby = document.createElement("div");
+                let btn = document.createElement("button");
                 btn.id = "join" + data[i]._id;
                 btn.dataset.room_id = data[i]._id;
                 btn.dataset.player_amount = data[i].player_amount;
@@ -130,16 +208,10 @@
                 lobby.innerText = "Room: " + data[i].room_name + "\nPlayers: " + data[i].player_amount + "/4";
                 document.getElementById("lobbyDiv").appendChild(lobby);
                 document.getElementById("lobbyDiv").appendChild(btn);
+
                 btn.addEventListener("click", async (event) => {
                     let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
-                    let response = await fetch('/auth/joinRoom', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(roomInfo)
-                    });
-                    const resData = await response.json();
+                    const resData = await fetchJoinRoom(roomInfo);
                     if (resData.status != 'success') {
                         window.location.replace('/multiplayer')
                     }
@@ -152,9 +224,9 @@
         })
 
         //tworzymy pokoje
-        for (var i = 0; i < rooms.length; i++) {
-            var lobby = document.createElement("div")
-            var btn = document.createElement("button");
+        for (let i = 0; i < rooms.length; i++) {
+            let lobby = document.createElement("div")
+            let btn = document.createElement("button");
             btn.id = "join" + rooms[i]._id;
             btn.dataset.room_id = rooms[i]._id;
             btn.dataset.player_amount = rooms[i].player_amount;
@@ -163,16 +235,10 @@
             lobby.innerText = "Room: " + rooms[i].room_name + "\nPlayers: " + rooms[i].player_amount + "/4"
             document.getElementById("lobbyDiv").appendChild(lobby);
             document.getElementById("lobbyDiv").appendChild(btn);
+
             btn.addEventListener("click", async (event) => {
                 let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
-                let response = await fetch('/auth/joinRoom', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(roomInfo)
-                });
-                const resData = await response.json();
+                const resData = await fetchJoinRoom(roomInfo);
                 if (resData.status != 'success') {
                     window.location.replace('/multiplayer')
                 }
@@ -185,16 +251,16 @@
     }
 
     //==========================================================================================POJEDYNCZE POKOJE=====================================================================================
-    var room = '<%- room %>';
-    var player_amount = '<%- player_amount %>';
-    //multiplayer/room_id = 
+    let room = '<%- room %>';
+    let player_amount = '<%- player_amount %>';
+    //multiplayer/room_id?= 
     if (room && room != 'null') {
-        socket.emit('roomSetup', { room_id: room });
+        // socket.emit('roomSetup', { room_id: '1' });
         socket.on('joinRoom', data => {
             console.log('joinRoom', data)
             //aktualizacja graczy w pokoju po otrzymaniu broadcasata (socket)
-            for (var i = 1; i < 5; i++) {
-                var x = document.getElementById('player' + i);
+            for (let i = 1; i < 5; i++) {
+                let x = document.getElementById('player' + i);
                 if (data['player' + i]) {
                     if (data['player' + i]._id == data.leader) {
                         x.innerHTML = data['player' + i].username + ' LIDER'
@@ -210,13 +276,35 @@
             }
         })
 
+        //chat setup
+        let form = document.getElementById('chatForm');
+        let input = document.getElementById('chatInput');
+        let messages = document.getElementById('messages');
+        let user = '<%- user.username %>';
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                let chatInput = { value: input.value, room_id: room, user: user }
+                socket.emit('newChatMessage', JSON.stringify(chatInput));
+                input.value = '';
+            }
+        });
+
+        socket.on('newChatMessage', function (msg) {
+            let item = document.createElement('li');
+            item.textContent = msg.user + ": " + msg.value;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+
 
         //gracze w pokoju
-        var players = '<%- JSON.stringify(players) %>';
+        let players = '<%- JSON.stringify(players) %>';
         players = JSON.parse(players);
         document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
-        for (var i = 1; i < 5; i++) {
-            var x = document.getElementById('player' + i);
+        for (let i = 1; i < 5; i++) {
+            let x = document.getElementById('player' + i);
             if (players['player' + i]) {
                 if (players['player' + i]._id == players.leader) {
                     x.innerHTML = players['player' + i].username + ' LIDER'
