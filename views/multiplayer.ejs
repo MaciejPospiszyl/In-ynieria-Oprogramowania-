@@ -12,6 +12,7 @@
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
     <link href="/ranking.css" rel="stylesheet">
+    <link href="/multiplayer.css" rel="stylesheet">
 </head>
 
 <body>
@@ -20,43 +21,105 @@
         <h4>Memory card game</h4>
         <% if (user) { %>
             <ul>
-                Zalogowany jako <%= user.username %>
+                Logged in as <%= user.username %>
                     <li>
-                    <li><a href="/levelChoice">Gra</a></li>
+                    <li><a href="/levelChoice">Game</a></li>
                     <li>
                     </li>
-                    <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
+                    <a href="/auth/wyloguj" style="color:crimson">Log out</a>
             </ul>
             <% } else { %>
                 <ul>
-                    <li><a href="/logowanie">Logowanie</a></li>
-                    <li><a href="/rejestracja">Rejestracja</a></li>
+                    <li><a href="/logowanie">Sign in</a></li>
+                    <li><a href="/rejestracja">Register</a></li>
                 </ul>
                 <% } %>
     </nav>
 
     <% if (!room) { %>
-        <div id="wholeLobby">
-            <div id="createRoom">
-                <label for="roomName">Room Name</label>
-                <input type="text" id="roomName" name="roomName">
+        <div id="createRoom">
+            <div class="form-group">
                 <button id="cr-btn" class="btn btn-primary">Create room</button>
+                <input type="text" id="roomName" name="roomName" placeholder="Room name">
             </div>
+        </div>
 
-            <div id="lobbyDiv">
-                <!-- wczytywanie pokoi -->
-            </div>
+        <div id="wholeLobby">
+            <!-- wczytywanie pokoi -->
+
         </div>
 
         <%} else { %>
             <!-- Pokój do 4 osób z czatem i przyciskiem start/wyjdz-->
             <div classs="playersDiv">
                 <p id='room_name'></p>
-                <p id='player1'></p>
-                <p id='player2'></p>
-                <p id='player3'></p>
-                <p id='player4'></p>
-                <button id="leave-btn">Leave</button>
+
+
+
+            </div>
+            <!-- chat -->
+
+
+
+
+
+
+            <div class="roomConteiner">
+
+                <div class="chat">
+                    <div class="chatMessages">
+                        <ul id="messages"></ul>
+                    </div>
+                    <div class="chatSend">
+                        <form id="chatForm" action="">
+                            <input id="chatInput" autocomplete="off" /><button>Send</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="rightMenu">
+                    <div class="players">
+                        <div class="player">
+                            <div class="playerNumber">
+                                P1
+                            </div>
+                            <div id='player1' class="playerName">
+
+                            </div>
+
+
+                        </div>
+                        <div class="player">
+                            <div class="playerNumber">
+                                P2
+                            </div>
+                            <div id='player2' class="playerName">
+
+                            </div>
+
+                        </div>
+                        <div class="player">
+                            <div class="playerNumber">
+                                P3
+                            </div>
+                            <div id='player3' class="playerName">
+
+                            </div>
+                        </div>
+                        <div class="player">
+                            <div class="playerNumber">
+                                P4
+                            </div>
+                            <div id='player4' class="playerName">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="startLeave">
+
+                        <button id="leave-btn">Leave</button>
+                    </div>
+
+                </div>
             </div>
             <% } %>
 
@@ -75,25 +138,43 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script src="../utils.js"></script>
 <script>
+    //funckja do buttona join room
+    async function fetchJoinRoom(roomInfo) {
+        let response = await fetch('/auth/joinRoom', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(roomInfo)
+        });
+        return response.json()
+    }
+
+    //socket server
     let socket = io()
     socket.on('connect', function (data) {
-        socket.emit('lobbySetup')
+        if (room && room != null) {
+            socket.emit('roomSetup', { room_id: room })
+        }
+        else {
+            socket.emit('lobbySetup')
+        }
     });
     socket.on('disconnect', function (data) {
 
     });
 
 
-
     //=========================================================================================LOBBY=======================================================================================================
     let rooms = '<%- JSON.stringify(rooms) %>';
     rooms = JSON.parse(rooms)
-    //multiplayer
+
+    //sprawdzamy czy uzytkownik jest w lobby
     if (rooms && rooms != 'null') {
+        //create room button
         let crBtn = document.getElementById('cr-btn');
         crBtn.addEventListener("click", async (event) => {
             let roomName = { roomName: document.getElementById('roomName').value };
-            console.log(roomName)
             let response = await fetch('/auth/createRoom', {
                 method: 'POST',
                 headers: {
@@ -102,7 +183,6 @@
                 body: JSON.stringify(roomName)
             });
             const resData = await response.json();
-            console.log(resData)
             if (resData.status != 'success') {
                 window.location.replace('/multiplayer')
             }
@@ -113,33 +193,40 @@
         })
 
         //aktualizujemy pokoje po otrzymaniu brodcasta
-        let lobbyDiv = document.getElementById("lobbyDiv")
         socket.on('lobbyChange', function (data) {
-            while (lobbyDiv.firstChild) {
-                lobbyDiv.removeChild(lobbyDiv.firstChild)    
+            let wholeLobby = document.getElementById("wholeLobby")
+            while (wholeLobby.firstChild) {
+                wholeLobby.removeChild(wholeLobby.firstChild)
             }
             console.log('lobbyChange', data)
-            for (var i = 0; i < data.length; i++) {
-                var lobby = document.createElement("div");
-                var btn = document.createElement("button");
-                btn.id = "join" + data[i]._id;
+            for (let i = 0; i < data.length; i++) {
+                let roomContainer = document.createElement("div")
+                roomContainer.className = "roomContainer"
+                roomContainer.id = "roomContainer" + [i]
+                wholeLobby.appendChild(roomContainer)
+                let roomHeader = document.createElement("div")
+                roomHeader.className = "roomHeader"
+                roomHeader.id = "roomHeader" + [i]
+                roomContainer.appendChild(roomHeader)
+
+                let btn = document.createElement("button");
+
+                let nazwaPokoju = document.createElement("div");
+                let gracze = document.createElement("div")
+                btn.id = "join";
                 btn.dataset.room_id = data[i]._id;
                 btn.dataset.player_amount = data[i].player_amount;
                 btn.innerText = "join"
-                lobby.id = "lobby" + data[i]._id;
-                lobby.innerText = "Room: " + data[i].room_name + "\nPlayers: " + data[i].player_amount + "/4";
-                document.getElementById("lobbyDiv").appendChild(lobby);
-                document.getElementById("lobbyDiv").appendChild(btn);
+                nazwaPokoju.id = "nazwaPokoju";
+                nazwaPokoju.innerText = "Room: " + data[i].room_name;
+                gracze.id = "gracze";
+                gracze.innerText = "Players: " + data[i].player_amount + "/4";
+                document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+                document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                document.getElementById("roomContainer" + [i]).appendChild(btn);
                 btn.addEventListener("click", async (event) => {
                     let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
-                    let response = await fetch('/auth/joinRoom', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(roomInfo)
-                    });
-                    const resData = await response.json();
+                    const resData = await fetchJoinRoom(roomInfo);
                     if (resData.status != 'success') {
                         window.location.replace('/multiplayer')
                     }
@@ -151,28 +238,39 @@
             }
         })
 
-        //tworzymy pokoje
-        for (var i = 0; i < rooms.length; i++) {
-            var lobby = document.createElement("div")
-            var btn = document.createElement("button");
-            btn.id = "join" + rooms[i]._id;
+        //tworzymy pokoje i join-btns
+
+        let wholeLobby = document.getElementById("wholeLobby")
+        for (let i = 0; i < rooms.length; i++) {
+            let roomContainer = document.createElement("div")
+            roomContainer.className = "roomContainer"
+            roomContainer.id = "roomContainer" + [i]
+            wholeLobby.appendChild(roomContainer)
+            let roomHeader = document.createElement("div")
+            roomHeader.className = "roomHeader"
+            roomHeader.id = "roomHeader" + [i]
+            roomContainer.appendChild(roomHeader)
+            let hr = document.createElement("hr")
+            hr.id = "hr"
+            let btn = document.createElement("button");
+            let nazwaPokoju = document.createElement("div");
+            let gracze = document.createElement("div")
+            btn.id = "join";
             btn.dataset.room_id = rooms[i]._id;
             btn.dataset.player_amount = rooms[i].player_amount;
             btn.innerText = "join"
-            lobby.id = "lobby" + rooms[i]._id;
-            lobby.innerText = "Room: " + rooms[i].room_name + "\nPlayers: " + rooms[i].player_amount + "/4"
-            document.getElementById("lobbyDiv").appendChild(lobby);
-            document.getElementById("lobbyDiv").appendChild(btn);
+            nazwaPokoju.id = "nazwaPokoju";
+            nazwaPokoju.innerText = "Room: " + rooms[i].room_name;
+            gracze.id = "gracze";
+            gracze.innerText = "Players: " + rooms[i].player_amount + "/4";
+            document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+            document.getElementById("roomHeader" + [i]).appendChild(gracze);
+            document.getElementById("roomContainer" + [i]).appendChild(btn);
+            document.getElementById("roomContainer" + [i]).appendChild(hr);
+
             btn.addEventListener("click", async (event) => {
                 let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
-                let response = await fetch('/auth/joinRoom', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(roomInfo)
-                });
-                const resData = await response.json();
+                const resData = await fetchJoinRoom(roomInfo);
                 if (resData.status != 'success') {
                     window.location.replace('/multiplayer')
                 }
@@ -185,16 +283,21 @@
     }
 
     //==========================================================================================POJEDYNCZE POKOJE=====================================================================================
-    var room = '<%- room %>';
-    var player_amount = '<%- player_amount %>';
-    //multiplayer/room_id = 
+    let room = '<%- room %>';        //id pokoju
+    let players = '<%- JSON.stringify(players) %>';  //gracze w pokoju
+    players = JSON.parse(players);
+    let user = '<%- user.username %>'; //username zalogowanego uzytkownika
+    let user_id = '<%- user.id %>'    //id zalogowanego uzytkownika
+    let player_amount = '<%- player_amount %>'; //ilosc graczy w pokoju
+    //multiplayer/room_id?= 
+    //sprawdzamy czy uzytkownik znadjuje sie w pokoju
     if (room && room != 'null') {
-        socket.emit('roomSetup', { room_id: room });
+        //socket dostaje informacje o zmianie w pokoju
         socket.on('joinRoom', data => {
             console.log('joinRoom', data)
-            //aktualizacja graczy w pokoju po otrzymaniu broadcasata (socket)
-            for (var i = 1; i < 5; i++) {
-                var x = document.getElementById('player' + i);
+            //aktualizacja graczy w pokoju po otrzymaniu 
+            for (let i = 1; i < 5; i++) {
+                let x = document.getElementById('player' + i);
                 if (data['player' + i]) {
                     if (data['player' + i]._id == data.leader) {
                         x.innerHTML = data['player' + i].username + ' LIDER'
@@ -208,15 +311,60 @@
                     x.innerHTML = null;
                 }
             }
+
+            //sprawdzamy czy zalogowany uzytkownik jest liderem pokoju i czy znajduje sie na jego ekranie button start, jezeli nie - dodajemy
+            if (user_id == data.leader && !document.body.contains(document.getElementById('buttonStart'))) {
+                let startLeave = document.getElementById("startLeave")
+                let buttonStart = document.createElement("button")
+                let leaveButton = document.getElementById("leave-btn")
+                buttonStart.id = "buttonStart"
+                buttonStart.innerText = "Start"
+                startLeave.insertBefore(buttonStart, leaveButton)
+            }
         })
 
 
+        //chat setup
+        let form = document.getElementById('chatForm');
+        let input = document.getElementById('chatInput');
+        let messages = document.getElementById('messages');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                let chatInput = { value: input.value, room_id: room, user: user }
+                socket.emit('newChatMessage', JSON.stringify(chatInput));
+                input.value = '';
+            }
+        });
+
+        //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
+        socket.on('newChatMessage', function (msg) {
+            let item = document.createElement('li');
+            item.textContent = msg.user + ": " + msg.value;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+
+
         //gracze w pokoju
-        var players = '<%- JSON.stringify(players) %>';
-        players = JSON.parse(players);
+
+        //START BUTTON jezeli user jest leaderem
+        if (user_id == players.leader) {
+            let startLeave = document.getElementById("startLeave")
+            let buttonStart = document.createElement("button")
+            let leaveButton = document.getElementById("leave-btn")
+            buttonStart.id = "buttonStart"
+            buttonStart.innerText = "Start"
+            startLeave.insertBefore(buttonStart, leaveButton)
+        }
+
+        //nazwa pokoju
         document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
-        for (var i = 1; i < 5; i++) {
-            var x = document.getElementById('player' + i);
+        //zaladowanie graczy
+        for (let i = 1; i < 5; i++) {
+            let x = document.getElementById('player' + i);
             if (players['player' + i]) {
                 if (players['player' + i]._id == players.leader) {
                     x.innerHTML = players['player' + i].username + ' LIDER'

@@ -8,7 +8,6 @@ const cookieParser = require("cookie-parser")
 const port = 3000
 const { getPlayers } = require('./functions.js')
 const { getRooms } = require('./functions.js');
-const { createWebSocketStream } = require("ws");
 
 //public
 app.use(express.static(__dirname + '/public'));
@@ -33,15 +32,23 @@ io.on('connection', (socket) => {
   // socket.join('lobby')
   // console.log('user joined lobby')
   socket.on('roomSetup', async data => {
-    socket.join(data.room_id);
-    console.log('socket joined ', data.room_id)
     socket.leave('lobby')
     console.log('socket left lobby')
+    console.log('roomsetup',data.room_id)
+    socket.join(data.room_id);
+    console.log('socket joined ', data.room_id)
+    socket.emit('roomSetup', 'costam')
   })
-  socket.on('lobbySetup', async data => {
+  socket.on('lobbySetup', async () => {
     socket.join('lobby');
     console.log('joined lobby')
   })
+
+  socket.on('newChatMessage', (msg) => {
+    console.log('message: ' , msg);
+    msg = JSON.parse(msg)
+    io.to(msg.room_id).emit('newChatMessage', msg)
+  });
 
   socket.on('lobbyChange', async () => {
     try {
@@ -62,9 +69,8 @@ io.on('connection', (socket) => {
           room_id: msg.room_id
         }
       })
-      // console.log('joinroomapp',x)
-      io.to(msg.room_id).emit('joinRoom', x)
 
+      io.to(msg.room_id).emit('joinRoom', x)
       const z = await getRooms({})
       io.to('lobby').emit('lobbyChange', z)
     }
