@@ -1,0 +1,242 @@
+.form-group{ /*jest*/
+   
+    padding: 10px;
+    flex-direction: row;
+    display: flex;
+    
+}
+
+#roomName{/*jest*/
+    width: 20%;
+}
+
+.roomContainer{
+    display: flex;
+    width: 100%;
+}
+
+.roomHeader{/*jest*/
+    
+    flex-direction: column;
+    display: flex;
+    font-size: 20px;
+    width: 80%;
+    font-weight: bold;
+}
+
+.btn-primary{/*jest*/
+    margin-right: 10px;
+}
+
+.btn-primary{/*jest*/
+    
+    flex-wrap: wrap;
+    align-items: center;
+    height: flex;
+    text-align: center;
+    
+}
+
+#wholeLobby {/*jest*/
+    margin: auto;
+    width: 60em;
+    border-width:10px;
+    border-radius: 10px;
+    border-color:#1090f0;
+    background: rgb(15,134,139);
+    background: linear-gradient(234deg, rgba(15,134,139,1) 0%, rgba(59,235,177,1) 48%, rgba(42,242,173,1) 77%, rgba(59,235,177,1) 85%, rgba(58,180,179,1) 100%);
+    display: flex;
+    flex-direction: column;
+  }
+
+  #createRoom {/*jest*/
+    margin:auto;
+    width: 60em;
+    
+  }
+  
+#lobbyDiv{/*jest*/
+    flex-direction: column;
+    display: flex;
+    font-size: 20px;
+    width: 80%;
+    font-weight: bold;
+}
+
+
+#nazwaPokoju{/*jest*/
+    margin-right: 30%;
+}
+
+#gracze{/*jest*/
+    margin: 0;
+}
+
+#join {/*jest*/
+	box-shadow: 3px 4px 0px 0px #1564ad;
+	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+	background-color:#79bbff;
+	border-radius:5px;
+	border:1px solid #337bc4;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	font-weight:bold;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #528ecc;
+    text-align: center;
+    vertical-align: middle;
+    
+    margin: auto;
+    height: 100%;
+    width: 20%;
+    margin-right: 10px;
+    
+    
+}
+#join:hover {/*jest*/
+	background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+	background-color:#378de5;
+}
+#join:active {/*jest*/
+	position:relative;
+	top:1px;
+}
+
+.roomConteiner{
+    width: 50%;
+    height: 400px;
+    margin: 20px auto 0;
+    border: black solid 1px;
+    display: flex;
+    flex-direction: flex-start;
+}
+
+.chat{
+    width: 80%;
+    display:flex;
+    flex-direction: column;
+}
+
+.chatMessages{
+    height: 88%;
+}
+
+.chatSend{
+    
+    height: 12%;
+}
+.rightMenu{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    border-left: black solid 1px;
+}
+
+.players{
+    
+    border-bottom: black solid 1px;
+    display: flex;
+    height: 60%;
+    flex-direction: column;
+}
+
+.player{
+    margin: 10px 0px 10px 20px;
+    height: 20%;
+    border: solid 1px black;
+    width: 80%;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.playerNumber{
+width: 20%;
+border-right: black solid 1px;
+line-height: 37.45px;
+height: 37.45px;
+}
+
+.playerName{
+width: 90%;
+line-height: 37.45px;
+height: 37.45px;
+}
+
+#startLeave{
+    width: 80%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    
+}
+
+
+
+#room_name{
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+}
+#leave-btn{
+    margin: 10px 0px;
+}
+
+#buttonStart{
+    margin: 10px 0px;
+}
+
+body {
+    margin: 0;
+    padding-bottom: 3rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+#chatForm {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 0.25rem;
+    
+    display: flex;
+    height: 3rem;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+}
+
+#chatInput {
+    border: none;
+    padding: 0 1rem;
+    flex-grow: 1;
+    border-radius: 2rem;
+    margin: 0.25rem;
+}
+
+#chatInput:focus {
+    outline: none;
+}
+
+#chatForm>button {
+    background: #333;
+    border: none;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#messages>li {
+    padding: 0.5rem 1rem;
+}
+
+#messages>li:nth-child(odd) {
+    background: #efefef;
+}
