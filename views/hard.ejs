@@ -25,17 +25,17 @@
       <% if (user) { %>
         <ul>
           <li>
-            Zalogowany jako <%= user.username %>
+            Logged in as <%= user.username %>
           </li>
           <li>
              <a href="/ranking">Ranking</a>
-             <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
+             <a href="/auth/wyloguj" style="color:crimson">Log out</a>
           </li>   
         </ul>
         <% } else { %>
           <ul>
-            <li><a href="/logowanie">Logowanie</a></li>
-            <li><a href="/rejestracja">Rejestracja</a></li>
+            <li><a href="/logowanie">Sign in</a></li>
+            <li><a href="/rejestracja">Register</a></li>
           </ul>
           <% } %>
     </nav>

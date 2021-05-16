@@ -151,4 +151,16 @@
       transform: scale(1);
     }
   }
+
+  .cursor-true{
+    cursor: pointer;
+  }
+
+ .cursor-false{
+  cursor:initial;
+ }
+
+ .currPlayer{
+   color:pink;
+ }
   

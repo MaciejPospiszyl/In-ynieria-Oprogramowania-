@@ -125,5 +125,19 @@ router.get('/hard', authController.isLoggedIn, (req, res) => {
     }
 })
 
+router.get('/multiGame/:room_id', authController.isLoggedIn, authController.getRoom, (req, res) => {
+    if (req.user) {
+        res.render('multiGame', {
+            user: req.user,
+            message: null,
+            players: req.players,
+            room_id: req.params.room_id
+        })
+    }
+    else {
+        res.redirect('multiplayer')
+    }
+})
+
 
 module.exports = router;

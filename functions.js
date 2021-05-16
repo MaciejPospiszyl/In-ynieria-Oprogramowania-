@@ -1,16 +1,17 @@
 const jwt = require('jsonwebtoken');
-var models = require('./database.js')
-var users = models.users
-var credentials = models.credentials
-var leaderboard = models.leaderboard
-var lobby = models.lobby
+let models = require('./database.js')
+let users = models.users
+let credentials = models.credentials
+let leaderboard = models.leaderboard
+let lobby = models.lobby
 
 async function getPlayers(req) {
     let players = {}
-    let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
+    // let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
 
     try {
         const result = await lobby.findOne({ _id: req.params.room_id })
+        // console.log('result', result)
         if (result && result.length != 0) {
             if (result.player1_id) {
                 players.player1 = await users.findOne({ _id: result.player1_id })
@@ -30,6 +31,7 @@ async function getPlayers(req) {
           
         }
     } catch (error) { console.log(error) }
+    // console.log('players',players)
     return players;
 }
 

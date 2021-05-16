@@ -19,19 +19,19 @@
     <h4>Memory card game</h4>
     <% if (user) { %>
       <ul>
-        Zalogowany jako <%= user.username %>  
+        Logged in as <%= user.username %>  
         <li>
           <li><a href="/ranking">Ranking</a></li>
-          <li><a href="/levelChoice">Gra</a></li>
+          <li><a href="/levelChoice">Game</a></li>
           <li>
                        
         </li>
-           <a href="/auth/wyloguj" style="color:crimson">Wyloguj</a>
+           <a href="/auth/wyloguj" style="color:crimson">Log out</a>
       </ul>
       <% } else { %>
         <ul>
-          <li><a href="/logowanie">Logowanie</a></li>
-          <li><a href="/rejestracja">Rejestracja</a></li>
+          <li><a href="/logowanie">Sign in</a></li>
+          <li><a href="/rejestracja">Register</a></li>
         </ul>
         <% } %>
   </nav>

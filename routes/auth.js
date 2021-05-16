@@ -16,5 +16,9 @@ router.post('/joinRoom', authController.joinRoom)
 
 router.post('/leaveRoom', authController.leaveRoom)
 
+router.post('/startGame', authController.startGame)
+
+
+
 
 module.exports = router;
