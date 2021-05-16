@@ -389,6 +389,30 @@
 
 
 
+        //chat setup
+        let form = document.getElementById('chatForm');
+        let input = document.getElementById('chatInput');
+        let messages = document.getElementById('messages');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                let chatInput = { value: input.value, room_id: room, user: user }
+                socket.emit('newChatMessage', JSON.stringify(chatInput));
+                input.value = '';
+            }
+        });
+
+        //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
+        socket.on('newChatMessage', function (msg) {
+            let item = document.createElement('li');
+            item.textContent = msg.user + ": " + msg.value;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+
+
         //gracze w pokoju
 
         //START BUTTON jezeli user jest leaderem
