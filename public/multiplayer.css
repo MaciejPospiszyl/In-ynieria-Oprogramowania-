@@ -1,61 +1,76 @@
-.form-group{ /*jest*/
-   
+.form-group {
+    /*jest*/
     padding: 10px;
     flex-direction: row;
     display: flex;
-    
 }
 
-#roomName{/*jest*/
+body {
+    background-image: url(img/bg.jpg);
+}
+
+.test {
+    width: 25px;
+    height: 25px;
+    background-image: url(img/koronaLidera.png);
+    background-size: 25px;
+    float: right;
+    text-align: center;
+}
+
+.roomHeader {
+    /*jest*/
+    flex-direction: column;
+    display: flex;
+    font-size: 20px;
+    width: 80%;
+    font-weight: bold;
+}
+
+#roomName {
+    /*jest*/
     width: 20%;
 }
 
-.roomContainer{
+.roomContainer {
     display: flex;
     width: 100%;
 }
 
-.roomHeader{/*jest*/
-    
-    flex-direction: column;
-    display: flex;
-    font-size: 20px;
-    width: 80%;
-    font-weight: bold;
-}
-
-.btn-primary{/*jest*/
+.btn-primary {
+    /*jest*/
     margin-right: 10px;
 }
 
-.btn-primary{/*jest*/
-    
+.btn-primary {
+    /*jest*/
     flex-wrap: wrap;
     align-items: center;
     height: flex;
     text-align: center;
-    
 }
 
-#wholeLobby {/*jest*/
+#wholeLobby {
+    /*jest*/
     margin: auto;
     width: 60em;
-    border-width:10px;
+    border-width: 10px;
     border-radius: 10px;
-    border-color:#1090f0;
-    background: rgb(15,134,139);
-    background: linear-gradient(234deg, rgba(15,134,139,1) 0%, rgba(59,235,177,1) 48%, rgba(42,242,173,1) 77%, rgba(59,235,177,1) 85%, rgba(58,180,179,1) 100%);
+    border-color: #1090f0;
+    background: rgb(15, 134, 139);
+    background: linear-gradient(234deg, rgba(15, 134, 139, 1) 0%, rgba(59, 235, 177, 1) 48%, rgba(42, 242, 173, 1) 77%, rgba(59, 235, 177, 1) 85%, rgba(58, 180, 179, 1) 100%);
     display: flex;
     flex-direction: column;
-  }
+}
 
-  #createRoom {/*jest*/
-    margin:auto;
+#createRoom {
+    /*jest*/
+    margin: auto;
     width: 60em;
-    
-  }
-  
-#lobbyDiv{/*jest*/
+}
+
+#lobbyDiv {
+    /*jest*/
     flex-direction: column;
     display: flex;
     font-size: 20px;
@@ -63,86 +78,90 @@
     font-weight: bold;
 }
 
-
-#nazwaPokoju{/*jest*/
+#nazwaPokoju {
+    /*jest*/
     margin-right: 30%;
 }
 
-#gracze{/*jest*/
+#gracze {
+    /*jest*/
     margin: 0;
 }
 
-#join {/*jest*/
-	box-shadow: 3px 4px 0px 0px #1564ad;
-	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
-	background-color:#79bbff;
-	border-radius:5px;
-	border:1px solid #337bc4;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:20px;
-	font-weight:bold;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #528ecc;
+#join {
+    /*jest*/
+    box-shadow: 3px 4px 0px 0px #1564ad;
+    background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+    background-color: #79bbff;
+    border-radius: 5px;
+    border: 1px solid #337bc4;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #528ecc;
     text-align: center;
     vertical-align: middle;
-    
     margin: auto;
     height: 100%;
     width: 20%;
     margin-right: 10px;
-    
-    
-}
-#join:hover {/*jest*/
-	background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
-	background-color:#378de5;
-}
-#join:active {/*jest*/
-	position:relative;
-	top:1px;
 }
 
-.roomConteiner{
+#join:hover {
+    /*jest*/
+    background: linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+    background-color: #378de5;
+}
+
+#join:active {
+    /*jest*/
+    position: relative;
+    top: 1px;
+}
+
+.roomConteiner {
     width: 50%;
     height: 400px;
     margin: 20px auto 0;
     border: black solid 1px;
     display: flex;
     flex-direction: flex-start;
+    background-color: white;
 }
 
-.chat{
+.chat {
     width: 80%;
-    display:flex;
+    display: flex;
     flex-direction: column;
 }
 
-.chatMessages{
+#chatMessages {
     height: 88%;
+    overflow-y: auto;
 }
 
-.chatSend{
-    
+.chatSend {
     height: 12%;
 }
-.rightMenu{
+
+.rightMenu {
     width: 20%;
     display: flex;
     flex-direction: column;
     border-left: black solid 1px;
 }
 
-.players{
-    
+.players {
     border-bottom: black solid 1px;
     display: flex;
     height: 60%;
     flex-direction: column;
 }
 
-.player{
+.player {
     margin: 10px 0px 10px 20px;
     height: 20%;
     border: solid 1px black;
@@ -152,41 +171,85 @@
     flex-direction: row;
 }
 
-.playerNumber{
-width: 20%;
-border-right: black solid 1px;
-line-height: 37.45px;
-height: 37.45px;
+.playerNumber {
+    width: 20%;
+    border-right: black solid 1px;
+    height: 37.45px;
+    line-height: 37.45px;
 }
 
-.playerName{
-width: 90%;
-line-height: 37.45px;
-height: 37.45px;
+.playerName {
+    width: 60%;
+    height: 37.45px;
+    line-height: 37.45px;
 }
 
-#startLeave{
+.koronaLidera {
+    width: 20%;
+    height: 100%;
+    background-image: url(img/koronaLidera.png);
+    background-size: cover;
+    background-position: center;
+    margin-right: 5px;
+}
+
+#startLeave {
     width: 80%;
     height: 10%;
     display: flex;
     flex-direction: column;
     margin: auto;
-    
 }
 
-
-
-#room_name{
+#room_name {
     text-align: center;
     font-size: 40px;
     font-weight: bold;
 }
-#leave-btn{
+
+#leave-btn {
+    box-shadow: inset 0px 39px 0px -24px #e67a73;
+    background-color: #e4685d;
+    border-radius: 4px;
+    border: 1px solid #ffffff;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 15px;
+    padding: 6px 15px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #b23e35;
+}
+
+#buttonStart {
+    box-shadow: inset 0px 1px 3px 0px #91b8b3;
+    background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+    background-color: #768d87;
+    border-radius: 4px;
+    border: 1px solid #ffffff;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 15px;
+    padding: 6px 15px;
+    text-decoration: none;
+    text-shadow: 0px -1px 0px #2b665e;
+}
+
+.hr {
+    width: 100%;
+    background-color: rgb(39, 41, 207);
+}
+
+#buttonStart {
     margin: 10px 0px;
 }
 
-#buttonStart{
+#ready-btn {
     margin: 10px 0px;
+    background-color: red;
 }
 
 body {
@@ -198,19 +261,19 @@ body {
 #chatForm {
     background: rgba(0, 0, 0, 0.15);
     padding: 0.25rem;
-    
     display: flex;
     height: 3rem;
     box-sizing: border-box;
     backdrop-filter: blur(10px);
+    flex-direction: row;
 }
 
 #chatInput {
     border: none;
     padding: 0 1rem;
-    flex-grow: 1;
     border-radius: 2rem;
     margin: 0.25rem;
+    width: 90%;
 }
 
 #chatInput:focus {
@@ -225,6 +288,7 @@ body {
     border-radius: 3px;
     outline: none;
     color: #fff;
+    width: 10%;
 }
 
 #messages {
@@ -239,4 +303,95 @@ body {
 
 #messages>li:nth-child(odd) {
     background: #efefef;
+}
+
+@media only screen and (max-width: 1400px) {
+    #chatInput {
+        width: 90%;
+    }
+    #chatForm>button {
+        padding: 0;
+        width: 10%;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .roomConteiner {
+        width: 80%;
+        height: 400px;
+        margin: 20px auto 0;
+        border: black solid 1px;
+        display: flex;
+        flex-direction: flex-start;
+    }
+    .player {
+        margin: 10px 0px 10px 15px;
+        height: 20%;
+        border: solid 1px black;
+        width: 80%;
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+    }
+    .playerNumber {
+        width: 20%;
+        border-right: black solid 1px;
+        line-height: 37.45px;
+        height: 37.45px;
+    }
+    .playerName {
+        width: 90%;
+        height: 37.45px;
+        text-align: center;
+    }
+    #chatInput {
+        width: 85%;
+    }
+    #chatForm>button {
+        padding: 0;
+        width: 15%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .player {
+        margin: 10px 0px 10px 10px;
+        height: 20%;
+        border: solid 1px black;
+        width: 70%;
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        background-color: white;
+    }
+    .playerNumber {
+        width: 40%;
+        border-right: black solid 1px;
+        line-height: 37.45px;
+        height: 37.45px;
+        display: none;
+    }
+    .playerName {
+        width: 90%;
+        height: 37.45px;
+        text-align: center;
+    }
+    #chatInput {
+        width: 75%;
+    }
+    #chatForm>button {
+        padding: 0;
+        width: 25%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .roomConteiner {
+        width: 90%;
+        height: 400px;
+        margin: 20px auto 0;
+        border: black solid 1px;
+        display: flex;
+        flex-direction: flex-start;
+    }
 }

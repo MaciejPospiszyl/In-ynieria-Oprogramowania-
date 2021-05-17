@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
     <link href="/ranking.css" rel="stylesheet">
@@ -21,12 +20,13 @@
         <h4>Memory card game</h4>
         <% if (user) { %>
             <ul>
-                Logged in as <%= user.username %>
+                Logged in as
+                <%= user.username %>
                     <li>
-                    <li><a href="/levelChoice">Game</a></li>
-                    <li>
-                    </li>
-                    <a href="/auth/wyloguj" style="color:crimson">Log out</a>
+                        <li><a href="/levelChoice">Game</a></li>
+                        <li>
+                        </li>
+                        <a href="/auth/wyloguj" style="color:crimson">Log out</a>
             </ul>
             <% } else { %>
                 <ul>
@@ -67,7 +67,7 @@
             <div class="roomConteiner">
 
                 <div class="chat">
-                    <div class="chatMessages">
+                    <div id="chatMessages">
                         <ul id="messages"></ul>
                     </div>
                     <div class="chatSend">
@@ -78,7 +78,7 @@
                 </div>
                 <div class="rightMenu">
                     <div class="players">
-                        <div class="player">
+                        <div class="player" id="gracz1">
                             <div class="playerNumber">
                                 P1
                             </div>
@@ -88,7 +88,7 @@
 
 
                         </div>
-                        <div class="player">
+                        <div class="player" id="gracz2">
                             <div class="playerNumber">
                                 P2
                             </div>
@@ -97,7 +97,7 @@
                             </div>
 
                         </div>
-                        <div class="player">
+                        <div class="player" id="gracz3">
                             <div class="playerNumber">
                                 P3
                             </div>
@@ -105,13 +105,14 @@
 
                             </div>
                         </div>
-                        <div class="player">
+                        <div class="player" id="gracz4">
                             <div class="playerNumber">
                                 P4
                             </div>
                             <div id='player4' class="playerName">
 
                             </div>
+
                         </div>
                     </div>
                     <div id="startLeave">
@@ -125,15 +126,9 @@
 
 
                 <!-- jQuery first, then Tether, then Bootstrap JS. -->
-                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-                    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-                    crossorigin="anonymous"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-                    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-                    crossorigin="anonymous"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-                    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-                    crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script src="../utils.js"></script>
@@ -177,15 +172,16 @@
 
     //socket server
     let socket = io()
-    socket.on('connect', function (data) {
+    socket.on('connect', function(data) {
         if (room && room != null) {
-            socket.emit('roomSetup', { room_id: room })
-        }
-        else {
+            socket.emit('roomSetup', {
+                room_id: room
+            })
+        } else {
             socket.emit('lobbySetup')
         }
     });
-    socket.on('disconnect', function (data) {
+    socket.on('disconnect', function(data) {
 
     });
 
@@ -198,8 +194,10 @@
     if (rooms && rooms != 'null') {
         //create room button
         let crBtn = document.getElementById('cr-btn');
-        crBtn.addEventListener("click", async (event) => {
-            let roomName = { roomName: document.getElementById('roomName').value };
+        crBtn.addEventListener("click", async(event) => {
+            let roomName = {
+                roomName: document.getElementById('roomName').value
+            };
             let response = await fetch('/auth/createRoom', {
                 method: 'POST',
                 headers: {
@@ -210,15 +208,17 @@
             const resData = await response.json();
             if (resData.status != 'success') {
                 window.location.replace('/multiplayer')
-            }
-            else {
-                socket.emit('joinRoom', { jwt: getCookie('jwt'), room_id: resData.room_id })
+            } else {
+                socket.emit('joinRoom', {
+                    jwt: getCookie('jwt'),
+                    room_id: resData.room_id
+                })
                 window.location.replace('/multiplayer/' + resData.room_id);
             }
         })
 
         //aktualizujemy pokoje po otrzymaniu brodcasta
-        socket.on('lobbyChange', function (data) {
+        socket.on('lobbyChange', function(data) {
             let wholeLobby = document.getElementById("wholeLobby")
             while (wholeLobby.firstChild) {
                 wholeLobby.removeChild(wholeLobby.firstChild)
@@ -249,14 +249,19 @@
                 document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
                 document.getElementById("roomHeader" + [i]).appendChild(gracze);
                 document.getElementById("roomContainer" + [i]).appendChild(btn);
-                btn.addEventListener("click", async (event) => {
-                    let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
+                btn.addEventListener("click", async(event) => {
+                    let roomInfo = {
+                        "roomId": btn.dataset.room_id,
+                        "playerAmount": btn.dataset.player_amount
+                    };
                     const resData = await fetchJoinRoom(roomInfo);
                     if (resData.status != 'success') {
                         window.location.replace('/multiplayer')
-                    }
-                    else {
-                        socket.emit('joinRoom', { jwt: getCookie('jwt'), room_id: roomInfo.roomId })
+                    } else {
+                        socket.emit('joinRoom', {
+                            jwt: getCookie('jwt'),
+                            room_id: roomInfo.roomId
+                        })
                         window.location.replace('/multiplayer/' + resData.room_id);
                     }
                 })
@@ -277,6 +282,7 @@
             roomContainer.appendChild(roomHeader)
             let hr = document.createElement("hr")
             hr.id = "hr"
+            hr.className = "hr"
             let btn = document.createElement("button");
             let nazwaPokoju = document.createElement("div");
             let gracze = document.createElement("div")
@@ -288,19 +294,31 @@
             nazwaPokoju.innerText = "Room: " + rooms[i].room_name;
             gracze.id = "gracze";
             gracze.innerText = "Players: " + rooms[i].player_amount + "/4";
-            document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
-            document.getElementById("roomHeader" + [i]).appendChild(gracze);
-            document.getElementById("roomContainer" + [i]).appendChild(btn);
-            document.getElementById("roomContainer" + [i]).appendChild(hr);
+            if (i + 1 < rooms.length) {
+                document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+                document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                document.getElementById("roomContainer" + [i]).appendChild(btn);
+                document.getElementById("wholeLobby").appendChild(hr);
+            } else {
+                document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+                document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                document.getElementById("roomContainer" + [i]).appendChild(btn);
+                document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
+            }
 
-            btn.addEventListener("click", async (event) => {
-                let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
+            btn.addEventListener("click", async(event) => {
+                let roomInfo = {
+                    "roomId": btn.dataset.room_id,
+                    "playerAmount": btn.dataset.player_amount
+                };
                 const resData = await fetchJoinRoom(roomInfo);
                 if (resData.status != 'success') {
                     window.location.replace('/multiplayer')
-                }
-                else {
-                    socket.emit('joinRoom', { jwt: getCookie('jwt'), room_id: roomInfo.roomId })
+                } else {
+                    socket.emit('joinRoom', {
+                        jwt: getCookie('jwt'),
+                        room_id: roomInfo.roomId
+                    })
                     window.location.replace('/multiplayer/' + resData.room_id);
                 }
             })
@@ -308,11 +326,11 @@
     }
 
     //==========================================================================================POJEDYNCZE POKOJE=====================================================================================
-    let room = '<%- room %>';        //id pokoju
-    let players = '<%- JSON.stringify(players) %>';  //gracze w pokoju
+    let room = '<%- room %>'; //id pokoju
+    let players = '<%- JSON.stringify(players) %>'; //gracze w pokoju
     players = JSON.parse(players);
     let user = '<%- user.username %>'; //username zalogowanego uzytkownika
-    let user_id = '<%- user.id %>'    //id zalogowanego uzytkownika
+    let user_id = '<%- user.id %>' //id zalogowanego uzytkownika
     let player_amount = '<%- player_amount %>'; //ilosc graczy w pokoju
     //multiplayer/room_id?= 
     //sprawdzamy czy uzytkownik znadjuje sie w pokoju
@@ -320,19 +338,17 @@
         //socket dostaje informacje o zmianie w pokoju
         socket.on('joinRoom', data => {
             console.log('joinRoom', data)
-            //aktualizacja graczy w pokoju po otrzymaniu 
+                //aktualizacja graczy w pokoju po otrzymaniu 
             for (let i = 1; i < 5; i++) {
                 let x = document.getElementById('player' + i);
                 if (data['player' + i]) {
                     if (data['player' + i]._id == data.leader) {
-                        x.innerHTML = data['player' + i].username + ' LIDER'
-                        //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
-                    }
-                    else {
+                        x.innerHTML = data['player' + i].username + ' <div class="chatInput">'
+                            //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
+                    } else {
                         x.innerHTML = data['player' + i].username;
                     }
-                }
-                else {
+                } else {
                     x.innerHTML = null;
                 }
             }
@@ -345,18 +361,28 @@
                 let leaveButton = document.getElementById("leave-btn")
                 buttonStart.id = "buttonStart"
                 buttonStart.innerText = "Start"
-                let data = { room_id: room }
-                buttonStart.addEventListener("click", async (event) => {
+                let data = {
+                    room_id: room
+                }
+                buttonStart.addEventListener("click", async(event) => {
                     let result = await fetchStartGame(data);
                     if (result.status == 'success') {
                         socket.emit('joinGame', JSON.stringify(data))
-                    }
-                    else {
+                    } else {
                         window.alert(result.message)
                     }
                 })
                 startLeave.insertBefore(buttonStart, leaveButton)
             }
+            //Kod jesli bysmy chcieli dodac przycisk ready
+            /*else if (user_id != data.leader) {
+                let startLeave = document.getElementById("startLeave")
+                let readyButton = document.createElement("button")
+                let leaveButton = document.getElementById("leave-btn")
+                readyButton.id = "readyButton"
+                readyButton.innerText = "ready"
+                startLeave.insertBefore(readyButton, leaveButton)
+            }*/
         })
 
         socket.on('joinGame', data => {
@@ -369,21 +395,29 @@
         let input = document.getElementById('chatInput');
         let messages = document.getElementById('messages');
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             if (input.value) {
-                let chatInput = { value: input.value, room_id: room, user: user }
+                let chatInput = {
+                    value: input.value,
+                    room_id: room,
+                    user: user
+                }
                 socket.emit('newChatMessage', JSON.stringify(chatInput));
                 input.value = '';
+
             }
         });
 
         //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
-        socket.on('newChatMessage', function (msg) {
+        socket.on('newChatMessage', function(msg) {
             let item = document.createElement('li');
             item.textContent = msg.user + ": " + msg.value;
             messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
+            var okno = document.getElementById("chatMessages");
+            //window.scrollTo(0, document.okno.scrollHeight);
+            okno.scrollTo(0, okno.scrollHeight);
+
         });
 
 
@@ -398,17 +432,27 @@
             buttonStart.id = "buttonStart"
             buttonStart.innerText = "Start"
             startLeave.insertBefore(buttonStart, leaveButton)
-            let data = { room_id: room }
-            buttonStart.addEventListener("click", async (event) => {
+            let data = {
+                room_id: room
+            }
+            buttonStart.addEventListener("click", async(event) => {
                 let result = await fetchStartGame(data);
                 if (result.status == 'success') {
                     socket.emit('joinGame', JSON.stringify(data))
-                }
-                else {
+                } else {
                     window.alert(result.message)
                 }
             })
         }
+        //Kod jesli bysmy chcieli dodac przycisk ready
+        /*else if (user_id != players.leader) {
+            let startLeave = document.getElementById("startLeave")
+            let readyButton = document.createElement("button")
+            let leaveButton = document.getElementById("leave-btn")
+            readyButton.id = "readyButton"
+            readyButton.innerText = "Ready"
+            startLeave.insertBefore(readyButton, leaveButton)
+        }*/
 
         //nazwa pokoju
         document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
@@ -417,19 +461,38 @@
             let x = document.getElementById('player' + i);
             if (players['player' + i]) {
                 if (players['player' + i]._id == players.leader) {
-                    x.innerHTML = players['player' + i].username + ' LIDER'
+                    x.innerHTML = players['player' + i].username
+
+                    let koronaLidera = document.createElement("div")
+                    koronaLidera.className = "koronaLidera"
+                    koronaLidera.id = "koronaLidera"
+
+                    let graczId = document.getElementById('gracz' + i)
+                    graczId.appendChild(koronaLidera)
+
+
                     //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
-                }
-                else {
+
+                } else {
                     x.innerHTML = players['player' + i].username;
+
                 }
             }
         }
-        //cheese
+
+        //zmiana pola gracza na zielone kiedy jest gotowy(przycisk ready)
+        /*let test = document.getElementById('readyButton')
+        test.addEventListener("click", async(event) => {
+            let nazwaGracza = document.getElementById("player1")
+            nazwaGracza.style.backgroundColor = "green"
+        })*/
+
         //przycisk leave
         let leave = document.getElementById('leave-btn');
-        leave.addEventListener("click", async (event) => {
-            let leaveInfo = { "room": room }
+        leave.addEventListener("click", async(event) => {
+            let leaveInfo = {
+                "room": room
+            }
             let res = await fetch('/auth/leaveRoom', {
                 method: 'POST',
                 headers: {
@@ -437,11 +500,15 @@
                 },
                 body: JSON.stringify(leaveInfo)
             });
-            socket.emit('leaveRoom', { jwt: getCookie('jwt'), room_id: room })
+            socket.emit('leaveRoom', {
+                jwt: getCookie('jwt'),
+                room_id: room
+            })
             window.location.replace('/multiplayer')
         })
-    }
 
+
+    }
 </script>
 
 </html>
