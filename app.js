@@ -9,8 +9,9 @@ const port = 3000
 const { getPlayers } = require('./functions.js')
 const { getRooms } = require('./functions.js');
 const { parse } = require("path");
-let number = -1
+let number = {}
 let board = null;
+
 
 //public
 app.use(express.static(__dirname + '/public'));
@@ -82,17 +83,20 @@ io.on('connection', (socket) => {
 
   socket.on('joinGame', async data => {
     data = JSON.parse(data);
-    console.log(data.room_id)
+    console.log(data.room_id)                     
+    let x = data.room_id;                           
+    number[x] = -1;
     io.to(data.room_id).emit('joinGame', data.room_id)
   })
 
   socket.on('joinGameRoom',  data => {
     socket.join(data.room_id)
-    if (number === -1) {
+    let x = data.room_id;
+    if (number[x] === -1) {
       setTimeout(() => io.to(data.room_id).emit('setBoard', board), 1000);
     }
-    if (data.number > number) {
-      number = data.number
+    if (data.number > number[x]) {
+      number[x] = data.number
       board = data.board;
     }
   })
