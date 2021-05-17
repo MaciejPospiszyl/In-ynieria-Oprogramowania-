@@ -122,6 +122,11 @@ io.on('connection', (socket) => {
     io.to(data).emit('playerChange');
   })
 
+  socket.on('gameFinished', data => {
+    data = JSON.parse(JSON.stringify(data))
+    io.to(data).emit('gameFinished')
+  })
+
   socket.on('leaveRoom', async msg => {
     try {
       const x = await getPlayers({

@@ -41,22 +41,18 @@ let costam = []
 // }
 
 function changeUM(user, mover, socket, room) {
-  console.log('wywolal sie')
   user_id = user;
   mover_id = mover;
   currSocket = socket;
   currRoom = room
   seconds = 20;
-  console.log('myturn', myTurn(mover_id, user_id))
   if (myTurn(mover_id, user_id)) {
-    console.log('tak')
     costam.forEach(e => {
       e.classList.remove("cursor-false")
       e.classList.add("cursor-true")
     })
   }
   else {
-    console.log('nie')
     costam.forEach(e => {
       e.classList.remove("cursor-true")
       e.classList.add("cursor-false")
@@ -172,7 +168,8 @@ function compareTwo() {
   }
   if (opened.length === 2 && opened[0].src === opened[1].src) {
     match();
-    let data = { card1: opened[0].parentElement.id, card2: opened[1].parentElement.id, currRoom }
+    console.log('matched',matched.length)
+    let data = { card1: opened[0].parentElement.id, card2: opened[1].parentElement.id, currRoom, points: matched.length + 2 }
     socket.emit("confirmFlip", data)
   } else if (opened.length === 2 && opened[0].src != opened[1].src) {
     noMatch();
@@ -188,11 +185,14 @@ function match() {
     opened[1].parentElement.classList.add("match");
     matched.push(...opened);
     document.body.style.pointerEvents = "auto";
-    winGame();
+    if(winGame()){
+      socket.emit("gameFinished", currRoom)
+    }
     opened = [];
   }, 600);
   // movesCounter();
 }
+
 
 function noMatch() {
   setTimeout(function () {
@@ -205,12 +205,11 @@ function noMatch() {
 }
 
 function winGame() {
-  if (matched.length === 36) {
-    
-    // stopTime();
-    // var scTime = seconds + (minutes * 60);
-    // const data = { scTime, moves, difficulty: 'hard' };
-    // sendData(data);
+  if (document.getElementsByClassName("match").length === 36) {  
+    return true;
+  }
+  else{
+    return false;
   }
 }
 

@@ -98,6 +98,7 @@
     let players = []
     let k = 0
     let pplayer = []
+    let ppoints = []
     for (let i = 1; i < 5; i++) {
         if (playersreq['player' + i]) {
             players[k] = playersreq['player' + i];
@@ -109,22 +110,30 @@
 
     function initMenu() {
         for (let i = 0; i < players.length; i++) {
+            let playerdiv = document.createElement('div');
+            playerdiv.classList.add("playerDiv");
             let player = document.createElement('p')
             player.id = 'player' + i; 
             pplayer.push(player);
+            let points = document.createElement('p')
+            points.id = 'points' + i;
+            points.innerText = 0;
+            ppoints.push(points);
             if (players[i]._id == user.id) {
                 player.innerText = 'Ty'
             }
             else {
                 player.innerText = players[i].username;
             }
-            menu.appendChild(player);
+            menu.appendChild(playerdiv);
+            playerdiv.appendChild(player);
+            playerdiv.appendChild(points);
         }
     }
 
     function updatePplayer(o){
     pplayer.forEach(e=>{
-        if(e.id == 'player' + o){
+        if(e.id === 'player' + o){
             e.classList.add('currPlayer')
         }
         else{
@@ -132,6 +141,18 @@
         }
     })
     }
+
+    function updatePpoints(o, x){
+    ppoints.forEach(e=>{
+        console.log('updatepoints', e.id, o, e.innerText)
+        if(e.id === 'points' + o){
+            console.log('jeeeeeeee')
+            e.innerText = x/2;
+        }
+    })
+    }
+
+
 
     let socket = io()
     socket.on('connect', function (data) {
@@ -187,6 +208,11 @@
             document.getElementById(data.card2).classList.add("match")
             document.body.style.pointerEvents = "auto";
         }, 600);
+        updatePpoints(turn-1, data.points)
+    })
+
+    socket.on('gameFinished', () => {
+        stopTime();
     })
 
 
