@@ -62,7 +62,7 @@ p {
 }
 
 .timer {
-    font-size: 1.5em;
+    font-size: 2em;
 }
 
 .text {
@@ -142,4 +142,32 @@ img {
     100% {
         transform: scale(1);
     }
+}
+
+.cursor-true {
+    cursor: pointer;
+}
+
+.cursor-false {
+    cursor: initial;
+}
+
+.currPlayer {
+    color: rgb(255, 0, 0);
+}
+
+.playerDiv {
+    display: flex;
+    margin-right: 20px;
+    font-size: 20px;
+}
+
+.playerDiv p {
+    padding: 10px;
+}
+
+#menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
