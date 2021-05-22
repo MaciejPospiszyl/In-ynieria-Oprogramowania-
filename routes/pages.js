@@ -29,21 +29,21 @@ router.get('/logowanie', (req, res) => {
     })
 })
 
-router.get('/multiplayer/:room_id',authController.isLoggedIn, authController.getRoom, (req, res) => {
-//req.params.room_id
-if(req.user){
-    res.render('multiplayer',{
-        user: req.user,
-        room: req.params.room_id,
-        players: req.players,
-        player_amount: req.player_amount,
-        rooms:  null,
-        message: null
-    })
-}
-else{
-    res.redirect('/logowanie')
-}
+router.get('/multiplayer/:room_id', authController.isLoggedIn, authController.getRoom, (req, res) => {
+    //req.params.room_id
+    if (req.user) {
+        res.render('multiplayer', {
+            user: req.user,
+            room: req.params.room_id,
+            players: req.players,
+            player_amount: req.player_amount,
+            rooms: null,
+            message: null
+        })
+    }
+    else {
+        res.redirect('/logowanie')
+    }
 
 })
 
@@ -125,13 +125,46 @@ router.get('/hard', authController.isLoggedIn, (req, res) => {
     }
 })
 
-router.get('/multiGame/:room_id', authController.isLoggedIn, authController.getRoom, (req, res) => {
+router.get('/multiGameHard/:room_id', authController.isLoggedIn, authController.getRoom, (req, res) => {
     if (req.user) {
-        res.render('multiGame', {
+        res.render('multiGameHard', {
             user: req.user,
             message: null,
             players: req.players,
-            room_id: req.params.room_id
+            room_id: req.params.room_id,
+            difficulty: 'Hard'
+        })
+    }
+    else {
+        res.redirect('multiplayer')
+    }
+})
+
+
+router.get('/multiGameMedium/:room_id', authController.isLoggedIn, authController.getRoom, (req, res) => {
+    if (req.user) {
+        res.render('multiGameMedium', {
+            user: req.user,
+            message: null,
+            players: req.players,
+            room_id: req.params.room_id,
+            difficulty: 'Medium'
+        })
+    }
+    else {
+        res.redirect('multiplayer')
+    }
+})
+
+
+router.get('/multiGameEasy/:room_id', authController.isLoggedIn, authController.getRoom, (req, res) => {
+    if (req.user) {
+        res.render('multiGameEasy', {
+            user: req.user,
+            message: null,
+            players: req.players,
+            room_id: req.params.room_id,
+            difficulty: 'Easy'
         })
     }
     else {

@@ -451,6 +451,7 @@ exports.leaveRoom = async (req, res, next) => {
 
 exports.startGame = async (req, res) => {
     let data = req.body;
+    console.log('DATAfgddgf',data)
 
     try {
         const results = await lobby.findOne({ _id: data.room_id })
