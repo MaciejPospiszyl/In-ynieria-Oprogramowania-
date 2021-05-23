@@ -1,12 +1,99 @@
 .container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    flex-direction: row;
     margin-top: 0.5em;
     font-size: 62.5%;
     letter-spacing: 1px;
-    text-align: center;
+}
+
+.rightMenu {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    height: 75em;
+    /*border-radius: 1.5em;*/
+    margin-bottom: 6em;
+    border-right: black 1px solid;
+    border-top: black 1px solid;
+    border-bottom: black 1px solid;
+}
+
+.players {
+    border-bottom: black solid 1px;
+    display: flex;
+    height: 60%;
+    flex-direction: column;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+}
+
+#chatMessages {
+    height: 88%;
+    overflow-y: auto;
+}
+
+
+/*.chatSend {
+    
+}*/
+
+.chatConteiner {
+    width: 100%;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+#chatForm {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 0.25rem;
+    display: flex;
+    height: 3rem;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    flex-direction: row;
+}
+
+#chatInput {
+    border: none;
+    padding: 0 1rem;
+    border-radius: 2rem;
+    margin: 0.25rem;
+    width: 90%;
+}
+
+#chatInput:focus {
+    outline: none;
+}
+
+#chatForm>button {
+    background: #333;
+    border: none;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+    width: 10%;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#messages>li {
+    padding: 0.5rem 1rem;
+}
+
+#messages>li:nth-child(odd) {
+    background: #efefef;
 }
 
 ul>li {
@@ -70,16 +157,17 @@ p {
 }
 
 .deck {
-    background-color: rgb(47, 32, 185);
-    border-radius: 1.5em;
+    /*background-color: rgb(47, 32, 185);
+    border-radius: 1.5em;*/
+    border: 1px black solid;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
-    height: 100em;
+    height: 75em;
     margin-bottom: 6em;
     padding: 0.5em;
-    width: 100em;
+    width: 75em;
 }
 
 .deck,
@@ -88,10 +176,11 @@ p {
 }
 
 .card {
-    background: linear-gradient(234deg, rgba(131, 58, 180, 1) 0%, rgba(29, 248, 253, 1) 50%, rgba(252, 176, 69, 1) 100%);
+    /*background: linear-gradient(234deg, rgba(131, 58, 180, 1) 0%, rgba(29, 248, 253, 1) 50%, rgba(252, 176, 69, 1) 100%);*/
+    background-color: green;
     border-radius: 1.5em;
-    height: 15em;
-    width: 15em;
+    height: 15%;
+    width: 15%;
     background-repeat: no-repeat;
 }
 
@@ -105,7 +194,7 @@ img {
 .deck img {
     /*visibility: hidden;*/
     visibility: hidden;
-    width: 13em;
+    width: 9em;
 }
 
 .deck .card.flip {
