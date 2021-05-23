@@ -1,8 +1,15 @@
-const deckCards = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+const deckCardsHard = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
   , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"
   , "sliwka.png", "sliwka.png", "agrest.png", "agrest.png", "porzeczka.png", "porzeczka.png", "brzoskwinie.png", "brzoskwinie.png"
   , "truskawki.png", "truskawki.png", "winogronoBiale.png", "winogronoBiale.png"];
+
+const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+  , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
+
+const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"];
 
 const deck = document.querySelector(".deck");
 let opened = [];
@@ -21,24 +28,7 @@ let mover_id = 0;
 let currSocket = null;
 let currRoom = null;
 let costam = []
-
-// function sendData(data){
-//   console.log(data)
-//   fetch("/auth/saveScore", {
-//     method: "POST", 
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(data),
-//   })
-//   .then(response => response.json())
-//   .then(data => {
-//     console.log('Success:');
-//   })
-//   .catch((error) => {
-//     console.error('Error:', error);
-//   });
-// }
+let diff;
 
 function changeUM(user, mover, socket, room) {
   user_id = user;
@@ -63,11 +53,6 @@ function changeUM(user, mover, socket, room) {
   timeStart = true;
 }
 
-// socket.on('playerChange', data => {
-//   console.log('playerchange',data);
-// })
-
-
 
 function emitToPlayers(flipper) {
   let data = { flip: flipper, currRoom }
@@ -87,7 +72,6 @@ function shuffle(array) {
 }
 
 function startGame(SD) {
-  console.log(SD)
   for (let i = 0; i < SD.length; i++) {
     const liTag = document.createElement('LI');
     liTag.classList.add('card');
@@ -100,9 +84,22 @@ function startGame(SD) {
   }
 }
 
-function returnSD() {
-  const shuffledDeck = shuffle(deckCards);
-  return shuffledDeck;
+function returnSD(difficulty) {
+  diff = difficulty;
+  let shuffledDeck;
+  if (difficulty === 'Easy') {
+    shuffledDeck = shuffle(deckCardsEz);
+    return shuffledDeck;
+  }
+  else if (difficulty === 'Medium') {
+    shuffledDeck = shuffle(deckCardsMed);
+    return shuffledDeck;
+  }
+  else if (difficulty === 'Hard') {
+    shuffledDeck = shuffle(deckCardsHard);
+    return shuffledDeck;
+  }
+
 }
 
 
@@ -121,7 +118,7 @@ function timer() {
         socket.emit('playerChange', currRoom);
       }
     }
-    timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + "Timer: " +  seconds;
+    timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + "Timer: " + seconds;
   }, 1000);
 
 }
@@ -130,24 +127,6 @@ function stopTime() {
   clearInterval(time);
 }
 
-// function resetEverything() {
-//  stopTime();
-//  timeStart = false;
-//  seconds = 0;
-//  minutes = 0;
-//  timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + " Timer: 00:00";
-//  moves = 0;
-//  movesCount.innerHTML = 0;
-//  matched = [];
-//  opened = [];
-//  removeCard();
-//  startGame();
-// }
-
-// function movesCounter() {
-//   movesCount.innerHTML++;
-//   moves++;
-// }
 
 function myTurn(mover_id, user_id) {
   if (!mover_id && !user_id) {
@@ -168,7 +147,7 @@ function compareTwo() {
   }
   if (opened.length === 2 && opened[0].src === opened[1].src) {
     match();
-    console.log('matched',matched.length)
+    console.log('matched', matched.length)
     let data = { card1: opened[0].parentElement.id, card2: opened[1].parentElement.id, currRoom, points: matched.length + 2 }
     socket.emit("confirmFlip", data)
   } else if (opened.length === 2 && opened[0].src != opened[1].src) {
@@ -185,7 +164,7 @@ function match() {
     opened[1].parentElement.classList.add("match");
     matched.push(...opened);
     document.body.style.pointerEvents = "auto";
-    if(winGame()){
+    if (winGame()) {
       socket.emit("gameFinished", currRoom)
     }
     opened = [];
@@ -205,12 +184,30 @@ function noMatch() {
 }
 
 function winGame() {
-  if (document.getElementsByClassName("match").length === 36) {  
+  if(diff = 'Hard'){
+  if (document.getElementsByClassName("match").length === 16) {
     return true;
   }
-  else{
+  else {
     return false;
   }
+}
+else if(diff = 'Medium'){
+  if (document.getElementsByClassName("match").length === 24) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+else if(diff = 'Easy'){
+  if (document.getElementsByClassName("match").length === 36) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
 }
 
 function emitToPlayers(flipper) {
@@ -242,5 +239,5 @@ deck.addEventListener("click", function (evt) {
   }
 });
 
-// reset.addEventListener('click', resetEverything);
+
 

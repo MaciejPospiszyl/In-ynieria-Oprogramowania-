@@ -6,13 +6,13 @@
 }
 
 body {
-    background-image: url(img/bg.jpg);
+    background-image: url("img/bg.jpg");
 }
 
 .test {
     width: 25px;
     height: 25px;
-    background-image: url(img/koronaLidera.png);
+    background-image: url("img/koronaLidera.png");
     background-size: 25px;
     float: right;
     text-align: center;

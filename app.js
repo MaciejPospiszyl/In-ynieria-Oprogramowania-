@@ -8,7 +8,6 @@ const cookieParser = require("cookie-parser")
 const port = 3000
 const { getPlayers } = require('./functions.js')
 const { getRooms } = require('./functions.js');
-const { parse } = require("path");
 let number = {}
 let board = null;
 
@@ -82,11 +81,11 @@ io.on('connection', (socket) => {
   })
 
   socket.on('joinGame', async data => {
-    data = JSON.parse(data);
-    console.log(data.room_id)                     
+    data = JSON.parse(data);     
+    console.log('dataapp',data)          
     let x = data.room_id;                           
     number[x] = -1;
-    io.to(data.room_id).emit('joinGame', data.room_id)
+    io.to(data.room_id).emit('joinGame', data)
   })
 
   socket.on('joinGameRoom',  data => {

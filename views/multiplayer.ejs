@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
     <link href="/ranking.css" rel="stylesheet">
@@ -23,10 +24,10 @@
                 Logged in as
                 <%= user.username %>
                     <li>
-                        <li><a href="/levelChoice">Game</a></li>
-                        <li>
-                        </li>
-                        <a href="/auth/wyloguj" style="color:crimson">Log out</a>
+                    <li><a href="/levelChoice">Game</a></li>
+                    <li>
+                    </li>
+                    <a href="/auth/wyloguj" style="color:crimson">Log out</a>
             </ul>
             <% } else { %>
                 <ul>
@@ -115,8 +116,9 @@
 
                         </div>
                     </div>
-                    <div id="startLeave">
 
+                    <div id="startLeave">
+                        <!-- else tu bedzie -->
                         <button id="leave-btn">Leave</button>
                     </div>
 
@@ -126,9 +128,15 @@
 
 
                 <!-- jQuery first, then Tether, then Bootstrap JS. -->
-                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+                    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+                    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+                    crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+                    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+                    crossorigin="anonymous"></script>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script src="../utils.js"></script>
@@ -157,22 +165,9 @@
         return response.json()
     }
 
-    // //startbtn listener
-    // async function startListener(data) {
-    //     console.log('weszlem w listener')
-    //     let resData = await fetch('/auth/startGame', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(data)
-    //     });
-    //     return resData;
-    // }
-
     //socket server
     let socket = io()
-    socket.on('connect', function(data) {
+    socket.on('connect', function (data) {
         if (room && room != null) {
             socket.emit('roomSetup', {
                 room_id: room
@@ -181,7 +176,7 @@
             socket.emit('lobbySetup')
         }
     });
-    socket.on('disconnect', function(data) {
+    socket.on('disconnect', function (data) {
 
     });
 
@@ -194,7 +189,7 @@
     if (rooms && rooms != 'null') {
         //create room button
         let crBtn = document.getElementById('cr-btn');
-        crBtn.addEventListener("click", async(event) => {
+        crBtn.addEventListener("click", async (event) => {
             let roomName = {
                 roomName: document.getElementById('roomName').value
             };
@@ -218,7 +213,7 @@
         })
 
         //aktualizujemy pokoje po otrzymaniu brodcasta
-        socket.on('lobbyChange', function(data) {
+        socket.on('lobbyChange', function (data) {
             let wholeLobby = document.getElementById("wholeLobby")
             while (wholeLobby.firstChild) {
                 wholeLobby.removeChild(wholeLobby.firstChild)
@@ -233,9 +228,7 @@
                 roomHeader.className = "roomHeader"
                 roomHeader.id = "roomHeader" + [i]
                 roomContainer.appendChild(roomHeader)
-
                 let btn = document.createElement("button");
-
                 let nazwaPokoju = document.createElement("div");
                 let gracze = document.createElement("div")
                 btn.id = "join";
@@ -249,7 +242,7 @@
                 document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
                 document.getElementById("roomHeader" + [i]).appendChild(gracze);
                 document.getElementById("roomContainer" + [i]).appendChild(btn);
-                btn.addEventListener("click", async(event) => {
+                btn.addEventListener("click", async (event) => {
                     let roomInfo = {
                         "roomId": btn.dataset.room_id,
                         "playerAmount": btn.dataset.player_amount
@@ -306,7 +299,7 @@
                 document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
             }
 
-            btn.addEventListener("click", async(event) => {
+            btn.addEventListener("click", async (event) => {
                 let roomInfo = {
                     "roomId": btn.dataset.room_id,
                     "playerAmount": btn.dataset.player_amount
@@ -338,13 +331,13 @@
         //socket dostaje informacje o zmianie w pokoju
         socket.on('joinRoom', data => {
             console.log('joinRoom', data)
-                //aktualizacja graczy w pokoju po otrzymaniu 
+            //aktualizacja graczy w pokoju po otrzymaniu 
             for (let i = 1; i < 5; i++) {
                 let x = document.getElementById('player' + i);
                 if (data['player' + i]) {
                     if (data['player' + i]._id == data.leader) {
                         x.innerHTML = data['player' + i].username + ' <div class="chatInput">'
-                            //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
+                        //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
                     } else {
                         x.innerHTML = data['player' + i].username;
                     }
@@ -355,16 +348,25 @@
 
             // sprawdzamy czy zalogowany uzytkownik jest liderem pokoju i czy znajduje sie na jego ekranie button start, jezeli nie - dodajemy
             if (user_id == data.leader && !document.body.contains(document.getElementById('buttonStart'))) {
-
                 let startLeave = document.getElementById("startLeave")
                 let buttonStart = document.createElement("button")
                 let leaveButton = document.getElementById("leave-btn")
                 buttonStart.id = "buttonStart"
                 buttonStart.innerText = "Start"
+                let diffSelector = document.createElement("SELECT")
+                let options = ["Easy", "Medium", "Hard"]
+                diffSelector.id = "diffSelect"
+                for (let i = 0; i < options.length; i++) {
+                    let option = document.createElement("option")
+                    option.value = options[i];
+                    option.text = options[i];
+                    diffSelector.appendChild(option);
+                }
+                startLeave.appendChild(diffSelector)
                 let data = {
                     room_id: room
                 }
-                buttonStart.addEventListener("click", async(event) => {
+                buttonStart.addEventListener("click", async (event) => {
                     let result = await fetchStartGame(data);
                     if (result.status == 'success') {
                         socket.emit('joinGame', JSON.stringify(data))
@@ -374,20 +376,18 @@
                 })
                 startLeave.insertBefore(buttonStart, leaveButton)
             }
-            //Kod jesli bysmy chcieli dodac przycisk ready
-            /*else if (user_id != data.leader) {
-                let startLeave = document.getElementById("startLeave")
-                let readyButton = document.createElement("button")
-                let leaveButton = document.getElementById("leave-btn")
-                readyButton.id = "readyButton"
-                readyButton.innerText = "ready"
-                startLeave.insertBefore(readyButton, leaveButton)
-            }*/
         })
 
         socket.on('joinGame', data => {
-            console.log('joinGame', data)
-            window.location.replace('/multiGame/' + data)
+            if (data.difficulty == 'Hard') {
+                window.location.replace('/multiGameHard/' + data.room_id)
+            }
+            else if (data.difficulty == 'Medium') {
+                window.location.replace('/multiGameMedium/' + data.room_id)
+            }
+            else if (data.difficulty == 'Easy') {
+                window.location.replace('/multiGameEasy/' + data.room_id)
+            }
         })
 
         //chat setup
@@ -395,7 +395,7 @@
         let input = document.getElementById('chatInput');
         let messages = document.getElementById('messages');
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (input.value) {
                 let chatInput = {
@@ -410,7 +410,7 @@
         });
 
         //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
-        socket.on('newChatMessage', function(msg) {
+        socket.on('newChatMessage', function (msg) {
             let item = document.createElement('li');
             item.textContent = msg.user + ": " + msg.value;
             messages.appendChild(item);
@@ -431,11 +431,25 @@
             let leaveButton = document.getElementById("leave-btn")
             buttonStart.id = "buttonStart"
             buttonStart.innerText = "Start"
-            startLeave.insertBefore(buttonStart, leaveButton)
-            let data = {
-                room_id: room
+
+            let diffSelector = document.createElement("SELECT")
+            let options = ["Easy", "Medium", "Hard"]
+            diffSelector.id = "diffSelect"
+            for (let i = 0; i < options.length; i++) {
+                let option = document.createElement("option")
+                option.value = options[i];
+                option.text = options[i];
+                diffSelector.appendChild(option);
             }
-            buttonStart.addEventListener("click", async(event) => {
+            startLeave.appendChild(diffSelector)
+
+            startLeave.insertBefore(buttonStart, leaveButton)
+            buttonStart.addEventListener("click", async (event) => {
+
+                let data = {
+                    room_id: room,
+                    difficulty: diffSelector.value
+                }
                 let result = await fetchStartGame(data);
                 if (result.status == 'success') {
                     socket.emit('joinGame', JSON.stringify(data))
@@ -444,15 +458,6 @@
                 }
             })
         }
-        //Kod jesli bysmy chcieli dodac przycisk ready
-        /*else if (user_id != players.leader) {
-            let startLeave = document.getElementById("startLeave")
-            let readyButton = document.createElement("button")
-            let leaveButton = document.getElementById("leave-btn")
-            readyButton.id = "readyButton"
-            readyButton.innerText = "Ready"
-            startLeave.insertBefore(readyButton, leaveButton)
-        }*/
 
         //nazwa pokoju
         document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
@@ -480,16 +485,9 @@
             }
         }
 
-        //zmiana pola gracza na zielone kiedy jest gotowy(przycisk ready)
-        /*let test = document.getElementById('readyButton')
-        test.addEventListener("click", async(event) => {
-            let nazwaGracza = document.getElementById("player1")
-            nazwaGracza.style.backgroundColor = "green"
-        })*/
-
         //przycisk leave
         let leave = document.getElementById('leave-btn');
-        leave.addEventListener("click", async(event) => {
+        leave.addEventListener("click", async (event) => {
             let leaveInfo = {
                 "room": room
             }
