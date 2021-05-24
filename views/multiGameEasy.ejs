@@ -84,16 +84,7 @@
                 </div>
             </div>
 
-            <div class="chat">
-                <div id="chatMessages">
-                    <ul id="messages"></ul>
-                </div>
-                <div class="chatSend">
-                    <form id="chatForm" action="">
-                        <input id="chatInput" autocomplete="off" /><button>Send</button>
-                    </form>
-                </div>
-            </div>
+
 
 
 
@@ -272,34 +263,4 @@
     socket.on('gameFinished', () => {
         stopTime();
     })
-
-    //chat
-    let form = document.getElementById('chatForm');
-    let input = document.getElementById('chatInput');
-    let messages = document.getElementById('messages');
-
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (input.value) {
-            let chatInput = {
-                value: input.value,
-                room_id: room_id,
-                user: user.username
-            }
-            socket.emit('newChatMessage', JSON.stringify(chatInput));
-            input.value = '';
-
-        }
-    });
-
-    //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
-    socket.on('newChatMessage', function(msg) {
-        let item = document.createElement('li');
-        item.textContent = msg.user + ": " + msg.value;
-        messages.appendChild(item);
-        var okno = document.getElementById("chatMessages");
-        //window.scrollTo(0, document.okno.scrollHeight);
-        okno.scrollTo(0, okno.scrollHeight);
-
-    });
 </script>
