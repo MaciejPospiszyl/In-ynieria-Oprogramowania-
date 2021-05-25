@@ -7,71 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
     <link href="/ranking.css" rel="stylesheet">
-<<<<<<< HEAD
     <link href="/multiplayer.css" rel="stylesheet">
-=======
-    <style>
-        body {
-            margin: 0;
-            padding-bottom: 3rem;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        #chatForm {
-            background: rgba(0, 0, 0, 0.15);
-            padding: 0.25rem;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            height: 3rem;
-            box-sizing: border-box;
-            backdrop-filter: blur(10px);
-        }
-
-        #chatInput {
-            border: none;
-            padding: 0 1rem;
-            flex-grow: 1;
-            border-radius: 2rem;
-            margin: 0.25rem;
-        }
-
-        #chatInput:focus {
-            outline: none;
-        }
-
-        #chatForm>button {
-            background: #333;
-            border: none;
-            padding: 0 1rem;
-            margin: 0.25rem;
-            border-radius: 3px;
-            outline: none;
-            color: #fff;
-        }
-
-        #messages {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        #messages>li {
-            padding: 0.5rem 1rem;
-        }
-
-        #messages>li:nth-child(odd) {
-            background: #efefef;
-        }
-    </style>
->>>>>>> db602f0 (poprawa socketow)
 </head>
 
 <body>
@@ -83,10 +23,10 @@
                 Logged in as
                 <%= user.username %>
                     <li>
-                    <li><a href="/levelChoice">Game</a></li>
-                    <li>
-                    </li>
-                    <a href="/auth/wyloguj" style="color:crimson">Log out</a>
+                        <li><a href="/levelChoice">Game</a></li>
+                        <li>
+                        </li>
+                        <a href="/auth/wyloguj" style="color:crimson">Log out</a>
             </ul>
             <% } else { %>
                 <ul>
@@ -183,34 +123,20 @@
 
                 </div>
             </div>
-            <!-- chat -->
-            
-            <ul id="messages"></ul>
-            <form id="chatForm" action="">
-                <input id="chatInput" autocomplete="off" /><button>Send</button>
-            </form>
+
 
             <% } %>
 
 
                 <!-- jQuery first, then Tether, then Bootstrap JS. -->
-                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-                    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-                    crossorigin="anonymous"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-                    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-                    crossorigin="anonymous"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-                    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-                    crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script src="../utils.js"></script>
 <script>
-<<<<<<< HEAD
     //funckja do buttona join room
-=======
->>>>>>> db602f0 (poprawa socketow)
     async function fetchJoinRoom(roomInfo) {
         let response = await fetch('/auth/joinRoom', {
             method: 'POST',
@@ -222,7 +148,6 @@
         return response.json()
     }
 
-<<<<<<< HEAD
     //funkcja do buttona start w pokoju
     async function fetchStartGame(data) {
         let response = await fetch('/auth/startGame', {
@@ -237,48 +162,30 @@
 
     //socket server
     let socket = io()
-    socket.on('connect', function (data) {
+    socket.on('connect', function(data) {
         if (room && room != null) {
             socket.emit('roomSetup', {
                 room_id: room
             })
         } else {
-=======
-
-    let socket = io()
-    socket.on('connect', function (data) {
-        if (room && room != null) {
-            socket.emit('roomSetup', { room_id: room })
-        }
-        else {
->>>>>>> db602f0 (poprawa socketow)
             socket.emit('lobbySetup')
         }
     });
-    socket.on('disconnect', function (data) {
-    });
+    socket.on('disconnect', function(data) {});
 
 
     //=========================================================================================LOBBY=======================================================================================================
     let rooms = '<%- JSON.stringify(rooms) %>';
     rooms = JSON.parse(rooms)
 
-<<<<<<< HEAD
     //sprawdzamy czy uzytkownik jest w lobby
-=======
-
->>>>>>> db602f0 (poprawa socketow)
     if (rooms && rooms != 'null') {
         //create room button
         let crBtn = document.getElementById('cr-btn');
-        crBtn.addEventListener("click", async (event) => {
-<<<<<<< HEAD
+        crBtn.addEventListener("click", async(event) => {
             let roomName = {
                 roomName: document.getElementById('roomName').value
             };
-=======
-            let roomName = { roomName: document.getElementById('roomName').value };
->>>>>>> db602f0 (poprawa socketow)
             let response = await fetch('/auth/createRoom', {
                 method: 'POST',
                 headers: {
@@ -299,8 +206,7 @@
         })
 
         //aktualizujemy pokoje po otrzymaniu brodcasta
-        socket.on('lobbyChange', function (data) {
-<<<<<<< HEAD
+        socket.on('lobbyChange', function(data) {
             let wholeLobby = document.getElementById("wholeLobby")
             while (wholeLobby.firstChild) {
                 wholeLobby.removeChild(wholeLobby.firstChild)
@@ -329,31 +235,11 @@
                 document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
                 document.getElementById("roomHeader" + [i]).appendChild(gracze);
                 document.getElementById("roomContainer" + [i]).appendChild(btn);
-                btn.addEventListener("click", async (event) => {
+                btn.addEventListener("click", async(event) => {
                     let roomInfo = {
                         "roomId": btn.dataset.room_id,
                         "playerAmount": btn.dataset.player_amount
                     };
-=======
-            while (lobbyDiv.firstChild) {
-                lobbyDiv.removeChild(lobbyDiv.firstChild)
-            }
-            console.log('lobbyChange', data)
-            for (let i = 0; i < data.length; i++) {
-                let lobby = document.createElement("div");
-                let btn = document.createElement("button");
-                btn.id = "join" + data[i]._id;
-                btn.dataset.room_id = data[i]._id;
-                btn.dataset.player_amount = data[i].player_amount;
-                btn.innerText = "join"
-                lobby.id = "lobby" + data[i]._id;
-                lobby.innerText = "Room: " + data[i].room_name + "\nPlayers: " + data[i].player_amount + "/4";
-                document.getElementById("lobbyDiv").appendChild(lobby);
-                document.getElementById("lobbyDiv").appendChild(btn);
-
-                btn.addEventListener("click", async (event) => {
-                    let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
->>>>>>> db602f0 (poprawa socketow)
                     const resData = await fetchJoinRoom(roomInfo);
                     if (resData.status != 'success') {
                         window.location.replace('/multiplayer')
@@ -368,7 +254,6 @@
             }
         })
 
-<<<<<<< HEAD
         //tworzymy pokoje i join-btns
 
         let wholeLobby = document.getElementById("wholeLobby")
@@ -407,28 +292,11 @@
                 document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
             }
 
-            btn.addEventListener("click", async (event) => {
+            btn.addEventListener("click", async(event) => {
                 let roomInfo = {
                     "roomId": btn.dataset.room_id,
                     "playerAmount": btn.dataset.player_amount
                 };
-=======
-        //tworzymy pokoje
-        for (let i = 0; i < rooms.length; i++) {
-            let lobby = document.createElement("div")
-            let btn = document.createElement("button");
-            btn.id = "join" + rooms[i]._id;
-            btn.dataset.room_id = rooms[i]._id;
-            btn.dataset.player_amount = rooms[i].player_amount;
-            btn.innerText = "join"
-            lobby.id = "lobby" + rooms[i]._id;
-            lobby.innerText = "Room: " + rooms[i].room_name + "\nPlayers: " + rooms[i].player_amount + "/4"
-            document.getElementById("lobbyDiv").appendChild(lobby);
-            document.getElementById("lobbyDiv").appendChild(btn);
-
-            btn.addEventListener("click", async (event) => {
-                let roomInfo = { "roomId": btn.dataset.room_id, "playerAmount": btn.dataset.player_amount };
->>>>>>> db602f0 (poprawa socketow)
                 const resData = await fetchJoinRoom(roomInfo);
                 if (resData.status != 'success') {
                     window.location.replace('/multiplayer')
@@ -444,7 +312,6 @@
     }
 
     //==========================================================================================POJEDYNCZE POKOJE=====================================================================================
-<<<<<<< HEAD
     let room = '<%- room %>'; //id pokoju
     let players = '<%- JSON.stringify(players) %>'; //gracze w pokoju
     players = JSON.parse(players);
@@ -457,21 +324,13 @@
         //socket dostaje informacje o zmianie w pokoju
         socket.on('joinRoom', data => {
             console.log('joinRoom', data)
-            //aktualizacja graczy w pokoju po otrzymaniu 
-=======
-    let room = '<%- room %>';
-    let player_amount = '<%- player_amount %>';
-    //multiplayer/room_id?= 
-    if (room && room != 'null') {
-        socket.on('joinRoom', data => {
-            console.log('joinRoom', data)
->>>>>>> db602f0 (poprawa socketow)
+                //aktualizacja graczy w pokoju po otrzymaniu 
             for (let i = 1; i < 5; i++) {
                 let x = document.getElementById('player' + i);
                 if (data['player' + i]) {
                     if (data['player' + i]._id == data.leader) {
                         x.innerHTML = data['player' + i].username + ' <div class="chatInput">'
-                        //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
+                            //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
                     } else {
                         x.innerHTML = data['player' + i].username;
                     }
@@ -500,7 +359,7 @@
                 let data = {
                     room_id: room
                 }
-                buttonStart.addEventListener("click", async (event) => {
+                buttonStart.addEventListener("click", async(event) => {
                     let result = await fetchStartGame(data);
                     if (result.status == 'success') {
                         socket.emit('joinGame', JSON.stringify(data))
@@ -512,28 +371,22 @@
             }
         })
 
-<<<<<<< HEAD
         socket.on('joinGame', data => {
             if (data.difficulty == 'Hard') {
                 window.location.replace('/multiGameHard/' + data.room_id)
-            }
-            else if (data.difficulty == 'Medium') {
+            } else if (data.difficulty == 'Medium') {
                 window.location.replace('/multiGameMedium/' + data.room_id)
-            }
-            else if (data.difficulty == 'Easy') {
+            } else if (data.difficulty == 'Easy') {
                 window.location.replace('/multiGameEasy/' + data.room_id)
             }
         })
 
-=======
->>>>>>> db602f0 (poprawa socketow)
         //chat setup
         let form = document.getElementById('chatForm');
         let input = document.getElementById('chatInput');
         let messages = document.getElementById('messages');
-<<<<<<< HEAD
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             if (input.value) {
                 let chatInput = {
@@ -548,36 +401,19 @@
         });
 
         //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
-=======
-        let user = '<%- user.username %>';
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (input.value) {
-                let chatInput = { value: input.value, room_id: room, user: user }
-                socket.emit('newChatMessage', JSON.stringify(chatInput));
-                input.value = '';
-            }
-        });
-
->>>>>>> db602f0 (poprawa socketow)
-        socket.on('newChatMessage', function (msg) {
+        socket.on('newChatMessage', function(msg) {
             let item = document.createElement('li');
             item.textContent = msg.user + ": " + msg.value;
             messages.appendChild(item);
-<<<<<<< HEAD
             var okno = document.getElementById("chatMessages");
             //window.scrollTo(0, document.okno.scrollHeight);
             okno.scrollTo(0, okno.scrollHeight);
 
-=======
-            window.scrollTo(0, document.body.scrollHeight);
->>>>>>> db602f0 (poprawa socketow)
         });
 
 
 
         //gracze w pokoju
-<<<<<<< HEAD
 
         //START BUTTON jezeli user jest leaderem
         if (user_id == players.leader) {
@@ -599,7 +435,7 @@
             startLeave.appendChild(diffSelector)
 
             startLeave.insertBefore(buttonStart, leaveButton)
-            buttonStart.addEventListener("click", async (event) => {
+            buttonStart.addEventListener("click", async(event) => {
 
                 let data = {
                     room_id: room,
@@ -617,11 +453,6 @@
         //nazwa pokoju
         document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
         //zaladowanie graczy
-=======
-        let players = '<%- JSON.stringify(players) %>';
-        players = JSON.parse(players);
-        document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
->>>>>>> db602f0 (poprawa socketow)
         for (let i = 1; i < 5; i++) {
             let x = document.getElementById('player' + i);
             if (players['player' + i]) {
@@ -647,7 +478,7 @@
 
         //przycisk leave
         let leave = document.getElementById('leave-btn');
-        leave.addEventListener("click", async (event) => {
+        leave.addEventListener("click", async(event) => {
             let leaveInfo = {
                 "room": room
             }
