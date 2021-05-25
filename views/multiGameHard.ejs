@@ -136,11 +136,7 @@
             points.id = 'points' + i;
             points.innerText = +0;
             ppoints.push(points);
-            if (players[i]._id == user.id) {
-                player.innerText = 'You'
-            } else {
-                player.innerText = players[i].username;
-            }
+            player.innerText = players[i].username;
             menu.appendChild(playerdiv);
             playerdiv.appendChild(player);
             playerdiv.appendChild(points);
@@ -161,7 +157,6 @@
         ppoints.forEach(e => {
             console.log('updatepoints', e.id, o, e.innerText)
             if (e.id === 'points' + o) {
-                console.log('jeeeeeeee')
                 e.innerText = x / 2;
             }
         })
@@ -258,7 +253,24 @@
         updatePpoints(turn - 1, data.points)
     })
 
-    socket.on('gameFinished', () => {
+    socket.on('gameFinished', async () => {
         stopTime();
+        let data = { room_id: room_id }
+        let res = await fetch('/auth/removeRoom', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        console.log('status', res.status)
+        if (res.status == 200) {
+            socket.emit('lobbyChange');
+
+        }
+        //gracze i punkty pod koniec gry
+        for (let i = 0; i < player_amount; i++) {
+            console.log(document.getElementById('player' + i).innerText, document.getElementById('points' + i).innerText);
+        }
     })
 </script>

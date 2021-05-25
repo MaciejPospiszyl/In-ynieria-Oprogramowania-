@@ -231,7 +231,7 @@ exports.createRoom = async(req, res, next) => {
                     res.json({ status: 'failure' })
                     return
                 } else {
-                    let newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user, leader_id: decoded.user });
+                    let newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user, leader_id: decoded.user, gameState: "Waiting for players" });
                     newLobby.save(function(err, result) {
                         if (err) {
                             console.log(err);
@@ -421,8 +421,6 @@ exports.leaveRoom = async(req, res, next) => {
 
 exports.startGame = async(req, res) => {
     let data = req.body;
-    console.log('DATAfgddgf', data)
-
     try {
         const results = await lobby.findOne({ _id: data.room_id })
         if (results.player_amount < 2) {
@@ -432,6 +430,7 @@ exports.startGame = async(req, res) => {
             })
             return
         }
+        const modify = await lobby.findOneAndUpdate({ _id: data.room_id }, { gameState: 'In game' })
     } catch (erorr) {
         console.log(error)
         res.json({
@@ -440,9 +439,19 @@ exports.startGame = async(req, res) => {
         })
         return
     }
-
     return res.json({
         status: 'success'
     })
+}
 
+exports.removeRoom = async(req, res) => {
+    let data = req.body;
+    try {
+        const result = await lobby.findOneAndDelete({ _id: data.room_id })
+    } catch (erorr) {
+        res.json({ status: 'failure' })
+        return
+    }
+    res.json({ status: 'success' })
+    return
 }

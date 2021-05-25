@@ -18,6 +18,8 @@ router.post('/leaveRoom', authController.leaveRoom)
 
 router.post('/startGame', authController.startGame)
 
+router.post('/removeRoom', authController.removeRoom)
+
 
 
 

@@ -80,6 +80,8 @@ io.on('connection', (socket) => {
         console.log('dataapp', data)
         let x = data.room_id;
         number[x] = -1;
+        const z = await getRooms({})
+        io.to('lobby').emit('lobbyChange', z)
         io.to(data.room_id).emit('joinGame', data)
     })
 
