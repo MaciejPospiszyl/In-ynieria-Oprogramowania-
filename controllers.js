@@ -381,6 +381,7 @@ exports.leaveRoom = async (req, res, next) => {
         }
     }
 
+<<<<<<< HEAD
     async function setNewLeader(player) {
         try {
             await lobby.findOneAndUpdate({ _id: data.room_id }, { leader_id: player })
@@ -448,6 +449,75 @@ exports.leaveRoom = async (req, res, next) => {
         }
     } catch (error) { console.log(error) }
 }
+=======
+        async function setNewLeader(player) {
+            try {
+                await lobby.findOneAndUpdate({ _id: data.room_id }, { leader_id: player })
+            }
+            catch (error) { console.log('error') }
+        }
+
+        async function findNewLeader() {
+            try {
+                const results = await lobby.findOne({ _id: data.room_id })
+                if (results) {
+                    if (results.player1_id != null) {
+                        await setNewLeader(results.player1_id)
+                    }
+                    else if (results.player2_id != null) {
+                        await setNewLeader(results.player2_id)
+                    }
+                    else if (results.player3_id != null) {
+                        await setNewLeader(results.player3_id)
+                    }
+                    else if (results.player4_id != null) {
+                        await setNewLeader(results.player4_id)
+                    }
+                }
+            } catch (error) { console.log('error') }
+        }
+
+
+        try {
+            const results = await lobby.findOne({
+                $and:
+                    [{ _id: data.room_id },
+                    {
+                        $or:
+                            [{ player1_id: decoded.user },
+                            { player2_id: decoded.user },
+                            { player3_id: decoded.user },
+                            { player4_id: decoded.user }
+                            ]
+                    }
+                    ]
+            })
+            if (results) {
+                if (results.player_amount == 1) {
+                    const result = await lobby.deleteOne({ _id: data.room_id })
+                    if(result){
+                        next()
+                    }
+                }
+                else if (results.player1_id && results.player1_id == decoded.user) {
+                    await removePlayer('player1_id', results.player_amount, results.leader_id)
+                }
+                else if (results.player2_id && results.player2_id == decoded.user) {
+                    await removePlayer('player2_id', results.player_amount, results.leader_id)
+                }
+                else if (results.player3_id && results.player3_id == decoded.user) {
+                    await removePlayer('player3_id', results.player_amount, results.leader_id)
+                }
+                else if (results.player4_id && results.player4_id == decoded.user) {
+                    await removePlayer('player4_id', results.player_amount, results.leader_id)
+                }
+            }
+            else {
+                next()
+            }
+        } catch (error) { console.log(error) }
+    }
+>>>>>>> db602f0 (poprawa socketow)
 
 exports.startGame = async (req, res) => {
     let data = req.body;
