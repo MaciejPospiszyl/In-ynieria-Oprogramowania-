@@ -8,12 +8,9 @@ const cookieParser = require("cookie-parser")
 const port = 3000
 const { getPlayers } = require('./functions.js')
 const { getRooms } = require('./functions.js');
-<<<<<<< HEAD
 let number = {}
 let board = null;
 
-=======
->>>>>>> db602f0 (poprawa socketow)
 
 //public
 app.use(express.static(__dirname + '/public'));
@@ -38,11 +35,7 @@ io.on('connection', (socket) => {
   socket.on('roomSetup', async data => {
     socket.leave('lobby')
     console.log('socket left lobby')
-<<<<<<< HEAD
     console.log('roomsetup', data.room_id)
-=======
-    console.log('roomsetup',data.room_id)
->>>>>>> db602f0 (poprawa socketow)
     socket.join(data.room_id);
     console.log('socket joined ', data.room_id)
     socket.emit('roomSetup', 'costam')
@@ -52,13 +45,8 @@ io.on('connection', (socket) => {
     console.log('joined lobby')
   })
 
-<<<<<<< HEAD
 
   socket.on('newChatMessage', (msg) => {
-=======
-  socket.on('newChatMessage', (msg) => {
-    console.log('message: ' , msg);
->>>>>>> db602f0 (poprawa socketow)
     msg = JSON.parse(msg)
     io.to(msg.room_id).emit('newChatMessage', msg)
   });
