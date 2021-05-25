@@ -228,6 +228,9 @@
                 roomHeader.className = "roomHeader"
                 roomHeader.id = "roomHeader" + [i]
                 roomContainer.appendChild(roomHeader)
+                let hr = document.createElement("hr")
+                hr.id = "hr"
+                hr.className = "hr"
                 let btn = document.createElement("button");
                 let nazwaPokoju = document.createElement("div");
                 let gracze = document.createElement("div")
@@ -239,9 +242,27 @@
                 nazwaPokoju.innerText = "Room: " + data[i].room_name;
                 gracze.id = "gracze";
                 gracze.innerText = "Players: " + data[i].player_amount + "/4";
-                document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
-                document.getElementById("roomHeader" + [i]).appendChild(gracze);
-                document.getElementById("roomContainer" + [i]).appendChild(btn);
+                let gameState = document.createElement("div");
+                gameState.id = "gameState";
+                gameState.className = "gameState";
+                gameState.innerText = "State: " + data[i].gameState
+                if (data[i].gameState == "In game" || data[i].player_amount == 4) {
+                    btn.style.display = "none";
+                }
+
+                if (i + 1 < data.length) {
+                    document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+                    document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                    document.getElementById("roomHeader" + [i]).appendChild(gameState);
+                    document.getElementById("roomContainer" + [i]).appendChild(btn);
+                    document.getElementById("wholeLobby").appendChild(hr);
+                } else {
+                    document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+                    document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                    document.getElementById("roomHeader" + [i]).appendChild(gameState);
+                    document.getElementById("roomContainer" + [i]).appendChild(btn);
+                    document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
+                }
                 btn.addEventListener("click", async (event) => {
                     let roomInfo = {
                         "roomId": btn.dataset.room_id,
@@ -287,14 +308,23 @@
             nazwaPokoju.innerText = "Room: " + rooms[i].room_name;
             gracze.id = "gracze";
             gracze.innerText = "Players: " + rooms[i].player_amount + "/4";
+            let gameState = document.createElement("div");
+            gameState.id = "gameState";
+            gameState.className = "gameState";
+            gameState.innerText = "State: " + rooms[i].gameState
+            if (rooms[i].gameState == "In game" || rooms[i].player_amount == 4) {
+                btn.style.display = "none";
+            }
             if (i + 1 < rooms.length) {
                 document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
                 document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                document.getElementById("roomHeader" + [i]).appendChild(gameState);
                 document.getElementById("roomContainer" + [i]).appendChild(btn);
                 document.getElementById("wholeLobby").appendChild(hr);
             } else {
                 document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
                 document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                document.getElementById("roomHeader" + [i]).appendChild(gameState);
                 document.getElementById("roomContainer" + [i]).appendChild(btn);
                 document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
             }
@@ -331,13 +361,22 @@
         //socket dostaje informacje o zmianie w pokoju
         socket.on('joinRoom', data => {
             console.log('joinRoom', data)
+            //usuwamy korone
+            let kor = document.getElementById('koronaLidera')
+            kor.remove();
             //aktualizacja graczy w pokoju po otrzymaniu 
             for (let i = 1; i < 5; i++) {
                 let x = document.getElementById('player' + i);
                 if (data['player' + i]) {
                     if (data['player' + i]._id == data.leader) {
                         x.innerHTML = data['player' + i].username + ' <div class="chatInput">'
-                        //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
+                        //dodajemy korone do lidera
+                        let koronaLidera = document.createElement("div")
+                        koronaLidera.className = "koronaLidera"
+                        koronaLidera.id = "koronaLidera"
+
+                        let graczId = document.getElementById('gracz' + i)
+                        graczId.appendChild(koronaLidera)
                     } else {
                         x.innerHTML = data['player' + i].username;
                     }
@@ -474,9 +513,6 @@
 
                     let graczId = document.getElementById('gracz' + i)
                     graczId.appendChild(koronaLidera)
-
-
-                    //dodac korone czy cos by bylo wiadomo ze jest zalozycielem
 
                 } else {
                     x.innerHTML = players['player' + i].username;
