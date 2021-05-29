@@ -47,6 +47,7 @@ p {
 .score-panel {
     font-size: 1.4em;
     padding: 1em 0 2em;
+    color: white;
 }
 
 .moves-counter {
@@ -60,7 +61,7 @@ p {
 
 .timer-container {
     border-radius: 0.5em;
-    color: #000;
+    color: rgb(255, 255, 255);
     margin: 0.5em;
     padding: 0.5em;
 }

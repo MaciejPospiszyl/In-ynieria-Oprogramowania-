@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
-    <link href="/graWieloOsobowa.css" rel="stylesheet">
+    <link href="/graWieloOsobowaEasy.css" rel="stylesheet">
 
 
 </head>
@@ -45,8 +45,9 @@
         </h4>
         <% } %>
 
-            <div id="menu">
-            </div>
+
+
+            <span class="timer"><i class="fa fa-hourglass-start"></i> Timer:00:20</span>
             <div class="container">
                 <!--<span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:20</span>
                  <section class="score-panel">
@@ -64,9 +65,12 @@
 
                 <ul class="deck"></ul>
                 <div class="rightMenu">
-                    <div class="players">
+
+
+                    <div id="menu">
 
                     </div>
+
 
                     <div class="chatConteiner">
 
@@ -82,7 +86,7 @@
                     </div>
 
                 </div>
-            </div>
+
 
 
 
@@ -93,7 +97,6 @@
 
 
 </body>
-
 <script src="/kartyMulti.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
@@ -101,7 +104,10 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 </html>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     //zorganizowanie graczy
     let turn = 0;
@@ -146,6 +152,8 @@
             menu.appendChild(playerdiv);
             playerdiv.appendChild(player);
             playerdiv.appendChild(points);
+
+
         }
     }
 
@@ -279,8 +287,119 @@
         }
         //gracze i punkty pod koniec gry
         for (let i = 0; i < player_amount; i++) {
-            3
+
             console.log(document.getElementById('player' + i).innerText, document.getElementById('points' + i).innerText);
+
+        }
+
+        //dla 2 graczy
+        if (player_amount == 2) {
+            var gracz1 = document.getElementById('player' + 0).innerText;
+            var gracz2 = document.getElementById('player' + 1).innerText;
+            var gracz1Pkt = document.getElementById('points' + 0).innerText;
+            var gracz2Pkt = document.getElementById('points' + 1).innerText;
+
+
+            //jesli wygral gracz 1
+            if (gracz1Pkt > gracz2Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt");
+                //jesli wygral gracz 2
+            } else if (gracz1Pkt < gracz2Pkt) {
+                Swal.fire("Wygral gracz: " + gracz2,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt");
+                //jesli remis
+            } else {
+                Swal.fire("Remis",
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt")
+            }
+        }
+        //dla 3 graczy
+        else if (player_amount == 3) {
+            var gracz1 = document.getElementById('player' + 0).innerText;
+            var gracz2 = document.getElementById('player' + 1).innerText;
+            var gracz3 = document.getElementById('player' + 2).innerText;
+            var gracz1Pkt = document.getElementById('points' + 0).innerText;
+            var gracz2Pkt = document.getElementById('points' + 1).innerText;
+            var gracz3Pkt = document.getElementById('points' + 2).innerText;
+
+            //jesli wygral gracz 1
+            if (gracz1Pkt > gracz2Pkt && gracz1Pkt > gracz3Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt");
+                //jesli wygral gracz 2
+            } else if (gracz2Pkt > gracz1Pkt && gracz2Pkt > gracz3Pkt) {
+                Swal.fire("Wygral gracz: " + gracz2,
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt");
+                //jesli wygral gracz 3
+            } else if (gracz3Pkt > gracz1Pkt && gracz3Pkt > gracz2Pkt) {
+                Swal.fire("Wygral gracz: " + gracz3,
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt");
+            }
+        }
+        //dla 4 graczy
+        else if (player_amount == 4) {
+            var gracz1 = document.getElementById('player' + 0).innerText;
+            var gracz2 = document.getElementById('player' + 1).innerText;
+            var gracz3 = document.getElementById('player' + 2).innerText;
+            var gracz4 = document.getElementById('player' + 3).innerText;
+            var gracz1Pkt = document.getElementById('points' + 0).innerText;
+            var gracz2Pkt = document.getElementById('points' + 1).innerText;
+            var gracz3Pkt = document.getElementById('points' + 2).innerText;
+            var gracz4Pkt = document.getElementById('points' + 3).innerText;
+
+            //jesli wygral gracz 1
+            if (gracz1Pkt > gracz2Pkt && gracz1Pkt > gracz3Pkt && gracz1Pkt > gracz4Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli wygral gracz 2
+            else if (gracz2Pkt > gracz1Pkt && gracz2Pkt > gracz3Pkt && gracz2Pkt > gracz4Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli wygral gracz 3
+            else if (gracz3Pkt > gracz1Pkt && gracz3Pkt > gracz2Pkt && gracz3Pkt > gracz4Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli wygral gracz 4
+            else if (gracz4Pkt > gracz1Pkt && gracz4Pkt > gracz2Pkt && gracz4Pkt > gracz3Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli remis
+            else {
+                Swal.fire("Remis",
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+
+
+
         }
     })
 </script>
