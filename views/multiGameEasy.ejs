@@ -108,10 +108,10 @@
         username: '<%- user.username %>'
     }
     let difficulty = '<%- difficulty %>'
-    console.log(difficulty)
     let player_amount = '<%- players.player_amount %>'
     let leader = '<%- players.leader %>'
     let room_id = '<%- room_id %>'
+    let connected = false;
     let players = []
     let k = 0
     let pplayer = []
@@ -155,9 +155,7 @@
 
     function updatePpoints(o, x) {
         ppoints.forEach(e => {
-            console.log('updatepoints', e.id, o, e.innerText)
             if (e.id === 'points' + o) {
-                console.log('jeeeeeeee')
                 e.innerText = x / 2;
             }
         })
@@ -167,16 +165,24 @@
 
     let socket = io()
     socket.on('connect', function (data) {
-        let random = Math.floor(Math.random() * 10);
-        let board = returnSD(difficulty);
-        const dane = {
-            room_id,
-            number: random,
-            board
+        if (connected === false) {
+            let random = Math.floor(Math.random() * 10);
+            let board = returnSD(difficulty);
+            const dane = {
+                room_id,
+                number: random,
+                board
+            }
+            socket.emit('joinGameRoom', dane)
+            connected = true;
         }
-        socket.emit('joinGameRoom', dane)
+        else {
+            // let dane = { room_id }
+            // socket.emit('askForGameInfo', dane)
+        }
     });
-    socket.on('disconnect', function (data) { });
+    socket.on('disconnect', function (data) {
+    });
 
 
     //chat setup
@@ -208,7 +214,6 @@
     });
 
     socket.on('setBoard', async data => {
-        console.log(players)
         startGame(data);
         initMenu();
         updatePplayer(0);
@@ -230,22 +235,24 @@
         }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
-        console.log('removeFlip')
         turn++;
     })
 
-    socket.on('playerChange', () => {
+    socket.on('playerChange', data => {
         if (turn > player_amount - 1) {
             turn = 0;
         }
+        try {
+            document.getElementById(data).classList.remove("flip")
+        } catch (error) {
+            console.log(error)
+        }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
-        console.log('playerChange')
         turn++;
     })
 
     socket.on('confirmFlip', data => {
-        console.log('confirmFlip', data)
         setTimeout(() => {
             document.getElementById(data.card1).classList.add("match")
             document.getElementById(data.card2).classList.add("match")
@@ -255,6 +262,7 @@
     })
 
     socket.on('gameFinished', async () => {
+        console.log('gameefinished')
         stopTime();
         let data = { room_id: room_id }
         let res = await fetch('/auth/removeRoom', {
@@ -264,14 +272,9 @@
             },
             body: JSON.stringify(data)
         });
-        console.log('status', res.status)
         if (res.status == 200) {
             socket.emit('lobbyChange');
 
-        }
-        //gracze i punkty pod koniec gry
-        for (let i = 0; i < player_amount; i++) {3
-            console.log(document.getElementById('player' + i).innerText, document.getElementById('points' + i).innerText);
         }
     })
 </script>

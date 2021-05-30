@@ -9,7 +9,7 @@ const port = 3000
 const { getPlayers } = require('./functions.js')
 const { getRooms } = require('./functions.js');
 let number = {}
-let board = null;
+let board = {}
 
 
 //public
@@ -92,11 +92,11 @@ io.on('connection', (socket) => {
     socket.join(data.room_id)
     let x = data.room_id;
     if (number[x] === -1) {
-      setTimeout(() => io.to(data.room_id).emit('setBoard', board), 1000);
+      setTimeout(() => io.to(data.room_id).emit('setBoard', board[x]), 1000);
     }
     if (data.number > number[x]) {
       number[x] = data.number
-      board = data.board;
+      board[x] = data.board;
     }
   })
 
@@ -122,7 +122,7 @@ io.on('connection', (socket) => {
   socket.on('playerChange', data => {
     data = JSON.parse(JSON.stringify(data))
     console.log('playerChange',data)
-    io.to(data).emit('playerChange');
+    io.to(data.currRoom).emit('playerChange', data.card1);
   })
 
   socket.on('gameFinished', data => {

@@ -108,7 +108,6 @@
         username: '<%- user.username %>'
     }
     let difficulty = '<%- difficulty %>'
-    console.log(difficulty)
     let player_amount = '<%- players.player_amount %>'
     let leader = '<%- players.leader %>'
     let room_id = '<%- room_id %>'
@@ -155,7 +154,6 @@
 
     function updatePpoints(o, x) {
         ppoints.forEach(e => {
-            console.log('updatepoints', e.id, o, e.innerText)
             if (e.id === 'points' + o) {
                 e.innerText = x / 2;
             }
@@ -207,7 +205,6 @@
     });
 
     socket.on('setBoard', async data => {
-        console.log(players)
         startGame(data);
         initMenu();
         updatePplayer(0);
@@ -229,22 +226,20 @@
         }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
-        console.log('removeFlip')
         turn++;
     })
 
-    socket.on('playerChange', () => {
+    socket.on('playerChange', data => {
         if (turn > player_amount - 1) {
             turn = 0;
-        }
+        } 
+        document.getElementById(data).classList.remove("flip")
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
-        console.log('playerChange')
         turn++;
     })
 
     socket.on('confirmFlip', data => {
-        console.log('confirmFlip', data)
         setTimeout(() => {
             document.getElementById(data.card1).classList.add("match")
             document.getElementById(data.card2).classList.add("match")
@@ -254,6 +249,7 @@
     })
 
     socket.on('gameFinished', async () => {
+        console.log('gameefinished')
         stopTime();
         let data = { room_id: room_id }
         let res = await fetch('/auth/removeRoom', {
@@ -263,14 +259,8 @@
             },
             body: JSON.stringify(data)
         });
-        console.log('status', res.status)
         if (res.status == 200) {
             socket.emit('lobbyChange');
-
-        }
-        //gracze i punkty pod koniec gry
-        for (let i = 0; i < player_amount; i++) {
-            console.log(document.getElementById('player' + i).innerText, document.getElementById('points' + i).innerText);
         }
     })
 </script>

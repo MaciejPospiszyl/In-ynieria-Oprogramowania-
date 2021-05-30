@@ -1,15 +1,26 @@
-const deckCardsHard = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
-  , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"
-  , "sliwka.png", "sliwka.png", "agrest.png", "agrest.png", "porzeczka.png", "porzeczka.png", "brzoskwinie.png", "brzoskwinie.png"
-  , "truskawki.png", "truskawki.png", "winogronoBiale.png", "winogronoBiale.png"];
+// const deckCardsHard = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+//   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+//   , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"
+//   , "sliwka.png", "sliwka.png", "agrest.png", "agrest.png", "porzeczka.png", "porzeczka.png", "brzoskwinie.png", "brzoskwinie.png"
+//   , "truskawki.png", "truskawki.png", "winogronoBiale.png", "winogronoBiale.png"];
 
-const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
-  , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
+const deckCardsHard = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
+  "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"
+  , "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", 
+  "kiwi.png", "kiwi.png", "kiwi.png"];
+
+// const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+//   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+//   , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
+
+const deckCardsMed = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
+  "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"
+  , "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"];
 
 const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"];
+
+// const deckCardsEz = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"]
 
 const deck = document.querySelector(".deck");
 let opened = [];
@@ -110,17 +121,24 @@ function removeCard() {
 }
 
 function timer() {
+  let data;
   time = setInterval(function () {
     seconds--;
     if (seconds <= 0) {
       stopTime();
       if (myTurn(user_id, mover_id)) {
-        socket.emit('playerChange', currRoom);
+        if (opened[0]) {
+          data = { currRoom, card1: opened[0].parentElement.id }
+          opened = [];
+        }
+        else {
+          data = { currRoom, card1: null }
+        }
+        socket.emit('playerChange', data);
       }
     }
     timeCounter.innerHTML = "<i class='fa fa-hourglass-start'></i>" + "Timer: " + seconds;
   }, 1000);
-
 }
 
 function stopTime() {
@@ -147,7 +165,6 @@ function compareTwo() {
   }
   if (opened.length === 2 && opened[0].src === opened[1].src) {
     match();
-    console.log('matched', matched.length)
     let data = { card1: opened[0].parentElement.id, card2: opened[1].parentElement.id, currRoom, points: matched.length + 2 }
     socket.emit("confirmFlip", data)
   } else if (opened.length === 2 && opened[0].src != opened[1].src) {
@@ -184,30 +201,33 @@ function noMatch() {
 }
 
 function winGame() {
-  if(diff = 'Hard'){
-  if (document.getElementsByClassName("match").length === 16) {
-    return true;
+  console.log(diff, document.getElementsByClassName("match").length)
+  if (diff === 'Hard') {
+    if (document.getElementsByClassName("match").length === 36) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
-  else {
-    return false;
+  else if (diff === 'Medium') {
+    console.log(diff, "medium")
+    if (document.getElementsByClassName("match").length === 24) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
-}
-else if(diff = 'Medium'){
-  if (document.getElementsByClassName("match").length === 24) {
-    return true;
+  else if (diff === 'Easy') {
+    console.log(diff, "easy")
+    if (document.getElementsByClassName("match").length === 16) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
-  else {
-    return false;
-  }
-}
-else if(diff = 'Easy'){
-  if (document.getElementsByClassName("match").length === 36) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
 }
 
 function emitToPlayers(flipper) {
@@ -217,7 +237,6 @@ function emitToPlayers(flipper) {
 
 deck.addEventListener("click", function (evt) {
   if (evt.target.nodeName === "LI" && myTurn(mover_id, user_id)) {
-    console.log(evt.target.nodeName + " Was clicked");
     if (timeStart === false) {
       timeStart = true;
       timer();
