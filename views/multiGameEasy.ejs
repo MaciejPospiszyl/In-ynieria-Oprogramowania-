@@ -12,7 +12,7 @@
         integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
-    <link href="/graWieloOsobowa.css" rel="stylesheet">
+    <link href="/graWieloOsobowaEasy.css" rel="stylesheet">
 
 
 </head>
@@ -23,34 +23,35 @@
     <nav>
         <h4>Memory card game</h4>
         <% if (user) { %>
-            <ul>
-                <li>
-                    Logged in as
-                    <%= user.username %>
-                </li>
-                <li>
-                    <a href="/ranking">Ranking</a>
-                    <a href="/auth/wyloguj" style="color:crimson">Log out</a>
-                </li>
-            </ul>
-            <% } else { %>
-                <ul>
-                    <li><a href="/logowanie">Sign in</a></li>
-                    <li><a href="/rejestracja">Register</a></li>
-                </ul>
-                <% } %>
+        <ul>
+            <li>
+                Logged in as
+                <%= user.username %>
+            </li>
+            <li>
+                <a href="/ranking">Ranking</a>
+                <a href="/auth/wyloguj" style="color:crimson">Log out</a>
+            </li>
+        </ul>
+        <% } else { %>
+        <ul>
+            <li><a href="/logowanie">Sign in</a></li>
+            <li><a href="/rejestracja">Register</a></li>
+        </ul>
+        <% } %>
     </nav>
     <% if (message) { %>
-        <h4 class="alert alert-info" style="text-align: center; margin-top: 50px;" role="alert">
-            <%= message %>
-        </h4>
-        <% } %>
+    <h4 class="alert alert-info" style="text-align: center; margin-top: 50px;" role="alert">
+        <%= message %>
+    </h4>
+    <% } %>
 
-            <div id="menu">
-            </div>
-            <div class="container">
-                <span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:20</span>
-                <!-- <section class="score-panel">
+
+
+    <span class="timer"><i class="fa fa-hourglass-start"></i> Timer:00:20</span>
+    <div class="container">
+        <!--<span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:20</span>
+                 <section class="score-panel">
                     <span class="text"> Moves:</span><span class="moves-counter">0</span>
                     <div class="timer-container">
                         <span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:00</span>
@@ -63,11 +64,17 @@
 
 
 
-                <ul class="deck"></ul>
+        <ul class="deck"></ul>
+        <div class="rightMenu">
+
+
+            <div id="menu">
 
             </div>
 
-            <div class="chat">
+
+            <div class="chatConteiner">
+
                 <div id="chatMessages">
                     <ul id="messages"></ul>
                 </div>
@@ -76,28 +83,38 @@
                         <input id="chatInput" autocomplete="off" /><button>Send</button>
                     </form>
                 </div>
+
             </div>
+
+        </div>
+
+
+
+
+
 
 
 
 
 
 </body>
-
 <script src="/kartyMulti.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-    crossorigin="anonymous"></script>
+    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous">
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-    crossorigin="anonymous"></script>
+    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous">
+</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-    crossorigin="anonymous"></script>
+    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous">
+</script>
 
 </html>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     //zorganizowanie graczy
     let turn = 0;
@@ -136,10 +153,14 @@
             points.id = 'points' + i;
             points.innerText = +0;
             ppoints.push(points);
+
             player.innerText = players[i].username;
+
             menu.appendChild(playerdiv);
             playerdiv.appendChild(player);
             playerdiv.appendChild(points);
+
+
         }
     }
 
@@ -175,14 +196,12 @@
             }
             socket.emit('joinGameRoom', dane)
             connected = true;
-        }
-        else {
+        } else {
             // let dane = { room_id }
             // socket.emit('askForGameInfo', dane)
         }
     });
-    socket.on('disconnect', function (data) {
-    });
+    socket.on('disconnect', function (data) {});
 
 
     //chat setup
@@ -214,6 +233,7 @@
     });
 
     socket.on('setBoard', async data => {
+        console.log('setBOARD', data)
         startGame(data);
         initMenu();
         updatePplayer(0);
@@ -242,10 +262,8 @@
         if (turn > player_amount - 1) {
             turn = 0;
         }
-        try {
-            document.getElementById(data).classList.remove("flip")
-        } catch (error) {
-            console.log(error)
+        if(data!=null){
+        document.getElementById(data).classList.remove("flip")
         }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
@@ -262,9 +280,10 @@
     })
 
     socket.on('gameFinished', async () => {
-        console.log('gameefinished')
         stopTime();
-        let data = { room_id: room_id }
+        let data = {
+            room_id: room_id
+        }
         let res = await fetch('/auth/removeRoom', {
             method: 'POST',
             headers: {
@@ -276,5 +295,285 @@
             socket.emit('lobbyChange');
 
         }
+        //gracze i punkty pod koniec gry
+        // let playerScores = {};
+        // let xd = 0;
+        // let xdd = 0;
+        // pplayer.forEach(e => {
+        //     playerScores[xd].player = e;
+        //     xd++;
+        // })
+        //   console.log(pplayer[0]);\
+
+        //dwuwymiarowa tablica z nazwa gracza i punktami
+        let playerScores = new Array(player_amount);
+        for (let i = 0; i < player_amount; i++) {
+            playerScores[i] = new Array(2);
+            playerScores[i][0] = pplayer[i].innerText;
+            playerScores[i][1] = ppoints[i].innerText;
+        }
+
+
+        //sortowanie od najwiekszej ilosci pkt do najmniejszej
+        playerScores.sort(sortFunction);
+
+        function sortFunction(a, b) {
+            if (a[1] === b[1]) {
+                return 0;
+            } else {
+                return (a[1] > b[1]) ? -1 : 1;
+            }
+        }
+        console.log('posortowane ' + playerScores);
+
+        let allPlayersString = "";
+        for (let i = 0; i < player_amount; i++) {
+            allPlayersString += playerScores[i][0] + ": " + playerScores[i][1] + " pkt<br>";
+        }
+
+        //gracze, ktorzy maja najwiecej pkt
+        let stringTopScores = "";
+        let topScores = new Array(player_amount);
+        let x = 0;
+        for (let i = 0; i < player_amount; i++) {
+            if (playerScores[i][1] == playerScores[0][1]) {
+                topScores[x] = new Array(2);
+                topScores[x][0] = playerScores[i][0];
+                topScores[x][1] = playerScores[i][1];
+                stringTopScores += topScores[x][0] + " ";
+                x++;
+            }
+        }
+        if (topScores.length == 1) {
+            Swal.fire("Wygrał " + stringTopScores + '<br>' + allPlayersString);
+        } else {
+            Swal.fire("Remis między " + stringTopScores + '<br>' + allPlayersString);
+        }
+
+
+
+
+
+        // ppoints.forEach(e => {
+        //     playerScores[xdd].points = e;
+        //     xdd++;
+        // })
+
+        // console.log(JSON.stringify(playerScores));
+
+
+
+
+
+
+        // for (let i = 0; i < player_amount; i++) {
+        //     console.log(document.getElementById('player' + i).innerText, document.getElementById('points' +
+        //         i).innerText);
+
+        // }
+
+        // function returnMaxPkt() {
+        //     var maxPkt = 0;
+        //     var gracz1Pkt = document.getElementById('points' + 0).innerText;
+
+        //     for (let i = 0; i < player_amount; i++) {
+        //         var pktGraczy = document.getElementById('points' + i).innerText;
+        //         if (maxPkt <= pktGraczy)
+        //             maxPkt = pktGraczy
+        //     }
+        //     return maxPkt;
+        // }
+
+        // function returnPlayersWithMaxPkt() {
+        //     var maxPkt = returnMaxPkt()
+        //     var playersWithMaxPkt = []
+        //     for (let i = 0; i < player_amount; i++) {
+        //         var pktGraczy = document.getElementById('points' + i).innerText;
+        //         var gracz = document.getElementById('player' + i).innerText;
+        //         if (pktGraczy == maxPkt) {
+        //             playersWithMaxPkt.push(gracz)
+        //         }
+        //     }
+        //     return playersWithMaxPkt
+        // }
+
+
+        // let gracze = []
+        // let punkty = []
+        // for (let i = 0; i < player_amount; i++) {
+        //     var gracz = document.getElementById('player' + i).innerText;
+        //     var pkt = document.getElementById('points' + i).innerText;
+        //     gracze.push(gracz)
+        //     punkty.push(pkt)
+        // }
+
+        // if (player_amount == 2) {
+        //     if (returnPlayersWithMaxPkt().length > 1) {
+        //         Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+        //             gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //             gracze[1] + ": " + punkty[1] + "pkt")
+        //     } else {
+        //         for (let i = 0; i < player_amount; i++) {
+        //             if (punkty[i] == returnMaxPkt()) {
+        //                 Swal.fire("Wygral gracz " + gracze[i],
+        //                     gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                     gracze[1] + ": " + punkty[1] + "pkt")
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // } else if (player_amount == 3) {
+        //     if (returnPlayersWithMaxPkt().length > 1) {
+        //         Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+        //             gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //             gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //             gracze[2] + ": " + punkty[2] + "pkt")
+        //     } else {
+        //         for (let i = 0; i < player_amount; i++) {
+        //             if (punkty[i] == returnMaxPkt()) {
+        //                 Swal.fire("Wygral gracz " + gracze[i],
+        //                     gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                     gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //                     gracze[2] + ": " + punkty[2] + "pkt")
+        //                 break;
+        //             }
+        //         }
+        //     }
+
+        // } else if (player_amount == 4) {
+        //     if (returnPlayersWithMaxPkt().length > 1) {
+        //         Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+        //             gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //             gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //             gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+        //             gracze[3] + ": " + punkty[3] + "pkt")
+        //     } else {
+        //         for (let i = 0; i < player_amount; i++) {
+        //             if (punkty[i] == returnMaxPkt()) {
+        //                 Swal.fire("Wygral gracz " + gracze[i],
+        //                     gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                     gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //                     gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+        //                     gracze[3] + ": " + punkty[3] + "pkt")
+        //                 break;
+        //             }
+        //         }
+        //     }
+
+        // }
+
+
+
+
+        //Swal.fire("Wygral krzys", returnMaxPkt() + returnPlayersWithMaxPkt())
+        /*//dla 2 graczy
+        if (player_amount == 2) {
+            var gracz1 = document.getElementById('player' + 0).innerText;
+            var gracz2 = document.getElementById('player' + 1).innerText;
+            var gracz1Pkt = document.getElementById('points' + 0).innerText;
+            var gracz2Pkt = document.getElementById('points' + 1).innerText;
+
+
+            //jesli wygral gracz 1
+            if (gracz1Pkt > gracz2Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt");
+                //jesli wygral gracz 2
+            } else if (gracz1Pkt < gracz2Pkt) {
+                Swal.fire("Wygral gracz: " + gracz2,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt");
+                //jesli remis
+            } else {
+                Swal.fire("Remis",
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt")
+            }
+        }
+        //dla 3 graczy
+        else if (player_amount == 3) {
+            var gracz1 = document.getElementById('player' + 0).innerText;
+            var gracz2 = document.getElementById('player' + 1).innerText;
+            var gracz3 = document.getElementById('player' + 2).innerText;
+            var gracz1Pkt = document.getElementById('points' + 0).innerText;
+            var gracz2Pkt = document.getElementById('points' + 1).innerText;
+            var gracz3Pkt = document.getElementById('points' + 2).innerText;
+
+            //jesli wygral gracz 1
+            if (gracz1Pkt > gracz2Pkt && gracz1Pkt > gracz3Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt");
+                //jesli wygral gracz 2
+            } else if (gracz2Pkt > gracz1Pkt && gracz2Pkt > gracz3Pkt) {
+                Swal.fire("Wygral gracz: " + gracz2,
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt");
+                //jesli wygral gracz 3
+            } else if (gracz3Pkt > gracz1Pkt && gracz3Pkt > gracz2Pkt) {
+                Swal.fire("Wygral gracz: " + gracz3,
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt");
+            }
+        }
+        //dla 4 graczy
+        else if (player_amount == 4) {
+            var gracz1 = document.getElementById('player' + 0).innerText;
+            var gracz2 = document.getElementById('player' + 1).innerText;
+            var gracz3 = document.getElementById('player' + 2).innerText;
+            var gracz4 = document.getElementById('player' + 3).innerText;
+            var gracz1Pkt = document.getElementById('points' + 0).innerText;
+            var gracz2Pkt = document.getElementById('points' + 1).innerText;
+            var gracz3Pkt = document.getElementById('points' + 2).innerText;
+            var gracz4Pkt = document.getElementById('points' + 3).innerText;
+
+            //jesli wygral gracz 1
+            if (gracz1Pkt > gracz2Pkt && gracz1Pkt > gracz3Pkt && gracz1Pkt > gracz4Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli wygral gracz 2
+            else if (gracz2Pkt > gracz1Pkt && gracz2Pkt > gracz3Pkt && gracz2Pkt > gracz4Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli wygral gracz 3
+            else if (gracz3Pkt > gracz1Pkt && gracz3Pkt > gracz2Pkt && gracz3Pkt > gracz4Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli wygral gracz 4
+            else if (gracz4Pkt > gracz1Pkt && gracz4Pkt > gracz2Pkt && gracz4Pkt > gracz3Pkt) {
+                Swal.fire("Wygral gracz: " + gracz1,
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+            //jesli remis
+            else {
+                Swal.fire("Remis",
+                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
+                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
+                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
+                    gracz4 + ": " + gracz4Pkt + "pkt");
+            }
+
+
+
+        }*/
     })
 </script>

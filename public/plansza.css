@@ -47,6 +47,7 @@ p {
 .score-panel {
     font-size: 1.4em;
     padding: 1em 0 2em;
+    color: white;
 }
 
 .moves-counter {
@@ -60,7 +61,7 @@ p {
 
 .timer-container {
     border-radius: 0.5em;
-    color: #000;
+    color: rgb(255, 255, 255);
     margin: 0.5em;
     padding: 0.5em;
 }
@@ -74,7 +75,7 @@ p {
 }
 
 .deck {
-    background-color: rgb(47, 32, 185);
+    background: #ffffff;
     border-radius: 1.5em;
     display: flex;
     flex-wrap: wrap;
@@ -92,7 +93,8 @@ p {
 }
 
 .card {
-    background: linear-gradient(234deg, rgba(131, 58, 180, 1) 0%, rgba(29, 248, 253, 1) 50%, rgba(252, 176, 69, 1) 100%);
+    /*background: linear-gradient(234deg, rgba(131, 58, 180, 1) 0%, rgba(29, 248, 253, 1) 50%, rgba(252, 176, 69, 1) 100%);*/
+    background-image: url("img/asteroids.jpg");
     border-radius: 1.5em;
     height: 15em;
     width: 15em;
@@ -125,14 +127,14 @@ img {
 }
 
 .deck .card.match {
-    background: #39d;
+    background: #d7b95e;
     visibility: visible;
     cursor: default;
     animation: pulse 1s;
 }
 
 .match img {
-    background: #39d;
+    background: #d7b95e;
 }
 
 @keyframes pulse {

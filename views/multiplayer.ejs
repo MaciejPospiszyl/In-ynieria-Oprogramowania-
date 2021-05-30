@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
     <link href="/ranking.css" rel="stylesheet">
@@ -24,10 +23,10 @@
                 Logged in as
                 <%= user.username %>
                     <li>
-                    <li><a href="/levelChoice">Game</a></li>
-                    <li>
-                    </li>
-                    <a href="/auth/wyloguj" style="color:crimson">Log out</a>
+                        <li><a href="/levelChoice">Game</a></li>
+                        <li>
+                        </li>
+                        <a href="/auth/wyloguj" style="color:crimson">Log out</a>
             </ul>
             <% } else { %>
                 <ul>
@@ -124,21 +123,14 @@
 
                 </div>
             </div>
-     
 
             <% } %>
 
 
                 <!-- jQuery first, then Tether, then Bootstrap JS. -->
-                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-                    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-                    crossorigin="anonymous"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-                    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-                    crossorigin="anonymous"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-                    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-                    crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script src="../utils.js"></script>
@@ -154,7 +146,6 @@
         });
         return response.json()
     }
-
     //funkcja do buttona start w pokoju
     async function fetchStartGame(data) {
         let response = await fetch('/auth/startGame', {
@@ -166,10 +157,9 @@
         });
         return response.json()
     }
-
     //socket server
     let socket = io()
-    socket.on('connect', function (data) {
+    socket.on('connect', function(data) {
         if (room && room != null) {
             socket.emit('roomSetup', {
                 room_id: room
@@ -178,113 +168,105 @@
             socket.emit('lobbySetup')
         }
     });
-    socket.on('disconnect', function (data) {
-    });
-
-
+    socket.on('disconnect', function(data) {});
     //=========================================================================================LOBBY=======================================================================================================
     let rooms = '<%- JSON.stringify(rooms) %>';
     rooms = JSON.parse(rooms)
-
-    //sprawdzamy czy uzytkownik jest w lobby
+        //sprawdzamy czy uzytkownik jest w lobby
     if (rooms && rooms != 'null') {
         //create room button
         let crBtn = document.getElementById('cr-btn');
-        crBtn.addEventListener("click", async (event) => {
-            let roomName = {
-                roomName: document.getElementById('roomName').value
-            };
-            let response = await fetch('/auth/createRoom', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(roomName)
-            });
-            const resData = await response.json();
-            if (resData.status != 'success') {
-                window.location.replace('/multiplayer')
-            } else {
-                socket.emit('joinRoom', {
-                    jwt: getCookie('jwt'),
-                    room_id: resData.room_id
-                })
-                window.location.replace('/multiplayer/' + resData.room_id);
-            }
-        })
-
-        //aktualizujemy pokoje po otrzymaniu brodcasta
-        socket.on('lobbyChange', function (data) {
-            let wholeLobby = document.getElementById("wholeLobby")
-            while (wholeLobby.firstChild) {
-                wholeLobby.removeChild(wholeLobby.firstChild)
-            }
-            console.log('lobbyChange', data)
-            for (let i = 0; i < data.length; i++) {
-                let roomContainer = document.createElement("div")
-                roomContainer.className = "roomContainer"
-                roomContainer.id = "roomContainer" + [i]
-                wholeLobby.appendChild(roomContainer)
-                let roomHeader = document.createElement("div")
-                roomHeader.className = "roomHeader"
-                roomHeader.id = "roomHeader" + [i]
-                roomContainer.appendChild(roomHeader)
-                let hr = document.createElement("hr")
-                hr.id = "hr"
-                hr.className = "hr"
-                let btn = document.createElement("button");
-                let nazwaPokoju = document.createElement("div");
-                let gracze = document.createElement("div")
-                btn.id = "join";
-                btn.dataset.room_id = data[i]._id;
-                btn.dataset.player_amount = data[i].player_amount;
-                btn.innerText = "join"
-                nazwaPokoju.id = "nazwaPokoju";
-                nazwaPokoju.innerText = "Room: " + data[i].room_name;
-                gracze.id = "gracze";
-                gracze.innerText = "Players: " + data[i].player_amount + "/4";
-                let gameState = document.createElement("div");
-                gameState.id = "gameState";
-                gameState.className = "gameState";
-                gameState.innerText = "State: " + data[i].gameState
-                if (data[i].gameState == "In game" || data[i].player_amount == 4) {
-                    btn.style.display = "none";
-                }
-
-                if (i + 1 < data.length) {
-                    document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
-                    document.getElementById("roomHeader" + [i]).appendChild(gracze);
-                    document.getElementById("roomHeader" + [i]).appendChild(gameState);
-                    document.getElementById("roomContainer" + [i]).appendChild(btn);
-                    document.getElementById("wholeLobby").appendChild(hr);
+        crBtn.addEventListener("click", async(event) => {
+                let roomName = {
+                    roomName: document.getElementById('roomName').value
+                };
+                let response = await fetch('/auth/createRoom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(roomName)
+                });
+                const resData = await response.json();
+                if (resData.status != 'success') {
+                    window.location.replace('/multiplayer')
                 } else {
-                    document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
-                    document.getElementById("roomHeader" + [i]).appendChild(gracze);
-                    document.getElementById("roomHeader" + [i]).appendChild(gameState);
-                    document.getElementById("roomContainer" + [i]).appendChild(btn);
-                    document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
+                    socket.emit('joinRoom', {
+                        jwt: getCookie('jwt'),
+                        room_id: resData.room_id
+                    })
+                    window.location.replace('/multiplayer/' + resData.room_id);
                 }
-                btn.addEventListener("click", async (event) => {
-                    let roomInfo = {
-                        "roomId": btn.dataset.room_id,
-                        "playerAmount": btn.dataset.player_amount
-                    };
-                    const resData = await fetchJoinRoom(roomInfo);
-                    if (resData.status != 'success') {
-                        window.location.replace('/multiplayer')
-                    } else {
-                        socket.emit('joinRoom', {
-                            jwt: getCookie('jwt'),
-                            room_id: roomInfo.roomId
-                        })
-                        window.location.replace('/multiplayer/' + resData.room_id);
+            })
+            //aktualizujemy pokoje po otrzymaniu brodcasta
+        socket.on('lobbyChange', function(data) {
+                let wholeLobby = document.getElementById("wholeLobby")
+                while (wholeLobby.firstChild) {
+                    wholeLobby.removeChild(wholeLobby.firstChild)
+                }
+                console.log('lobbyChange', data)
+                for (let i = 0; i < data.length; i++) {
+                    let roomContainer = document.createElement("div")
+                    roomContainer.className = "roomContainer"
+                    roomContainer.id = "roomContainer" + [i]
+                    wholeLobby.appendChild(roomContainer)
+                    let roomHeader = document.createElement("div")
+                    roomHeader.className = "roomHeader"
+                    roomHeader.id = "roomHeader" + [i]
+                    roomContainer.appendChild(roomHeader)
+                    let hr = document.createElement("hr")
+                    hr.id = "hr"
+                    hr.className = "hr"
+                    let btn = document.createElement("button");
+                    let nazwaPokoju = document.createElement("div");
+                    let gracze = document.createElement("div")
+                    btn.id = "join";
+                    btn.dataset.room_id = data[i]._id;
+                    btn.dataset.player_amount = data[i].player_amount;
+                    btn.innerText = "join"
+                    nazwaPokoju.id = "nazwaPokoju";
+                    nazwaPokoju.innerText = "Room: " + data[i].room_name;
+                    gracze.id = "gracze";
+                    gracze.innerText = "Players: " + data[i].player_amount + "/4";
+                    let gameState = document.createElement("div");
+                    gameState.id = "gameState";
+                    gameState.className = "gameState";
+                    gameState.innerText = "State: " + data[i].gameState
+                    if (data[i].gameState == "In game" || data[i].player_amount == 4) {
+                        btn.style.display = "none";
                     }
-                })
-            }
-        })
-
-        //tworzymy pokoje i join-btns
-
+                    if (i + 1 < data.length) {
+                        document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+                        document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                        document.getElementById("roomHeader" + [i]).appendChild(gameState);
+                        document.getElementById("roomContainer" + [i]).appendChild(btn);
+                        document.getElementById("wholeLobby").appendChild(hr);
+                    } else {
+                        document.getElementById("roomHeader" + [i]).appendChild(nazwaPokoju);
+                        document.getElementById("roomHeader" + [i]).appendChild(gracze);
+                        document.getElementById("roomHeader" + [i]).appendChild(gameState);
+                        document.getElementById("roomContainer" + [i]).appendChild(btn);
+                        document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
+                    }
+                    btn.addEventListener("click", async(event) => {
+                        let roomInfo = {
+                            "roomId": btn.dataset.room_id,
+                            "playerAmount": btn.dataset.player_amount
+                        };
+                        const resData = await fetchJoinRoom(roomInfo);
+                        if (resData.status != 'success') {
+                            window.location.replace('/multiplayer')
+                        } else {
+                            socket.emit('joinRoom', {
+                                jwt: getCookie('jwt'),
+                                room_id: roomInfo.roomId
+                            })
+                            window.location.replace('/multiplayer/' + resData.room_id);
+                        }
+                    })
+                }
+            })
+            //tworzymy pokoje i join-btns
         let wholeLobby = document.getElementById("wholeLobby")
         for (let i = 0; i < rooms.length; i++) {
             let roomContainer = document.createElement("div")
@@ -329,8 +311,7 @@
                 document.getElementById("roomContainer" + [i]).appendChild(btn);
                 document.getElementById("roomHeader" + [i]).style.marginBottom = "15px";
             }
-
-            btn.addEventListener("click", async (event) => {
+            btn.addEventListener("click", async(event) => {
                 let roomInfo = {
                     "roomId": btn.dataset.room_id,
                     "playerAmount": btn.dataset.player_amount
@@ -348,7 +329,6 @@
             })
         }
     }
-
     //==========================================================================================POJEDYNCZE POKOJE=====================================================================================
     let room = '<%- room %>'; //id pokoju
     let players = '<%- JSON.stringify(players) %>'; //gracze w pokoju
@@ -362,7 +342,7 @@
         //socket dostaje informacje o zmianie w pokoju
         socket.on('joinRoom', data => {
             console.log('joinRoom', data)
-            //usuwamy korone
+                //usuwamy korone
             let kor = document.getElementById('koronaLidera')
             kor.remove();
             //aktualizacja graczy w pokoju po otrzymaniu 
@@ -371,11 +351,10 @@
                 if (data['player' + i]) {
                     if (data['player' + i]._id == data.leader) {
                         x.innerHTML = data['player' + i].username + ' <div class="chatInput">'
-                        //dodajemy korone do lidera
+                            //dodajemy korone do lidera
                         let koronaLidera = document.createElement("div")
                         koronaLidera.className = "koronaLidera"
                         koronaLidera.id = "koronaLidera"
-
                         let graczId = document.getElementById('gracz' + i)
                         graczId.appendChild(koronaLidera)
                     } else {
@@ -385,7 +364,6 @@
                     x.innerHTML = null;
                 }
             }
-
             // sprawdzamy czy zalogowany uzytkownik jest liderem pokoju i czy znajduje sie na jego ekranie button start, jezeli nie - dodajemy
             if (user_id == data.leader && !document.body.contains(document.getElementById('buttonStart'))) {
                 let startLeave = document.getElementById("startLeave")
@@ -406,7 +384,7 @@
                 let data = {
                     room_id: room
                 }
-                buttonStart.addEventListener("click", async (event) => {
+                buttonStart.addEventListener("click", async(event) => {
                     let result = await fetchStartGame(data);
                     if (result.status == 'success') {
                         socket.emit('joinGame', JSON.stringify(data))
@@ -417,25 +395,20 @@
                 startLeave.insertBefore(buttonStart, leaveButton)
             }
         })
-
         socket.on('joinGame', data => {
-            if (data.difficulty == 'Hard') {
-                window.location.replace('/multiGameHard/' + data.room_id)
-            }
-            else if (data.difficulty == 'Medium') {
-                window.location.replace('/multiGameMedium/' + data.room_id)
-            }
-            else if (data.difficulty == 'Easy') {
-                window.location.replace('/multiGameEasy/' + data.room_id)
-            }
-        })
-
-        //chat setup
+                if (data.difficulty == 'Hard') {
+                    window.location.replace('/multiGameHard/' + data.room_id)
+                } else if (data.difficulty == 'Medium') {
+                    window.location.replace('/multiGameMedium/' + data.room_id)
+                } else if (data.difficulty == 'Easy') {
+                    window.location.replace('/multiGameEasy/' + data.room_id)
+                }
+            })
+            //chat setup
         let form = document.getElementById('chatForm');
         let input = document.getElementById('chatInput');
         let messages = document.getElementById('messages');
-
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             if (input.value) {
                 let chatInput = {
@@ -445,25 +418,18 @@
                 }
                 socket.emit('newChatMessage', JSON.stringify(chatInput));
                 input.value = '';
-
             }
         });
-
         //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
-        socket.on('newChatMessage', function (msg) {
+        socket.on('newChatMessage', function(msg) {
             let item = document.createElement('li');
             item.textContent = msg.user + ": " + msg.value;
             messages.appendChild(item);
             var okno = document.getElementById("chatMessages");
             //window.scrollTo(0, document.okno.scrollHeight);
             okno.scrollTo(0, okno.scrollHeight);
-
         });
-
-
-
         //gracze w pokoju
-
         //START BUTTON jezeli user jest leaderem
         if (user_id == players.leader) {
             let startLeave = document.getElementById("startLeave")
@@ -471,7 +437,6 @@
             let leaveButton = document.getElementById("leave-btn")
             buttonStart.id = "buttonStart"
             buttonStart.innerText = "Start"
-
             let diffSelector = document.createElement("SELECT")
             let options = ["Easy", "Medium", "Hard"]
             diffSelector.id = "diffSelect"
@@ -482,10 +447,8 @@
                 diffSelector.appendChild(option);
             }
             startLeave.appendChild(diffSelector)
-
             startLeave.insertBefore(buttonStart, leaveButton)
-            buttonStart.addEventListener("click", async (event) => {
-
+            buttonStart.addEventListener("click", async(event) => {
                 let data = {
                     room_id: room,
                     difficulty: diffSelector.value
@@ -498,7 +461,6 @@
                 }
             })
         }
-
         //nazwa pokoju
         document.getElementById('room_name').innerHTML = "Room name: " + players.room_name;
         //zaladowanie graczy
@@ -507,24 +469,19 @@
             if (players['player' + i]) {
                 if (players['player' + i]._id == players.leader) {
                     x.innerHTML = players['player' + i].username
-
                     let koronaLidera = document.createElement("div")
                     koronaLidera.className = "koronaLidera"
                     koronaLidera.id = "koronaLidera"
-
                     let graczId = document.getElementById('gracz' + i)
                     graczId.appendChild(koronaLidera)
-
                 } else {
                     x.innerHTML = players['player' + i].username;
-
                 }
             }
         }
-
         //przycisk leave
         let leave = document.getElementById('leave-btn');
-        leave.addEventListener("click", async (event) => {
+        leave.addEventListener("click", async(event) => {
             let leaveInfo = {
                 "room": room
             }
@@ -541,8 +498,6 @@
             })
             window.location.replace('/multiplayer')
         })
-
-
     }
 </script>
 

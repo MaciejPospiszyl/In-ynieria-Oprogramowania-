@@ -8,11 +8,10 @@
 
     <!-- Bootstrap CSS -->
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
-    <link href="/graWieloOsobowa.css" rel="stylesheet">
+    <link href="/graWieloOsobowaHard.css" rel="stylesheet">
 
 
 </head>
@@ -46,37 +45,45 @@
         </h4>
         <% } %>
 
-            <div id="menu">
-            </div>
+            <span class="timer"><i class="fa fa-hourglass-start"></i> Timer:00:20</span>
             <div class="container">
-                <span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:20</span>
-                <!-- <section class="score-panel">
-                    <span class="text"> Moves:</span><span class="moves-counter">0</span>
-                    <div class="timer-container">
-                        <span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:00</span>
-                    </div>
-                    <div class="reset">
-                        <button class="btn reset-btn">Reset <i class="fa fa-repeat"></i></button>
-                    </div>
-                </section> -->
+                <!--<span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:20</span>
+             <section class="score-panel">
+                <span class="text"> Moves:</span><span class="moves-counter">0</span>
+                <div class="timer-container">
+                    <span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:00</span>
+                </div>
+                <div class="reset">
+                    <button class="btn reset-btn">Reset <i class="fa fa-repeat"></i></button>
+                </div>
+            </section> -->
 
 
 
 
                 <ul class="deck"></ul>
+                <div class="rightMenu">
 
-            </div>
 
-            <div class="chat">
-                <div id="chatMessages">
-                    <ul id="messages"></ul>
+                    <div id="menu">
+
+                    </div>
+
+
+                    <div class="chatConteiner">
+
+                        <div id="chatMessages">
+                            <ul id="messages"></ul>
+                        </div>
+                        <div class="chatSend">
+                            <form id="chatForm" action="">
+                                <input id="chatInput" autocomplete="off" /><button>Send</button>
+                            </form>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="chatSend">
-                    <form id="chatForm" action="">
-                        <input id="chatInput" autocomplete="off" /><button>Send</button>
-                    </form>
-                </div>
-            </div>
 
 
 
@@ -86,18 +93,13 @@
 
 <script src="/kartyMulti.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-    crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-    crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     //zorganizowanie graczy
     let turn = 0;
@@ -163,7 +165,7 @@
 
 
     let socket = io()
-    socket.on('connect', function (data) {
+    socket.on('connect', function(data) {
         let random = Math.floor(Math.random() * 10);
         let board = returnSD(difficulty);
         const dane = {
@@ -173,7 +175,7 @@
         }
         socket.emit('joinGameRoom', dane)
     });
-    socket.on('disconnect', function (data) { });
+    socket.on('disconnect', function(data) {});
 
 
     //chat setup
@@ -181,7 +183,7 @@
     let input = document.getElementById('chatInput');
     let messages = document.getElementById('messages');
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
             let chatInput = {
@@ -195,7 +197,7 @@
     });
 
     //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
-    socket.on('newChatMessage', function (msg) {
+    socket.on('newChatMessage', function(msg) {
         let item = document.createElement('li');
         item.textContent = msg.user + ": " + msg.value;
         messages.appendChild(item);
@@ -232,8 +234,10 @@
     socket.on('playerChange', data => {
         if (turn > player_amount - 1) {
             turn = 0;
-        } 
+        }
+        if(data!=null){
         document.getElementById(data).classList.remove("flip")
+        }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
         turn++;
@@ -248,10 +252,11 @@
         updatePpoints(turn - 1, data.points)
     })
 
-    socket.on('gameFinished', async () => {
-        console.log('gameefinished')
+    socket.on('gameFinished', async() => {
         stopTime();
-        let data = { room_id: room_id }
+        let data = {
+            room_id: room_id
+        }
         let res = await fetch('/auth/removeRoom', {
             method: 'POST',
             headers: {
@@ -262,5 +267,145 @@
         if (res.status == 200) {
             socket.emit('lobbyChange');
         }
+
+          //dwuwymiarowa tablica z nazwa gracza i punktami
+          let playerScores = new Array(player_amount);
+        for (let i = 0; i < player_amount; i++) {
+            playerScores[i] = new Array(2);
+            playerScores[i][0] = pplayer[i].innerText;
+            playerScores[i][1] = ppoints[i].innerText;
+        }
+
+
+        //sortowanie od najwiekszej ilosci pkt do najmniejszej
+        playerScores.sort(sortFunction);
+
+        function sortFunction(a, b) {
+            if (a[1] === b[1]) {
+                return 0;
+            } else {
+                return (a[1] > b[1]) ? -1 : 1;
+            }
+        }
+        console.log('posortowane ' + playerScores);
+
+        let allPlayersString = "";
+        for(let i = 0; i<player_amount; i++){
+            allPlayersString += playerScores[i][0] + ": " + playerScores[i][1] + " pkt<br>";
+        }
+
+        //gracze, ktorzy maja najwiecej pkt
+        let stringTopScores = "";
+        let topScores = new Array(player_amount);
+        let x = 0;
+        for(let i = 0; i<player_amount; i++){
+            if(playerScores[i][1] == playerScores[0][1])
+            {
+                topScores[x] = new Array(2);
+                topScores[x][0] = playerScores[i][0];
+                topScores[x][1] = playerScores[i][1];
+                stringTopScores += topScores[x][0] + " ";
+                x++;
+            }
+        }
+        if(topScores.length == 1){
+            Swal.fire("Wygrał " + stringTopScores + '<br>' + allPlayersString);
+        }
+        else{
+            Swal.fire("Remis między " + stringTopScores + '<br>' + allPlayersString);
+        }
+
+
+    //     function returnMaxPkt() {
+    //         var maxPkt = 0;
+
+    //         for (let i = 0; i < player_amount; i++) {
+    //             var pktGraczy = document.getElementById('points' + i).innerText;
+    //             if (maxPkt <= pktGraczy)
+    //                 maxPkt = pktGraczy
+    //         }
+    //         return maxPkt;
+    //     }
+
+    //     function returnPlayersWithMaxPkt() {
+    //         var maxPkt = returnMaxPkt()
+    //         var playersWithMaxPkt = []
+    //         for (let i = 0; i < player_amount; i++) {
+    //             var pktGraczy = document.getElementById('points' + i).innerText;
+    //             var gracz = document.getElementById('player' + i).innerText;
+    //             if (pktGraczy == maxPkt) {
+    //                 playersWithMaxPkt.push(gracz)
+    //             }
+    //         }
+    //         return playersWithMaxPkt
+    //     }
+
+
+    //     let gracze = []
+    //     let punkty = []
+    //     for (let i = 0; i < player_amount; i++) {
+    //         var gracz = document.getElementById('player' + i).innerText;
+    //         var pkt = document.getElementById('points' + i).innerText;
+    //         gracze.push(gracz)
+    //         punkty.push(pkt)
+    //     }
+
+    //     if (player_amount == 2) {
+    //         if (returnPlayersWithMaxPkt().length > 1) {
+    //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+    //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+    //                 gracze[1] + ": " + punkty[1] + "pkt")
+    //         } else {
+    //             for (let i = 0; i < player_amount; i++) {
+    //                 if (punkty[i] == returnMaxPkt()) {
+    //                     Swal.fire("Wygral gracz " + gracze[i],
+    //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+    //                         gracze[1] + ": " + punkty[1] + "pkt")
+    //                     console.log("maxpkt " + returnMaxPkt() + gracze[i])
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //     } else if (player_amount == 3) {
+    //         if (returnPlayersWithMaxPkt().length > 1) {
+    //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+    //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+    //                 gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+    //                 gracze[2] + ": " + punkty[2] + "pkt")
+    //         } else {
+    //             for (let i = 0; i < player_amount; i++) {
+    //                 if (punkty[i] == returnMaxPkt()) {
+    //                     Swal.fire("Wygral gracz " + gracze[i],
+    //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+    //                         gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+    //                         gracze[2] + ": " + punkty[2] + "pkt")
+    //                     break;
+    //                 }
+    //             }
+    //         }
+
+    //     } else if (player_amount == 4) {
+    //         if (returnPlayersWithMaxPkt().length > 1) {
+    //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+    //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+    //                 gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+    //                 gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+    //                 gracze[3] + ": " + punkty[3] + "pkt")
+    //         } else {
+    //             for (let i = 0; i < player_amount; i++) {
+    //                 if (punkty[i] == returnMaxPkt()) {
+    //                     Swal.fire("Wygral gracz " + gracze[i],
+    //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+    //                         gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+    //                         gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+    //                         gracze[3] + ": " + punkty[3] + "pkt")
+    //                     break;
+    //                 }
+    //             }
+    //         }
+
+    //     }
     })
+    
+
 </script>

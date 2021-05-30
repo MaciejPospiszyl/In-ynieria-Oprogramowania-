@@ -13,12 +13,23 @@ const deckCardsHard = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png
 //   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
 //   , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
 
-const deckCardsMed = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
-  "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"
-  , "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"];
 
-const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"];
+
+/*const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+    "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png", "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"
+];*/
+
+const deckCardsMed = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
+    "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"
+];
+
+/*const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+    "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+];*/
+
+const deckCardsEz = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
+    "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
+];
 
 // const deckCardsEz = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"]
 
@@ -42,82 +53,81 @@ let costam = []
 let diff;
 
 function changeUM(user, mover, socket, room) {
-  user_id = user;
-  mover_id = mover;
-  currSocket = socket;
-  currRoom = room
-  seconds = 20;
-  if (myTurn(mover_id, user_id)) {
-    costam.forEach(e => {
-      e.classList.remove("cursor-false")
-      e.classList.add("cursor-true")
-    })
-  }
-  else {
-    costam.forEach(e => {
-      e.classList.remove("cursor-true")
-      e.classList.add("cursor-false")
-    })
-  }
-  stopTime();
-  timer();
-  timeStart = true;
+    user_id = user;
+    mover_id = mover;
+    currSocket = socket;
+    currRoom = room
+    seconds = 20;
+    if (myTurn(mover_id, user_id)) {
+        costam.forEach(e => {
+            e.classList.remove("cursor-false")
+            e.classList.add("cursor-true")
+        })
+    } else {
+        costam.forEach(e => {
+            e.classList.remove("cursor-true")
+            e.classList.add("cursor-false")
+        })
+    }
+    stopTime();
+    timer();
+    timeStart = true;
 }
 
 
 function emitToPlayers(flipper) {
-  let data = { flip: flipper, currRoom }
-  socket.emit('Flip', data)
+    let data = { flip: flipper, currRoom }
+    socket.emit('Flip', data)
 }
 
 function shuffle(array) {
-  let currentIndex = array.length, temporaryValue, randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-  return array;
+    let currentIndex = array.length,
+        temporaryValue, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
 }
 
 function startGame(SD) {
-  for (let i = 0; i < SD.length; i++) {
-    const liTag = document.createElement('LI');
-    liTag.classList.add('card');
-    liTag.id = i;
-    const addImage = document.createElement("IMG");
-    liTag.appendChild(addImage);
-    addImage.setAttribute("src", "../img/" + SD[i]);
-    deck.appendChild(liTag);
-    costam.push(liTag)
-  }
+  console.log('wchodzone jest', SD.length)
+    for (let i = 0; i < SD.length; i++) {
+        const liTag = document.createElement('LI');
+        liTag.classList.add('card');
+        liTag.id = i;
+        const addImage = document.createElement("IMG");
+        liTag.appendChild(addImage);
+        addImage.setAttribute("src", "../img/" + SD[i]);
+        deck.appendChild(liTag);
+        costam.push(liTag)
+    }
 }
 
 function returnSD(difficulty) {
-  diff = difficulty;
-  let shuffledDeck;
-  if (difficulty === 'Easy') {
-    shuffledDeck = shuffle(deckCardsEz);
-    return shuffledDeck;
-  }
-  else if (difficulty === 'Medium') {
-    shuffledDeck = shuffle(deckCardsMed);
-    return shuffledDeck;
-  }
-  else if (difficulty === 'Hard') {
-    shuffledDeck = shuffle(deckCardsHard);
-    return shuffledDeck;
-  }
+    diff = difficulty;
+    let shuffledDeck;
+    if (difficulty === 'Easy') {
+        shuffledDeck = shuffle(deckCardsEz);
+        return shuffledDeck;
+    } else if (difficulty === 'Medium') {
+        shuffledDeck = shuffle(deckCardsMed);
+        return shuffledDeck;
+    } else if (difficulty === 'Hard') {
+        shuffledDeck = shuffle(deckCardsHard);
+        return shuffledDeck;
+    }
 
 }
 
 
 function removeCard() {
-  while (deck.hasChildNodes()) {
-    deck.removeChild(deck.firstChild);
-  }
+    while (deck.hasChildNodes()) {
+        deck.removeChild(deck.firstChild);
+    }
 }
 
 function timer() {
@@ -127,13 +137,17 @@ function timer() {
     if (seconds <= 0) {
       stopTime();
       if (myTurn(user_id, mover_id)) {
+        console.log(opened[0])
         if (opened[0]) {
+          console.log('jest opened')
           data = { currRoom, card1: opened[0].parentElement.id }
           opened = [];
         }
         else {
+          console.log('nie jest opened')
           data = { currRoom, card1: null }
         }
+        console.log('emitdata', data)
         socket.emit('playerChange', data);
       }
     }
@@ -142,20 +156,18 @@ function timer() {
 }
 
 function stopTime() {
-  clearInterval(time);
+    clearInterval(time);
 }
 
 
 function myTurn(mover_id, user_id) {
-  if (!mover_id && !user_id) {
-    return false;
-  }
-  else if (mover_id == user_id) {
-    return true;
-  }
-  else {
-    return false
-  }
+    if (!mover_id && !user_id) {
+        return false;
+    } else if (mover_id == user_id) {
+        return true;
+    } else {
+        return false
+    }
 }
 
 
@@ -176,28 +188,28 @@ function compareTwo() {
 }
 
 function match() {
-  setTimeout(function () {
-    opened[0].parentElement.classList.add("match");
-    opened[1].parentElement.classList.add("match");
-    matched.push(...opened);
-    document.body.style.pointerEvents = "auto";
-    if (winGame()) {
-      socket.emit("gameFinished", currRoom)
-    }
-    opened = [];
-  }, 600);
-  // movesCounter();
+    setTimeout(function() {
+        opened[0].parentElement.classList.add("match");
+        opened[1].parentElement.classList.add("match");
+        matched.push(...opened);
+        document.body.style.pointerEvents = "auto";
+        if (winGame()) {
+            socket.emit("gameFinished", currRoom)
+        }
+        opened = [];
+    }, 600);
+    // movesCounter();
 }
 
 
 function noMatch() {
-  setTimeout(function () {
-    opened[0].parentElement.classList.remove("flip");
-    opened[1].parentElement.classList.remove("flip");
-    document.body.style.pointerEvents = "auto";
-    opened = [];
-  }, 700);
-  // movesCounter();
+    setTimeout(function() {
+        opened[0].parentElement.classList.remove("flip");
+        opened[1].parentElement.classList.remove("flip");
+        document.body.style.pointerEvents = "auto";
+        opened = [];
+    }, 700);
+    // movesCounter();
 }
 
 function winGame() {
@@ -254,9 +266,17 @@ deck.addEventListener("click", function (evt) {
     if (opened.length === 0 || opened.length === 1) {
       opened.push(evt.target.firstElementChild);
     }
-    compareTwo();
   }
+
+    function flipCard() {
+        evt.target.classList.add("flip");
+        addToOpened();
+    }
+
+    function addToOpened() {
+        if (opened.length === 0 || opened.length === 1) {
+            opened.push(evt.target.firstElementChild);
+        }
+        compareTwo();
+    }
 });
-
-
-

@@ -10,7 +10,7 @@ let credentials = models.credentials
 let leaderboard = models.leaderboard
 let lobby = models.lobby
 
-exports.register = async (req, res) => {
+exports.register = async(req, res) => {
     const { username, email, password } = req.body;
 
     if (!username.length || !email.length || !password.length) {
@@ -39,7 +39,7 @@ exports.register = async (req, res) => {
     }
 
     let newUser = users({ username: username })
-    newUser.save(function (err, result) {
+    newUser.save(function(err, result) {
         if (err) console.log(err)
         else {
             console.log("newUserSave", result)
@@ -49,7 +49,7 @@ exports.register = async (req, res) => {
                 password: hashedPassword,
                 user_id: result._id
             })
-            newCredential.save(function (err2, result2) {
+            newCredential.save(function(err2, result2) {
                 if (err2) console.log(err2)
                 else {
                     console.log("newCredentialSave", result2)
@@ -62,7 +62,7 @@ exports.register = async (req, res) => {
     })
 }
 
-exports.login = async (req, res) => {
+exports.login = async(req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         console.log("Niewypełnione pole/a")
@@ -91,8 +91,7 @@ exports.login = async (req, res) => {
                             res.status('400').redirect("/levelChoice")
                         }
                     })
-            }
-            else {
+            } else {
                 console.log("Złe dane")
                 return res.status('401').render('login', {
                     message: "Wrong date"
@@ -101,7 +100,7 @@ exports.login = async (req, res) => {
         })
 }
 
-exports.isLoggedIn = async (req, res, next) => {
+exports.isLoggedIn = async(req, res, next) => {
     if (req.cookies.jwt) {
         try {
             let decoded = jwt.verify(req.cookies.jwt, 'secret');
@@ -110,23 +109,20 @@ exports.isLoggedIn = async (req, res, next) => {
                     if (results) {
                         req.user = results;
                         next()
-                    }
-                    else {
+                    } else {
                         next()
                     }
                 })
-        }
-        catch {
+        } catch {
             next()
         }
-    }
-    else {
+    } else {
         next()
     }
 }
 
 
-exports.logout = async (req, res) => {
+exports.logout = async(req, res) => {
     res.cookie('jwt', 'wyloguj', {
         expires: new Date(Date.now() + 2 * 1000), //2 seconds
         httpOnly: true
@@ -134,11 +130,11 @@ exports.logout = async (req, res) => {
     res.status(200).redirect('/logowanie')
 }
 
-exports.saveScore = async (req, res) => {
+exports.saveScore = async(req, res) => {
     console.log(req.body)
     let decoded = jwt.verify(req.cookies.jwt, 'secret');
     let newScore = leaderboard({ user_id: decoded.user, time: req.body.scTime, moves: req.body.moves, difficulty: req.body.difficulty })
-    newScore.save(function (err, result) {
+    newScore.save(function(err, result) {
         if (err) console.log(err)
         else {
             console.log("newScoreSave", result)
@@ -150,8 +146,7 @@ exports.saveScore = async (req, res) => {
 exports.getLeaderboard = (req, res, next) => {
     let difficulty = req.query.difficulty || 'easy'
 
-    leaderboard.aggregate([
-        {
+    leaderboard.aggregate([{
             $match: {
                 "difficulty": difficulty
             }
@@ -186,23 +181,21 @@ exports.getLeaderboard = (req, res, next) => {
     })
 }
 
-exports.getRooms = async (req, res, next) => {
+exports.getRooms = async(req, res, next) => {
     //sprawdzam czy uzytkownik jest juz w pokoju jezeli tak to go do niego przekierowujemy 
     const decoded = jwt.verify(req.cookies.jwt, 'secret');
 
     try {
         const check = await lobby.findOne({
-            $or:
-                [{ player1_id: decoded.user },
+            $or: [{ player1_id: decoded.user },
                 { player2_id: decoded.user },
                 { player3_id: decoded.user },
                 { player4_id: decoded.user }
-                ]
+            ]
         })
         if (check && check.length != 0) {
             return res.redirect('/multiplayer/' + check._id)
-        }
-        else {
+        } else {
             lobby.find()
                 .then(results => {
                     req.rooms = results;
@@ -217,7 +210,7 @@ exports.getRooms = async (req, res, next) => {
 }
 
 
-exports.createRoom = async (req, res, next) => {
+exports.createRoom = async(req, res, next) => {
     const roomName = req.body.roomName;
     const decoded = jwt.verify(req.cookies.jwt, 'secret');
 
@@ -225,12 +218,11 @@ exports.createRoom = async (req, res, next) => {
         //sprawdzamy czy uzytkownik jest juz w jakims pokoju
         try {
             const check = await lobby.find({
-                $or:
-                    [{ player1_id: decoded.user },
+                $or: [{ player1_id: decoded.user },
                     { player2_id: decoded.user },
                     { player3_id: decoded.user },
                     { player4_id: decoded.user }
-                    ]
+                ]
             }).catch(error => {
                 console.log(error)
             }).then(results => {
@@ -238,16 +230,14 @@ exports.createRoom = async (req, res, next) => {
                     console.log('jestes w innym lobby', results)
                     res.json({ status: 'failure' })
                     return
-                }
-                else {
+                } else {
                     let newLobby = lobby({ room_name: roomName, player_amount: 1, player1_id: decoded.user, leader_id: decoded.user, gameState: "Waiting for players" });
-                    newLobby.save(function (err, result) {
+                    newLobby.save(function(err, result) {
                         if (err) {
                             console.log(err);
                             res.json({ status: 'failure' })
                             return
-                        }
-                        else {
+                        } else {
                             res.json({ status: 'success', room_id: result._id })
                             return
                         }
@@ -255,24 +245,23 @@ exports.createRoom = async (req, res, next) => {
                 }
             })
         } catch (error) { console.log(erorr) }
-    }
-    else {
+    } else {
         res.json({ status: 'failure' })
         return
     }
 }
 
-exports.joinRoom = async (req, res) => {
+exports.joinRoom = async(req, res) => {
     let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
     let data = { room_id: req.body.roomId }; //pokoj do ktorego dolacza uzytkownik
 
     //funkcja dodajaca gracza do pokoju
     async function addToCertainSpot(player_id, playerAmount) {
         try {
-            await lobby.findOneAndUpdate({ _id: data.room_id }, { [player_id]: decoded.user, player_amount: playerAmount + 1 })
+            await lobby.findOneAndUpdate({ _id: data.room_id }, {
+                [player_id]: decoded.user, player_amount: playerAmount + 1 })
             data.player_amount = playerAmount + 1
-        }
-        catch (error) {
+        } catch (error) {
             throw error;
         }
     }
@@ -280,12 +269,11 @@ exports.joinRoom = async (req, res) => {
     //sprawdzamy czy gracz znajduje sie juz w jakimkolwiek pokoju
     try {
         const check = await lobby.find({
-            $or:
-                [{ player1_id: decoded.user },
+            $or: [{ player1_id: decoded.user },
                 { player2_id: decoded.user },
                 { player3_id: decoded.user },
                 { player4_id: decoded.user }
-                ]
+            ]
         })
         if (check && check.length != 0) {
             console.log('jestes w innym lobby', check)
@@ -302,27 +290,21 @@ exports.joinRoom = async (req, res) => {
         if (findSpotForPlayer && findSpotForPlayer.player_amount < 4) {
             if (!findSpotForPlayer.player1_id) {
                 await addToCertainSpot('player1_id', findSpotForPlayer.player_amount)
-            }
-            else if (!findSpotForPlayer.player2_id) {
+            } else if (!findSpotForPlayer.player2_id) {
                 await addToCertainSpot('player2_id', findSpotForPlayer.player_amount)
-            }
-            else if (!findSpotForPlayer.player3_id) {
+            } else if (!findSpotForPlayer.player3_id) {
                 await addToCertainSpot('player3_id', findSpotForPlayer.player_amount)
-            }
-            else if (!findSpotForPlayer.player4_id) {
+            } else if (!findSpotForPlayer.player4_id) {
                 await addToCertainSpot('player4_id', findSpotForPlayer.player_amount)
-            }
-            else {
+            } else {
                 res.json({ status: 'failure' })
                 return
             }
-        }
-        else {
+        } else {
             res.json({ status: 'failure' })
             return
         }
-    }
-    catch (error) {
+    } catch (error) {
         res.json({
             status: 'failure'
         })
@@ -339,7 +321,7 @@ exports.joinRoom = async (req, res) => {
 
 
 
-exports.getRoom = async (req, res, next) => {
+exports.getRoom = async(req, res, next) => {
     // let players = {}
     // let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
 
@@ -350,12 +332,10 @@ exports.getRoom = async (req, res, next) => {
             players.room_name = players.room_name;
             req.players = players;
             req.player_amount = players.player_amount;
-        }
-        else {
+        } else {
             res.status('400').redirect('/multiplayer')
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error)
     }
     next()
@@ -363,13 +343,14 @@ exports.getRoom = async (req, res, next) => {
 
 
 
-exports.leaveRoom = async (req, res, next) => {
+exports.leaveRoom = async(req, res, next) => {
     let decoded = jwt.verify(req.cookies.jwt, 'secret'); //zalogowany uzytkownik
     let data = { room_id: req.body.room }; //pokoj ktory opuszcza uzytkownik
 
     async function removePlayer(player, player_amount, leader) {
         try {
-            const x = await lobby.findOneAndUpdate({ _id: data.room_id }, { [player]: undefined, player_amount: player_amount - 1 })
+            const x = await lobby.findOneAndUpdate({ _id: data.room_id }, {
+                [player]: undefined, player_amount: player_amount - 1 })
             if (x) {
                 if (leader == decoded.user) {
                     await findNewLeader();
@@ -384,8 +365,7 @@ exports.leaveRoom = async (req, res, next) => {
     async function setNewLeader(player) {
         try {
             await lobby.findOneAndUpdate({ _id: data.room_id }, { leader_id: player })
-        }
-        catch (error) { console.log('error') }
+        } catch (error) { console.log('error') }
     }
 
     async function findNewLeader() {
@@ -394,14 +374,11 @@ exports.leaveRoom = async (req, res, next) => {
             if (results) {
                 if (results.player1_id != null) {
                     await setNewLeader(results.player1_id)
-                }
-                else if (results.player2_id != null) {
+                } else if (results.player2_id != null) {
                     await setNewLeader(results.player2_id)
-                }
-                else if (results.player3_id != null) {
+                } else if (results.player3_id != null) {
                     await setNewLeader(results.player3_id)
-                }
-                else if (results.player4_id != null) {
+                } else if (results.player4_id != null) {
                     await setNewLeader(results.player4_id)
                 }
             }
@@ -411,17 +388,15 @@ exports.leaveRoom = async (req, res, next) => {
 
     try {
         const results = await lobby.findOne({
-            $and:
-                [{ _id: data.room_id },
+            $and: [{ _id: data.room_id },
                 {
-                    $or:
-                        [{ player1_id: decoded.user },
+                    $or: [{ player1_id: decoded.user },
                         { player2_id: decoded.user },
                         { player3_id: decoded.user },
                         { player4_id: decoded.user }
-                        ]
+                    ]
                 }
-                ]
+            ]
         })
         if (results) {
             if (results.player_amount == 1) {
@@ -429,27 +404,22 @@ exports.leaveRoom = async (req, res, next) => {
                 if (result) {
                     next()
                 }
-            }
-            else if (results.player1_id && results.player1_id == decoded.user) {
+            } else if (results.player1_id && results.player1_id == decoded.user) {
                 await removePlayer('player1_id', results.player_amount, results.leader_id)
-            }
-            else if (results.player2_id && results.player2_id == decoded.user) {
+            } else if (results.player2_id && results.player2_id == decoded.user) {
                 await removePlayer('player2_id', results.player_amount, results.leader_id)
-            }
-            else if (results.player3_id && results.player3_id == decoded.user) {
+            } else if (results.player3_id && results.player3_id == decoded.user) {
                 await removePlayer('player3_id', results.player_amount, results.leader_id)
-            }
-            else if (results.player4_id && results.player4_id == decoded.user) {
+            } else if (results.player4_id && results.player4_id == decoded.user) {
                 await removePlayer('player4_id', results.player_amount, results.leader_id)
             }
-        }
-        else {
+        } else {
             next()
         }
     } catch (error) { console.log(error) }
 }
 
-exports.startGame = async (req, res) => {
+exports.startGame = async(req, res) => {
     let data = req.body;
     try {
         const results = await lobby.findOne({ _id: data.room_id })
@@ -474,7 +444,7 @@ exports.startGame = async (req, res) => {
     })
 }
 
-exports.removeRoom = async (req, res) => {
+exports.removeRoom = async(req, res) => {
     let data = req.body;
     try {
         const result = await lobby.findOneAndDelete({ _id: data.room_id })
