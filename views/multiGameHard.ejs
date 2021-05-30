@@ -277,116 +277,94 @@
             console.log(document.getElementById('player' + i).innerText, document.getElementById('points' + i).innerText);
         }
 
-        //dla 2 graczy
+        function returnMaxPkt() {
+            var maxPkt = 0;
+
+            for (let i = 0; i < player_amount; i++) {
+                var pktGraczy = document.getElementById('points' + i).innerText;
+                if (maxPkt <= pktGraczy)
+                    maxPkt = pktGraczy
+            }
+            return maxPkt;
+        }
+
+        function returnPlayersWithMaxPkt() {
+            var maxPkt = returnMaxPkt()
+            var playersWithMaxPkt = []
+            for (let i = 0; i < player_amount; i++) {
+                var pktGraczy = document.getElementById('points' + i).innerText;
+                var gracz = document.getElementById('player' + i).innerText;
+                if (pktGraczy == maxPkt) {
+                    playersWithMaxPkt.push(gracz)
+                }
+            }
+            return playersWithMaxPkt
+        }
+
+
+        let gracze = []
+        let punkty = []
+        for (let i = 0; i < player_amount; i++) {
+            var gracz = document.getElementById('player' + i).innerText;
+            var pkt = document.getElementById('points' + i).innerText;
+            gracze.push(gracz)
+            punkty.push(pkt)
+        }
+
         if (player_amount == 2) {
-            var gracz1 = document.getElementById('player' + 0).innerText;
-            var gracz2 = document.getElementById('player' + 1).innerText;
-            var gracz1Pkt = document.getElementById('points' + 0).innerText;
-            var gracz2Pkt = document.getElementById('points' + 1).innerText;
-
-
-            //jesli wygral gracz 1
-            if (gracz1Pkt > gracz2Pkt) {
-                Swal.fire("Wygral gracz: " + gracz1,
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt");
-                //jesli wygral gracz 2
-            } else if (gracz2Pkt > gracz1Pkt) {
-                Swal.fire("Wygral gracz: " + gracz2,
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt");
-                //jesli remis
+            if (returnPlayersWithMaxPkt().length > 1) {
+                Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+                    gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+                    gracze[1] + ": " + punkty[1] + "pkt")
             } else {
-                Swal.fire("Remis",
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt");
+                for (let i = 0; i < player_amount; i++) {
+                    if (punkty[i] == returnMaxPkt()) {
+                        Swal.fire("Wygral gracz " + gracze[i],
+                            gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+                            gracze[1] + ": " + punkty[1] + "pkt")
+                        console.log("maxpkt " + returnMaxPkt() + gracze[i])
+                        break;
+                    }
+                }
             }
-        }
-        //dla 3 graczy
-        else if (player_amount == 3) {
-            var gracz1 = document.getElementById('player' + 0).innerText;
-            var gracz2 = document.getElementById('player' + 1).innerText;
-            var gracz3 = document.getElementById('player' + 2).innerText;
-            var gracz1Pkt = document.getElementById('points' + 0).innerText;
-            var gracz2Pkt = document.getElementById('points' + 1).innerText;
-            var gracz3Pkt = document.getElementById('points' + 2).innerText;
-
-            //jesli wygral gracz 1
-            if (gracz1Pkt > gracz2Pkt && gracz1Pkt > gracz3Pkt) {
-                Swal.fire("Wygral gracz: " + gracz1,
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz3 + ": " + gracz3Pkt + "pkt");
-                //jesli wygral gracz 2
-            } else if (gracz2Pkt > gracz1Pkt && gracz2Pkt > gracz3Pkt) {
-                Swal.fire("Wygral gracz: " + gracz2,
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz3 + ": " + gracz3Pkt + "pkt");
-                //jesli wygral gracz 3
-            } else if (gracz3Pkt > gracz1Pkt && gracz3Pkt > gracz2Pkt) {
-                Swal.fire("Wygral gracz: " + gracz3,
-                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz1 + ": " + gracz1Pkt + "pkt");
+        } else if (player_amount == 3) {
+            if (returnPlayersWithMaxPkt().length > 1) {
+                Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+                    gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+                    gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+                    gracze[2] + ": " + punkty[2] + "pkt")
             } else {
-                Swal.fire("Remis",
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz3 + ": " + gracz3Pkt + "pkt");
+                for (let i = 0; i < player_amount; i++) {
+                    if (punkty[i] == returnMaxPkt()) {
+                        Swal.fire("Wygral gracz " + gracze[i],
+                            gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+                            gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+                            gracze[2] + ": " + punkty[2] + "pkt")
+                        break;
+                    }
+                }
             }
-        }
-        //dla 4 graczy
-        else if (player_amount == 4) {
-            var gracz1 = document.getElementById('player' + 0).innerText;
-            var gracz2 = document.getElementById('player' + 1).innerText;
-            var gracz3 = document.getElementById('player' + 2).innerText;
-            var gracz4 = document.getElementById('player' + 3).innerText;
-            var gracz1Pkt = document.getElementById('points' + 0).innerText;
-            var gracz2Pkt = document.getElementById('points' + 1).innerText;
-            var gracz3Pkt = document.getElementById('points' + 2).innerText;
-            var gracz4Pkt = document.getElementById('points' + 3).innerText;
 
-            //jesli wygral gracz 1
-            if (gracz1Pkt > gracz2Pkt && gracz1Pkt > gracz3Pkt && gracz1Pkt > gracz4Pkt) {
-                Swal.fire("Wygral gracz: " + gracz1,
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
-                    gracz4 + ": " + gracz4Pkt + "pkt");
+        } else if (player_amount == 4) {
+            if (returnPlayersWithMaxPkt().length > 1) {
+                Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+                    gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+                    gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+                    gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+                    gracze[3] + ": " + punkty[3] + "pkt")
+            } else {
+                for (let i = 0; i < player_amount; i++) {
+                    if (punkty[i] == returnMaxPkt()) {
+                        Swal.fire("Wygral gracz " + gracze[i],
+                            gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+                            gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+                            gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+                            gracze[3] + ": " + punkty[3] + "pkt")
+                        break;
+                    }
+                }
             }
-            //jesli wygral gracz 2
-            else if (gracz2Pkt > gracz1Pkt && gracz2Pkt > gracz3Pkt && gracz2Pkt > gracz4Pkt) {
-                Swal.fire("Wygral gracz: " + gracz2,
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
-                    gracz4 + ": " + gracz4Pkt + "pkt");
-            }
-            //jesli wygral gracz 3
-            else if (gracz3Pkt > gracz1Pkt && gracz3Pkt > gracz2Pkt && gracz3Pkt > gracz4Pkt) {
-                Swal.fire("Wygral gracz: " + gracz3,
-                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz4 + ": " + gracz4Pkt + "pkt");
-            }
-            //jesli wygral gracz 4
-            else if (gracz4Pkt > gracz1Pkt && gracz4Pkt > gracz2Pkt && gracz4Pkt > gracz3Pkt) {
-                Swal.fire("Wygral gracz: " + gracz4,
-                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz4 + ": " + gracz4Pkt + "pkt");
-            }
-            //jesli remis
-            else {
-                Swal.fire("Remis",
-                    gracz1 + ": " + gracz1Pkt + "pkt" + '<br>' +
-                    gracz2 + ": " + gracz2Pkt + "pkt" + '<br>' +
-                    gracz3 + ": " + gracz3Pkt + "pkt" + '<br>' +
-                    gracz4 + ": " + gracz4Pkt + "pkt");
-            }
+
         }
     })
 </script>

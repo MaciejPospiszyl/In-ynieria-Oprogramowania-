@@ -4,12 +4,17 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+h4 {
+    font-size: 2em;
+}
+
 nav {
     /*background-color: #0000FF;*/
     color: #fff;
     padding: 30px 60px;
     display: flex;
     justify-content: space-between;
+    font-size: 20px;
 }
 
 nav ul {

@@ -1,35 +1,35 @@
 .levelButton {
-	box-shadow: 3px 4px 0px 0px #1564ad;
-	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
-	background-color:#79bbff;
-	border-radius:5px;
-	border:1px solid #337bc4;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:30px;
-	font-weight:bold;
-	width: 440px;
+    box-shadow: inset 0px 1px 3px 0px #91b8b3;
+    background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+    background-color: #768d87;
+    border-radius: 5px;
+    border: 1px solid #566963;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 30px;
+    font-weight: bold;
+    width: 440px;
     height: 120px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #528ecc;
+    text-decoration: none;
+    text-shadow: 0px -1px 0px #2b665e;
     text-align: center;
     vertical-align: middle;
-    line-height: 120px; 
+    line-height: 120px;
     margin: 20px 0px 20px 0px;
-    
-}
-.levelButton:hover {
-	background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
-	background-color:#378de5;
-}
-.levelButton:active {
-	position:relative;
-	top:1px;
 }
 
-a:hover
-{
+.levelButton:hover {
+    background: linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
+    background-color: #6c7c7c;
+}
+
+.levelButton:active {
+    position: relative;
+    top: 1px;
+}
+
+a:hover {
     text-decoration: none;
 }
 
@@ -41,24 +41,22 @@ a:hover
     font-size: 62.5%;
     letter-spacing: 1px;
     text-align: center;
-    
-  }
+}
 
-  .containerButtons {
+.containerButtons {
     flex-direction: column;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     height: flex;
     width: 60em;
-    border-width:10px;
-    border-style:solid;
-    border-color:#1090f0;
-    background-color: rgb(180, 221, 238);
-  }
+    border-width: 10px;
+    border-style: solid;
+    border-color: #565757;
+    background-color: rgb(195, 197, 198);
+}
 
-  h1
-  {
-      text-align: center;
-      margin-top: 50px;
-  }
+h1 {
+    text-align: center;
+    margin-top: 50px;
+}

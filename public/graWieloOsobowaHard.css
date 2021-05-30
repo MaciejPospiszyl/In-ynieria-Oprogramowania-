@@ -206,7 +206,6 @@ p {
     border-radius: 1.5em;
     height: 15%;
     width: 15%;
-    background-size: 90%;
 }
 
 img {
@@ -237,14 +236,14 @@ img {
 }
 
 .deck .card.match {
-    background: #39d;
+    background: #d7b95e;
     visibility: visible;
     cursor: default;
     animation: pulse 1s;
 }
 
 .match img {
-    background: #39d;
+    background: #d7b95e;
 }
 
 @keyframes pulse {
