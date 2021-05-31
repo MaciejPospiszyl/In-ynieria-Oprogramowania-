@@ -9,29 +9,17 @@ const deckCardsHard = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png
   , "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", 
   "kiwi.png", "kiwi.png", "kiwi.png"];
 
-// const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-//   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
-//   , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
+const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+  , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
 
-
-
-/*const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-    "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png", "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"
-];*/
-
-const deckCardsMed = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
-    "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"
-];
-
-/*const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-    "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
-];*/
+// const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+//     "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+// ];
 
 const deckCardsEz = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
     "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
 ];
-
-// const deckCardsEz = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"]
 
 const deck = document.querySelector(".deck");
 let opened = [];
@@ -43,7 +31,7 @@ let moves = 0;
 const timeCounter = document.querySelector(".timer");
 let time;
 let minutes = 0;
-let seconds = 20;
+let seconds = 10;
 let timeStart = false;
 let user_id = 1;
 let mover_id = 0;
@@ -57,7 +45,7 @@ function changeUM(user, mover, socket, room) {
     mover_id = mover;
     currSocket = socket;
     currRoom = room
-    seconds = 20;
+    seconds = 10;
     if (myTurn(mover_id, user_id)) {
         costam.forEach(e => {
             e.classList.remove("cursor-false")
