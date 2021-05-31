@@ -1,28 +1,16 @@
-// const deckCardsHard = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-//   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
-//   , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"
-//   , "sliwka.png", "sliwka.png", "agrest.png", "agrest.png", "porzeczka.png", "porzeczka.png", "brzoskwinie.png", "brzoskwinie.png"
-//   , "truskawki.png", "truskawki.png", "winogronoBiale.png", "winogronoBiale.png"];
+const deckCardsHard = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+  , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"
+  , "sliwka.png", "sliwka.png", "agrest.png", "agrest.png", "porzeczka.png", "porzeczka.png", "brzoskwinie.png", "brzoskwinie.png"
+  , "truskawki.png", "truskawki.png", "winogronoBiale.png", "winogronoBiale.png"];
 
-// const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-//     "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
-// ];
-
-// const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
-//   "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
-//   , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
-
-const deckCardsMed = ["kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png",
-"kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png","kiwi.png", "kiwi.png"]
-
-const deckCardsHard = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
-  "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png"
-  , "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", 
-  "kiwi.png", "kiwi.png", "kiwi.png"];
-
-const deckCardsEz = ["kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
-    "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png", "kiwi.png",
+const deckCardsEz = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+    "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
 ];
+
+const deckCardsMed = ["kiwi.png", "kiwi.png", "pomarancze.png", "pomarancze.png", "banany.png", "banany.png", "grejfrut.png", "grejfrut.png",
+  "arbuz.png", "arbuz.png", "maliny.png", "maliny.png", "winogrono.png", "winogrono.png", "wisnie.png", "wisnie.png"
+  , "borowki.png", "borowki.png", "gruszka.png", "gruszka.png", "ananas.png", "ananas.png", "limonka.png", "limonka.png"];
 
 const deck = document.querySelector(".deck");
 let opened = [];
