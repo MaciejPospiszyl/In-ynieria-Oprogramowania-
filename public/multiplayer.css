@@ -313,6 +313,10 @@ body {
     margin-top: 10px;
 }
 
+#diffSelect>option {
+    font-family: sans-serif;
+}
+
 @media only screen and (max-width: 1400px) {
     #chatInput {
         width: 90%;

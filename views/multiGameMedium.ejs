@@ -8,8 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
     <link href="/graWieloOsobowaMedium.css" rel="stylesheet">
@@ -23,33 +22,33 @@
     <nav>
         <h4>Memory card game</h4>
         <% if (user) { %>
-        <ul>
-            <li>
-                Logged in as
-                <%= user.username %>
-            </li>
-            <li>
-                <a href="/ranking">Ranking</a>
-                <a href="/auth/wyloguj" style="color:crimson">Log out</a>
-            </li>
-        </ul>
-        <% } else { %>
-        <ul>
-            <li><a href="/logowanie">Sign in</a></li>
-            <li><a href="/rejestracja">Register</a></li>
-        </ul>
-        <% } %>
+            <ul>
+                <li>
+                    Logged in as
+                    <%= user.username %>
+                </li>
+                <li>
+                    <a href="/ranking">Ranking</a>
+                    <a href="/auth/wyloguj" style="color:crimson">Log out</a>
+                </li>
+            </ul>
+            <% } else { %>
+                <ul>
+                    <li><a href="/logowanie">Sign in</a></li>
+                    <li><a href="/rejestracja">Register</a></li>
+                </ul>
+                <% } %>
     </nav>
     <% if (message) { %>
-    <h4 class="alert alert-info" style="text-align: center; margin-top: 50px;" role="alert">
-        <%= message %>
-    </h4>
-    <% } %>
+        <h4 class="alert alert-info" style="text-align: center; margin-top: 50px;" role="alert">
+            <%= message %>
+        </h4>
+        <% } %>
 
 
-    <span class="timer"><i class="fa fa-hourglass-start"></i> Timer:00:20</span>
-    <div class="container">
-        <!--<span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:20</span>
+            <span class="timer"><i class="fa fa-hourglass-start"></i> Timer:00:20</span>
+            <div class="container">
+                <!--<span class="timer"><i class="fa fa-hourglass-start"></i> Timer: 00:20</span>
                  <section class="score-panel">
                     <span class="text"> Moves:</span><span class="moves-counter">0</span>
                     <div class="timer-container">
@@ -63,29 +62,29 @@
 
 
 
-        <ul class="deck"></ul>
-        <div class="rightMenu">
+                <ul class="deck"></ul>
+                <div class="rightMenu">
 
 
-            <div id="menu">
+                    <div id="menu">
 
-            </div>
+                    </div>
 
 
-            <div class="chatConteiner">
+                    <div class="chatConteiner">
 
-                <div id="chatMessages">
-                    <ul id="messages"></ul>
+                        <div id="chatMessages">
+                            <ul id="messages"></ul>
+                        </div>
+                        <div class="chatSend">
+                            <form id="chatForm" action="">
+                                <input id="chatInput" autocomplete="off" /><button>Send</button>
+                            </form>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="chatSend">
-                    <form id="chatForm" action="">
-                        <input id="chatInput" autocomplete="off" /><button>Send</button>
-                    </form>
-                </div>
-
-            </div>
-
-        </div>
 
 
 
@@ -95,14 +94,11 @@
 
 <script src="/kartyMulti.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous">
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-    integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous">
 </script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous">
 </script>
 
 </html>
@@ -173,7 +169,7 @@
 
 
     let socket = io()
-    socket.on('connect', function (data) {
+    socket.on('connect', function(data) {
         let random = Math.floor(Math.random() * 10);
         let board = returnSD(difficulty);
         const dane = {
@@ -183,7 +179,7 @@
         }
         socket.emit('joinGameRoom', dane)
     });
-    socket.on('disconnect', function (data) {});
+    socket.on('disconnect', function(data) {});
 
 
     //chat setup
@@ -191,7 +187,7 @@
     let input = document.getElementById('chatInput');
     let messages = document.getElementById('messages');
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
             let chatInput = {
@@ -205,7 +201,7 @@
     });
 
     //socket otrzymuje informacje o nowej wiadomosci wyslanej w pokoju => dodaje ją do czatu
-    socket.on('newChatMessage', function (msg) {
+    socket.on('newChatMessage', function(msg) {
         let item = document.createElement('li');
         item.textContent = msg.user + ": " + msg.value;
         messages.appendChild(item);
@@ -243,8 +239,8 @@
         if (turn > player_amount - 1) {
             turn = 0;
         }
-        if(data!=null){
-        document.getElementById(data).classList.remove("flip")
+        if (data != null) {
+            document.getElementById(data).classList.remove("flip")
         }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
@@ -260,7 +256,7 @@
         updatePpoints(turn - 1, data.points)
     })
 
-    socket.on('gameFinished', async () => {
+    socket.on('gameFinished', async() => {
         stopTime();
         let data = {
             room_id: room_id
@@ -280,7 +276,7 @@
         for (let i = 0; i < player_amount; i++) {
             playerScores[i] = new Array(2);
             playerScores[i][0] = pplayer[i].innerText;
-            playerScores[i][1] = ppoints[i].innerText;
+            playerScores[i][1] = parseInt(ppoints[i].innerText);
         }
 
 
@@ -416,5 +412,4 @@
 
         // }
     })
-    
 </script>

@@ -235,8 +235,8 @@
         if (turn > player_amount - 1) {
             turn = 0;
         }
-        if(data!=null){
-        document.getElementById(data).classList.remove("flip")
+        if (data != null) {
+            document.getElementById(data).classList.remove("flip")
         }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
@@ -268,12 +268,12 @@
             socket.emit('lobbyChange');
         }
 
-          //dwuwymiarowa tablica z nazwa gracza i punktami
-          let playerScores = new Array(player_amount);
+        //dwuwymiarowa tablica z nazwa gracza i punktami
+        let playerScores = new Array(player_amount);
         for (let i = 0; i < player_amount; i++) {
             playerScores[i] = new Array(2);
             playerScores[i][0] = pplayer[i].innerText;
-            playerScores[i][1] = ppoints[i].innerText;
+            playerScores[i][1] = parseInt(ppoints[i].innerText);
         }
 
 
@@ -290,7 +290,7 @@
         console.log('posortowane ' + playerScores);
 
         let allPlayersString = "";
-        for(let i = 0; i<player_amount; i++){
+        for (let i = 0; i < player_amount; i++) {
             allPlayersString += playerScores[i][0] + ": " + playerScores[i][1] + " pkt<br>";
         }
 
@@ -298,9 +298,8 @@
         let stringTopScores = "";
         let topScores = new Array(player_amount);
         let x = 0;
-        for(let i = 0; i<player_amount; i++){
-            if(playerScores[i][1] == playerScores[0][1])
-            {
+        for (let i = 0; i < player_amount; i++) {
+            if (playerScores[i][1] == playerScores[0][1]) {
                 topScores[x] = new Array(2);
                 topScores[x][0] = playerScores[i][0];
                 topScores[x][1] = playerScores[i][1];
@@ -308,104 +307,101 @@
                 x++;
             }
         }
-        if(topScores.length == 1){
+        if (topScores.length == 1) {
             Swal.fire("Wygrał " + stringTopScores + '<br>' + allPlayersString);
-        }
-        else{
+        } else {
             Swal.fire("Remis między " + stringTopScores + '<br>' + allPlayersString);
         }
 
 
-    //     function returnMaxPkt() {
-    //         var maxPkt = 0;
+        //     function returnMaxPkt() {
+        //         var maxPkt = 0;
 
-    //         for (let i = 0; i < player_amount; i++) {
-    //             var pktGraczy = document.getElementById('points' + i).innerText;
-    //             if (maxPkt <= pktGraczy)
-    //                 maxPkt = pktGraczy
-    //         }
-    //         return maxPkt;
-    //     }
+        //         for (let i = 0; i < player_amount; i++) {
+        //             var pktGraczy = document.getElementById('points' + i).innerText;
+        //             if (maxPkt <= pktGraczy)
+        //                 maxPkt = pktGraczy
+        //         }
+        //         return maxPkt;
+        //     }
 
-    //     function returnPlayersWithMaxPkt() {
-    //         var maxPkt = returnMaxPkt()
-    //         var playersWithMaxPkt = []
-    //         for (let i = 0; i < player_amount; i++) {
-    //             var pktGraczy = document.getElementById('points' + i).innerText;
-    //             var gracz = document.getElementById('player' + i).innerText;
-    //             if (pktGraczy == maxPkt) {
-    //                 playersWithMaxPkt.push(gracz)
-    //             }
-    //         }
-    //         return playersWithMaxPkt
-    //     }
+        //     function returnPlayersWithMaxPkt() {
+        //         var maxPkt = returnMaxPkt()
+        //         var playersWithMaxPkt = []
+        //         for (let i = 0; i < player_amount; i++) {
+        //             var pktGraczy = document.getElementById('points' + i).innerText;
+        //             var gracz = document.getElementById('player' + i).innerText;
+        //             if (pktGraczy == maxPkt) {
+        //                 playersWithMaxPkt.push(gracz)
+        //             }
+        //         }
+        //         return playersWithMaxPkt
+        //     }
 
 
-    //     let gracze = []
-    //     let punkty = []
-    //     for (let i = 0; i < player_amount; i++) {
-    //         var gracz = document.getElementById('player' + i).innerText;
-    //         var pkt = document.getElementById('points' + i).innerText;
-    //         gracze.push(gracz)
-    //         punkty.push(pkt)
-    //     }
+        //     let gracze = []
+        //     let punkty = []
+        //     for (let i = 0; i < player_amount; i++) {
+        //         var gracz = document.getElementById('player' + i).innerText;
+        //         var pkt = document.getElementById('points' + i).innerText;
+        //         gracze.push(gracz)
+        //         punkty.push(pkt)
+        //     }
 
-    //     if (player_amount == 2) {
-    //         if (returnPlayersWithMaxPkt().length > 1) {
-    //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
-    //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
-    //                 gracze[1] + ": " + punkty[1] + "pkt")
-    //         } else {
-    //             for (let i = 0; i < player_amount; i++) {
-    //                 if (punkty[i] == returnMaxPkt()) {
-    //                     Swal.fire("Wygral gracz " + gracze[i],
-    //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
-    //                         gracze[1] + ": " + punkty[1] + "pkt")
-    //                     console.log("maxpkt " + returnMaxPkt() + gracze[i])
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     } else if (player_amount == 3) {
-    //         if (returnPlayersWithMaxPkt().length > 1) {
-    //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
-    //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
-    //                 gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
-    //                 gracze[2] + ": " + punkty[2] + "pkt")
-    //         } else {
-    //             for (let i = 0; i < player_amount; i++) {
-    //                 if (punkty[i] == returnMaxPkt()) {
-    //                     Swal.fire("Wygral gracz " + gracze[i],
-    //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
-    //                         gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
-    //                         gracze[2] + ": " + punkty[2] + "pkt")
-    //                     break;
-    //                 }
-    //             }
-    //         }
+        //     if (player_amount == 2) {
+        //         if (returnPlayersWithMaxPkt().length > 1) {
+        //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+        //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                 gracze[1] + ": " + punkty[1] + "pkt")
+        //         } else {
+        //             for (let i = 0; i < player_amount; i++) {
+        //                 if (punkty[i] == returnMaxPkt()) {
+        //                     Swal.fire("Wygral gracz " + gracze[i],
+        //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                         gracze[1] + ": " + punkty[1] + "pkt")
+        //                     console.log("maxpkt " + returnMaxPkt() + gracze[i])
+        //                     break;
+        //                 }
+        //             }
+        //         }
+        //     } else if (player_amount == 3) {
+        //         if (returnPlayersWithMaxPkt().length > 1) {
+        //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+        //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                 gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //                 gracze[2] + ": " + punkty[2] + "pkt")
+        //         } else {
+        //             for (let i = 0; i < player_amount; i++) {
+        //                 if (punkty[i] == returnMaxPkt()) {
+        //                     Swal.fire("Wygral gracz " + gracze[i],
+        //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                         gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //                         gracze[2] + ": " + punkty[2] + "pkt")
+        //                     break;
+        //                 }
+        //             }
+        //         }
 
-    //     } else if (player_amount == 4) {
-    //         if (returnPlayersWithMaxPkt().length > 1) {
-    //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
-    //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
-    //                 gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
-    //                 gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
-    //                 gracze[3] + ": " + punkty[3] + "pkt")
-    //         } else {
-    //             for (let i = 0; i < player_amount; i++) {
-    //                 if (punkty[i] == returnMaxPkt()) {
-    //                     Swal.fire("Wygral gracz " + gracze[i],
-    //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
-    //                         gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
-    //                         gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
-    //                         gracze[3] + ": " + punkty[3] + "pkt")
-    //                     break;
-    //                 }
-    //             }
-    //         }
+        //     } else if (player_amount == 4) {
+        //         if (returnPlayersWithMaxPkt().length > 1) {
+        //             Swal.fire("Remis między graczami: " + returnPlayersWithMaxPkt(),
+        //                 gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                 gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //                 gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+        //                 gracze[3] + ": " + punkty[3] + "pkt")
+        //         } else {
+        //             for (let i = 0; i < player_amount; i++) {
+        //                 if (punkty[i] == returnMaxPkt()) {
+        //                     Swal.fire("Wygral gracz " + gracze[i],
+        //                         gracze[0] + ": " + punkty[0] + "pkt" + '<br>' +
+        //                         gracze[1] + ": " + punkty[1] + "pkt" + '<br>' +
+        //                         gracze[2] + ": " + punkty[2] + "pkt" + '<br>' +
+        //                         gracze[3] + ": " + punkty[3] + "pkt")
+        //                     break;
+        //                 }
+        //             }
+        //         }
 
-    //     }
+        //     }
     })
-    
-
 </script>
