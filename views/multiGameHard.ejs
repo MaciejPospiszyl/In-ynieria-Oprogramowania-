@@ -216,8 +216,8 @@
         if (turn > player_amount - 1) {
             turn = 0;
         }
-        if(data!=null){
-        document.getElementById(data).classList.remove("flip")
+        if (data != null) {
+            document.getElementById(data).classList.remove("flip")
         }
         updatePplayer(turn);
         changeUM(user.id, players[turn]._id, socket, room_id)
@@ -249,12 +249,12 @@
             socket.emit('lobbyChange');
         }
 
-          //dwuwymiarowa tablica z nazwa gracza i punktami
-          let playerScores = new Array(player_amount);
+        //dwuwymiarowa tablica z nazwa gracza i punktami
+        let playerScores = new Array(player_amount);
         for (let i = 0; i < player_amount; i++) {
             playerScores[i] = new Array(2);
             playerScores[i][0] = pplayer[i].innerText;
-            playerScores[i][1] = ppoints[i].innerText;
+            playerScores[i][1] = parseInt(ppoints[i].innerText);
         }
 
 
@@ -271,7 +271,7 @@
         console.log('posortowane ' + playerScores);
 
         let allPlayersString = "";
-        for(let i = 0; i<player_amount; i++){
+        for (let i = 0; i < player_amount; i++) {
             allPlayersString += playerScores[i][0] + ": " + playerScores[i][1] + " pkt<br>";
         }
 
@@ -279,9 +279,8 @@
         let stringTopScores = "";
         let topScores = new Array(player_amount);
         let x = 0;
-        for(let i = 0; i<player_amount; i++){
-            if(playerScores[i][1] == playerScores[0][1])
-            {
+        for (let i = 0; i < player_amount; i++) {
+            if (playerScores[i][1] == playerScores[0][1]) {
                 topScores[x] = new Array(2);
                 topScores[x][0] = playerScores[i][0];
                 topScores[x][1] = playerScores[i][1];
@@ -289,16 +288,13 @@
                 x++;
             }
         }
-        if(topScores.length == 1){
-            Swal.fire("Wygrał " + stringTopScores + '<br>' + allPlayersString);
-        }
-        else{
-            Swal.fire("Remis między " + stringTopScores + '<br>' + allPlayersString);
+        if (topScores.length == 1) {
+            Swal.fire("Winner: " + stringTopScores + '<br><br>' + allPlayersString);
+        } else {
+            Swal.fire("Draw between: " + stringTopScores + '<br><br>' + allPlayersString);
         }
 
-
- 
     })
-    
+
 
 </script>
